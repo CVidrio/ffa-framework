@@ -1,5 +1,5 @@
 # Mann-Whitney-Pettitt hypothesis test for abrupt changes in the mean
-test <- function(df, alpha) {
+pettitt_test <- function(df, alpha) {
 
 	# Extract information from the dataframe for convenience
 	n <- length(df$max)

@@ -33,32 +33,33 @@ if (is.null(opt$config)) {
 }
 
 # Create a directory for storing reports for this csv_file
-csv_name <- file_path_sans_ext(basename(csv_file))
+csv_name <- file_path_sans_ext(csv_file)
 report_path <- glue("{report_dir}/{csv_name}")
 if (!dir.exists(report_path)) dir.create(report_path)
 
 # Load data from the given input file and remove null values
-df <- read.csv(csv_file)
+df <- read.csv(glue("{data_dir}/{csv_file}"))
 df <- df[!is.na(df$max), ]
 
 # Run the statistical test
 test_path <- glue("stats/{opt$name}/{opt$name}-test.R")
+test_name <- glue("{opt$name}_test")
 
 if (file.exists(test_path)) {
 	source(test_path)
-	result <- test(df, alpha)
-	print(result)
+	result <- get(test_name)(df, alpha)
+	# print(result)
 } else {
 	print(glue("/stats/{opt$name} does not have a testing script."))
 }
 
-
 # Generate a plot 
 plot_path <- glue("stats/{opt$name}/{opt$name}-plot.R")
+plot_name <- glue("{opt$name}_plot")
 
 if (file.exists(plot_path)) {
 	source(plot_path)
-	plot(df, result)
+	get(plot_name)(df, result)
 
 	# Save the plot to the report directory
 	plot_name <- glue("{opt$name}-test.png")

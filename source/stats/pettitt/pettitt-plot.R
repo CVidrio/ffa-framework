@@ -5,7 +5,7 @@ library(patchwork)
 source("stats/plot-theme.R")
 
 # Plot the results of the Mann-Whitney-Pettitt test for abrupt changes in the mean
-plot <- function(df, results) {
+pettitt_plot <- function(df, results) {
 
 	# Load the results of the test into the environment
 	list2env(results, envir = environment())

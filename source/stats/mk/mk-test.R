@@ -1,5 +1,5 @@
 # Mann-Kendall test for trends
-test <- function(df, alpha) {
+mk_test <- function(df, alpha) {
 
 	# Assign a variable to the AMS series and number of data points for convenience
 	ams <- df$max
@@ -34,7 +34,7 @@ test <- function(df, alpha) {
 	p_value <- 2 * pnorm(abs(z), lower.tail=FALSE)
 
 	# Return the results of the test as a list
-	mget(c("s", "p_value"))
+	mget(c("s", "s_variance", "p_value"))
 
 }
 

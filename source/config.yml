@@ -1,5 +1,8 @@
-# Path to CSV file 
-csv_file: "~/Code/ffa-framework/data/Application_2.csv"                 
+# Directory containing CSV files
+data_dir: "~/Code/ffa-framework/data"                 
+
+# Name of CSV file within data_dir
+csv_file: "Application_3.3.csv"                 
 
 # Path for generating reports
 report_dir: "~/Code/ffa-framework/reports"  

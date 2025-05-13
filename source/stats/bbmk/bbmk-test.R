@@ -1,22 +1,18 @@
-# Create separate environments for auxillary tests
-mk <- new.env()
-spearman <- new.env()
-
 # Load auxillary tests
-source("stats/mk/mk-test.R", local = mk)
-source("stats/spearman/spearman-test.R", local = spearman)
+source("stats/mk/mk-test.R")
+source("stats/spearman/spearman-test.R")
 
 
 # Block-Bootstrap Mann-Kendall test for identifying non-autocorrelated trends
-test <- function(df, alpha) {
+bbmk_test <- function(df, alpha) {
 
 	# Assign a variable to the AMS series and number of data points for convenience
 	ams <- df$max
 	n <- length(ams)
 
 	# These variables should come from other statistical tests
-	least_lag <- spearman$test(df, alpha)$least_lag
-	s_statistic  <- mk$test(df, alpha)$s
+	least_lag <- spearman_test(df, alpha)$least_lag
+	s_statistic  <- mk_test(df, alpha)$s
 
 	# Create blocks
 	block_size <- least_lag + 1

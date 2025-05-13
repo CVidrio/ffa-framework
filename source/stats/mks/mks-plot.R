@@ -6,7 +6,7 @@ source("stats/plot-theme.R")
 
 
 # Plot the results of the MKS test
-plot <- function(df, result) {
+mks_plot <- function(df, result) {
 
 	# Load the values of result into the environment
 	list2env(result, env = environment())
@@ -19,11 +19,14 @@ plot <- function(df, result) {
 	df$s_prog = s_prog
 	df$s_regr = s_regr
 
+	# Get the indices of the statistically significant crossings
+	significant_cross = cross[which(abs(y_cross) > abs(bound))]
+
 	# Create a dataframe with all of the statistically significant crossings
 	crossing_df <- data.frame(
-		year = df[cross, "year"],
-		statistic = ((s_prog + s_regr) / 2)[cross],
-		max = df[cross, "max"]
+		year = df[significant_cross, "year"],
+		statistic = ((s_prog + s_regr) / 2)[significant_cross],
+		max = df[significant_cross, "max"]
 	)
 
 	# Define labels for the plot 

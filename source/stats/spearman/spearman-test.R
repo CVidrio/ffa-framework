@@ -1,5 +1,5 @@
 # Spearman test for serial correlation
-test <- function(df, alpha) {
+spearman_test <- function(df, alpha) {
 
 	# Assign a variable to the AMS series and number of data points for convenience
 	ams <- df$max
