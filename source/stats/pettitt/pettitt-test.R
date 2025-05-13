@@ -1,9 +1,10 @@
 # Mann-Whitney-Pettitt hypothesis test for abrupt changes in the mean
-pettitt_test <- function(df, alpha) {
+#  - ams: A vector of annual maximum streamflow data with no NA values
+#  - alpha: The significance level as a floating point number
+pettitt_test <- function(ams, alpha = 0.05) {
 
-	# Extract information from the dataframe for convenience
-	n <- length(df$max)
-	ams <- df$max
+	# Extract the length of ams for convenience
+	n <- length(ams)
 
 	# Compute the U-statistic for all t-values from 1 to n
 	u_t <- numeric(n)

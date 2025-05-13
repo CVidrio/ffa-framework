@@ -2,17 +2,18 @@
 source("stats/mk/mk-test.R")
 source("stats/spearman/spearman-test.R")
 
-
 # Block-Bootstrap Mann-Kendall test for identifying non-autocorrelated trends
-bbmk_test <- function(df, alpha) {
+#  - ams: A vector of annual maximum streamflow data with no NA values
+#  - alpha: The significance level as a floating point number
+#  - repetitions: The number of repetitions for the bootstrap
+bbmk_test <- function(ams, alpha = 0.05, repetitions = 10000) {
 
-	# Assign a variable to the AMS series and number of data points for convenience
-	ams <- df$max
+	# Assign a variable to the number of data points for convenience
 	n <- length(ams)
 
-	# These variables should come from other statistical tests
-	least_lag <- spearman_test(df, alpha)$least_lag
-	s_statistic  <- mk_test(df, alpha)$s
+	# Compute least_lag and s_statistic from the Spearman and MK tests
+	least_lag <- spearman_test(ams, alpha)$least_lag
+	s_statistic  <- mk_test(ams, alpha)$s
 
 	# Create blocks
 	block_size <- least_lag + 1
@@ -20,9 +21,8 @@ bbmk_test <- function(df, alpha) {
 	blocks <- split(ams[1:(n_blocks * block_size)], rep(1:n_blocks, each = block_size))
 
 	# Loop through the bootstrap
-	reps <- 10000
-	s_bootstrap <- numeric(reps)
-	for (sample in 1:reps) {
+	s_bootstrap <- numeric(repetitions)
+	for (sample in 1:repetitions) {
 
 		# Sample blocks for this iteration
 		sampled_blocks <- sample(blocks, n_blocks, replace = FALSE)
@@ -48,7 +48,7 @@ bbmk_test <- function(df, alpha) {
 	)
 
 	# Compute the CI bounds
-	bounds <- quantile(s_bootstrap, c(0.025, 0.975))
+	bounds <- quantile(s_bootstrap, c(alpha / 2, 1 - (alpha / 2)))
 
 	# Return the results as a list
 	mget(c("s_bootstrap", "s_statistic", "p_value", "bounds"))

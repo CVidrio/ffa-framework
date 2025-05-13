@@ -1,14 +1,15 @@
 # Spearman test for serial correlation
-spearman_test <- function(df, alpha) {
+#  - ams: A vector of annual maximum streamflow data
+#  - alpha: The significance level as a floating point number
+spearman_test <- function(ams, alpha = 0.05) {
 
-	# Assign a variable to the AMS series and number of data points for convenience
-	ams <- df$max
+	# Assign a variable to the number of data points for convenience
 	n <- length(ams)
 
 	# Compute the spearman rho-autocorrelation for a given lag
 	rho_autocorrelation <- function(lag, ams) {
-		ams_lagged <- ams[(lag + 1):length(ams)]
-		ams_original <- ams[1:(length(ams) - lag)]
+		ams_original <- ams[(lag + 1):length(ams)]
+		ams_lagged <- ams[1:(length(ams) - lag)]
 		cor.test(ams_original, ams_lagged, method="spearman", exact=FALSE)
 	}
 

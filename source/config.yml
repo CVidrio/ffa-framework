@@ -2,7 +2,7 @@
 data_dir: "~/Code/ffa-framework/data"                 
 
 # Name of CSV file within data_dir
-csv_file: "Application_3.3.csv"                 
+csv_file: "Application_1.csv"                 
 
 # Path for generating reports
 report_dir: "~/Code/ffa-framework/reports"  
@@ -11,11 +11,11 @@ report_dir: "~/Code/ffa-framework/reports"
 alpha: 0.05       
 
 # Number of bootstrap samples in BB-MK test
-bb_mk_repetitions: 10000      
+bbmk_repetitions: 10000      
 
-# Window length in MW-MK test
-window_length_eda: 10 
+# Window length used to compute AMS variances
+window_length: 10 
 
-# Window step in MW-MK test
-window_step_eda: 5    
+# Window step used to compute AMS variances
+window_step: 5    
 

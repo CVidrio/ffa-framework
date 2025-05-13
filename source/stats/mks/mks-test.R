@@ -1,5 +1,8 @@
 # Mann-Kendall-Sneyers test for detecting the beginning of a trend 
-mks_test <- function(df, alpha) {
+#  - ams: A vector of annual maximum streamflow data with no NA values
+#  - year: A numeric vector of years corresponding to ams with no NA values
+#  - alpha: The significance level as a floating point number
+mks_test <- function(ams, year, alpha = 0.05) {
 
 	# Compute number of elements such that ams[i] > ams[j] for all j < i < t for all t.
 	s_statistic <- function(vt, ams) {
@@ -15,10 +18,9 @@ mks_test <- function(df, alpha) {
 	}
 
 	# Compute the forward and backwards s-statistics
-	idx <- 1:length(df$max)
-	year <- as.numeric(df$year)
-	s_prog_non_normal <- s_statistic(idx, df$max)
-	s_regr_non_normal <- s_statistic(idx, rev(df$max))
+	idx <- 1:length(ams)
+	s_prog_non_normal <- s_statistic(idx, ams)
+	s_regr_non_normal <- s_statistic(idx, rev(ams))
 
 	# Get the variance and expectation of the S-statistics
 	s_expectation = idx * (idx - 1) / 4

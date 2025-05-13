@@ -1,26 +1,28 @@
 # Mann-Kendall test for trends
-mk_test <- function(df, alpha) {
+#  - data: A vector of AMS data or AMS variances with no NA values
+#  - alpha: The significance level as a floating point number
+mk_test <- function(data, alpha = 0.05) {
 
-	# Assign a variable to the AMS series and number of data points for convenience
-	ams <- df$max
-	n <- length(ams)
+	# Assign a variable to number of data points for convenience
+	n <- length(data)
 
-	# Compute the test statistic S by iterating through all pairs of values in ams
+	# Compute the test statistic S by iterating through all pairs of values in data
 	s <- 0
 	for (i in 1:(n-1)) {
 		for (j in (i+1):n) {
-			s = s + sign(ams[j] - ams[i])
+			s = s + sign(data[j] - data[i])
 		}
 	}
 
 	# Identify tied groups and find the number of elements in each group
-	freqs <- table(ams)         # Frequency of each data point
+	freqs <- table(data)        # Frequency of each data point
 	ties <- freqs[freqs > 1]    # Get data points with frequency > 1 (i.e. ties)
 	g <- length(ties)           # Get the total number of groups
 	tp <- as.vector(ties)       # Get a vector of group sizes
 
 	# Compute the normalized test statistic Z
-	s_variance <- (1/18) * ((n * (n-1) * (2*n + 5)) + sum(tp * (tp-1) * (2*tp + 5)))
+	group_sum <- sum(tp * (tp - 1) * (2 * tp + 5))
+	s_variance <- (1 / 18) * ((n * (n-1) * (2 * n + 5)) - group_sum)
 
 	z <- if (s > 0) { 
 		(s - 1) / sqrt(s_variance) 

@@ -3,8 +3,8 @@ library(testthat)
 test_that("Test spearman-test.R on data set #1", {
 
 	# Load dataset and run Spearman test
-	df <- load("Application_1.csv")
-	results <- spearman_test(df, 0.05)
+	df_clean <- data1$df_clean
+	results <- spearman_test(df_clean$max)
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
@@ -15,8 +15,8 @@ test_that("Test spearman-test.R on data set #1", {
 test_that("Test spearman-test.R on data set #2", {
 
 	# Load dataset and run Spearman test
-	df <- load("Application_2.csv")
-	results <- spearman_test(df, 0.05)
+	df_clean <- data2$df_clean
+	results <- spearman_test(df_clean$max)
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
@@ -27,8 +27,8 @@ test_that("Test spearman-test.R on data set #2", {
 test_that("Test spearman-test.R on data set #3.1", {
 
 	# Load dataset and run Spearman test
-	df <- load("Application_3.1.csv")
-	results <- spearman_test(df, 0.05)
+	df_clean <- data3_1$df_clean
+	results <- spearman_test(df_clean$max)
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
@@ -39,8 +39,8 @@ test_that("Test spearman-test.R on data set #3.1", {
 test_that("Test spearman-test.R on data set #3.2", {
 
 	# Load dataset and run Spearman test
-	df <- load("Application_3.2.csv")
-	results <- spearman_test(df, 0.05)
+	df_clean <- data3_2$df_clean
+	results <- spearman_test(df_clean$max)
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
@@ -51,8 +51,8 @@ test_that("Test spearman-test.R on data set #3.2", {
 test_that("Test spearman-test.R on data set #3.3", {
 
 	# Load dataset and run Spearman test
-	df <- load("Application_3.3.csv")
-	results <- spearman_test(df, 0.05)
+	df_clean <- data3_3$df_clean
+	results <- spearman_test(df_clean$max)
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
