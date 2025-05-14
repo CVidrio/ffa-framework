@@ -1,18 +1,49 @@
 
+##########################
 ### DIRECTORY SETTINGS ###
+##########################
 
-data_folder: "~/Code/ffa-framework/data"         # Location of .csv files
-csv_file: "Application_1.csv"                    # Name of .csv file in data_dir
-report_folder: "~/Code/ffa-framework/reports"    # Path for generating reports
+# Location of .csv files
+data_folder: "~/Code/ffa-framework/data"         
 
+# Name of .csv file in data_dir
+csv_file: "Application_2.csv"                    
+
+# Path for generating reports
+report_folder: "~/Code/ffa-framework/reports"    
+
+####################
 ### EDA SETTINGS ###
+####################
 
-alpha: 0.05                # Significance threshold for statistical tests
-bbmk_repetitions: 10000    # Number of bootstrap samples in BB-MK test
-window_length: 10          # Window length used to compute AMS variances
-window_step: 5             # Window step used to compute AMS variances
+# Significance threshold for statistical tests
+alpha: 0.05                
 
+# Number of bootstrap samples in BB-MK test
+bbmk_repetitions: 10000    
+
+# Window length used to compute AMS variances
+window_length: 10          
+
+# Window step used to compute AMS variances
+window_step: 5             
+
+#####################
 ### PLOT SETTINGS ###
+#####################
 
-show_trend: True   # Add a line between data points when generating plots
+# Add a line between data points when generating plots
+show_trend: True
 
+#######################
+### REPORT SETTINGS ###
+#######################
+
+# Enable report generation. Overrides settings below.
+generate_report: True   
+
+# Include details of the statistical test (i.e. equations)
+include_details: True  
+
+# Include the code used to run statistical tests / draw plots
+include_code: True     

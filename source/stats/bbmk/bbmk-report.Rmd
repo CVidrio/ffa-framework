@@ -1,0 +1,61 @@
+---
+title: "Block-Bootstrap Mann-Kendall Test Report"
+output: html_document
+params: 
+  output_dir: "[output_dir]"
+  include_details: TRUE
+  include_code: TRUE
+  alpha: "[alpha]"
+  outcome: "[outcome]"
+  s_bootstrap: "[s_bootstrap]"
+  s_statistic: "[s_statistic]"
+  p_value: "[p_value]"
+  bounds: "[bounds]"
+---
+
+The **BB-MK Test** is used to assess whether there is a statistically significant monotonic trend in a time series.
+
+Unlike the MK test, the BB-MK test is insensitive to autocorrelation.
+
+- **Null Hypothesis**: There is no monotonic trend.
+- **Alternative Hypothesis**: There is a monotonic upwards or downwards trend.
+
+<!-- Render additional details about the test. -->
+```{r, child = if(include_details) 'bbmk-details.Rmd' }
+```
+
+## Results
+
+<!-- Include code used to compute the results. -->
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("### Code") 
+```
+
+```{r, file = "bbmk-test.R", include = include_code, eval = FALSE } 
+
+```
+
+<!-- Include the results. -->
+
+## Statistics
+
+- S-statistic: `r round(params$s_statistic, 2)`
+- P-value: `r round(params$p_value, 3)`
+- Significance level: `r params$alpha`
+- Confidence bounds: `r round(params$bounds, 2)`
+
+Given the test statistic and p-value, we *`r params$outcome`* the null hypothesis.
+
+<!-- Render the figure. -->
+
+## Figure
+
+```{r, file = "bbmk-plot.R", include = include_code, eval = FALSE } 
+
+```
+
+```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+include_graphics(file.path(params$output_dir, "img/bbmk-test.png"))
+```
+

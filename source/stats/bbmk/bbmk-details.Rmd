@@ -1,0 +1,9 @@
+To carry out the BB-MK test, we rely on the results of the MK test and Spearman test.
+
+1. Compute the MK test statistic.
+2. Find the greatest significant lag $k$ using the Spearman test.
+3. Resample from the original time series in blocks of size $k+1$, without replacement.
+4. Estimate the MK test statistic for each bootstrapped sample.
+5. Derive the empirical distribution of the MK test statistic from the bootstrapped statistics.
+6. Estimate the significance of the observed test statistic using the empirical distribution.
+

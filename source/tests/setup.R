@@ -17,5 +17,8 @@ config <- list(
 	bbmk_repetitions = as.integer(10000),
 	window_length = as.integer(10),
 	window_step = as.integer(5),
-	show_trend = TRUE
+	show_trend = TRUE,
+	generate_report = TRUE,
+	include_details = TRUE,
+	include_code = TRUE
 )

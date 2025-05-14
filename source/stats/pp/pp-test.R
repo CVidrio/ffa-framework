@@ -18,6 +18,11 @@ pp_test <- function(ams, alpha = 0.05) {
 	# Run the Phillips-Perron test and return the p-value
 	result <- pp.test(ams, output = FALSE)
 	p_value <- result[3, 3]
-	p_value
+
+	# Determine the outcome
+	outcome <- ifelse(p_value <= alpha, "reject", "fail to reject")
+
+	# Return the results as a list
+	mget(c("p_value", "outcome"))
 
 }

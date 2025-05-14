@@ -15,19 +15,11 @@ mks_plot <- function(df_clean, result, show_trend) {
 	bound_df <- data.frame(y = c(-bound, bound))
 
 	# Add the test statistics to df_clean
-	df_clean$year = as.integer(df_clean$year)
 	df_clean$s_prog = s_prog
 	df_clean$s_regr = s_regr
 
-	# Get the indices of the statistically significant crossings
-	significant_cross = cross[which(abs(y_cross) > abs(bound))]
-
-	# Create a dataframe with all of the statistically significant crossings
-	crossing_df <- data.frame(
-		year = df_clean[significant_cross, "year"],
-		statistic = ((s_prog + s_regr) / 2)[significant_cross],
-		max = df_clean[significant_cross, "max"]
-	)
+	# Subset crossing_df on the statistically significant crossings
+	crossing_df = crossing_df[which(abs(crossing_df$statistic) > abs(bound)), ]
 
 	# Define labels for the plot 
 	ut_label <- "Normalized Trend Statistic"
@@ -70,7 +62,7 @@ mks_plot <- function(df_clean, result, show_trend) {
 		scale_color_manual(
 			values = c("black" = "black", "blue" = "blue"),
 			breaks = c("black", "blue"),
-			labels = c(flow_label, "Potential Change Point")
+			labels = c(flow_label, "Potential Trend Change")
 		)	
 
 	# Stack plots on top of each other and return

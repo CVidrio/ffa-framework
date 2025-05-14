@@ -34,7 +34,10 @@ pettitt_test <- function(ams, alpha = 0.05) {
 	# Determine the change index if the change is statistically significant
 	change_index <- ifelse(k > k_alpha, which.max(u_t), 0)
 
+	# Determine the outcome
+	outcome <- ifelse(p_value <= alpha, "reject", "fail to reject")
+
 	# Return a list containing the results of the test
-	mget(c("u_t", "k", "k_alpha", "p_value", "change_index"))
+	mget(c("u_t", "k", "k_alpha", "p_value", "change_index", "outcome"))
 
 }

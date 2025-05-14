@@ -10,7 +10,10 @@ validate_config <- function(config) {
 		bbmk_repetitions = "integer",
 		window_length = "integer", 
 		window_step = "integer", 
-		show_trend = "logical"
+		show_trend = "logical",
+		generate_report = "logical",
+		include_details = "logical",
+		include_code = "logical"
 	)
 
 	# Validate data types in the configuration file

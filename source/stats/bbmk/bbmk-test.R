@@ -13,7 +13,7 @@ bbmk_test <- function(ams, alpha = 0.05, reps = 10000) {
 
 	# Compute least_lag and s_statistic from the Spearman and MK tests
 	least_lag <- spearman_test(ams, alpha)$least_lag
-	s_statistic  <- mk_test(ams, alpha)$s
+	s_statistic  <- mk_test(ams, alpha)$s_statistic
 
 	# Create blocks
 	block_size <- least_lag + 1
@@ -50,8 +50,11 @@ bbmk_test <- function(ams, alpha = 0.05, reps = 10000) {
 	# Compute the CI bounds
 	bounds <- quantile(s_bootstrap, c(alpha / 2, 1 - (alpha / 2)))
 
+	# Determine the outcome based on the p-value and alpha
+	outcome <- ifelse(p_value <= alpha, "reject", "fail to reject")
+
 	# Return the results as a list
-	mget(c("s_bootstrap", "s_statistic", "p_value", "bounds"))
+	mget(c("s_bootstrap", "s_statistic", "p_value", "bounds", "outcome"))
 
 }
 

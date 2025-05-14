@@ -5,6 +5,8 @@ library(glue)
 library(patchwork)
 library(ggplot2)
 library(tools)
+library(rmarkdown)
+library(knitr)
 
 # Source helper functions
 source("helpers/load-data.R")
@@ -122,7 +124,7 @@ if (opt$name == "sens-mean" | opt$name == "sens-variance") {
 
 	# Run the plotting function
 	source("stats/sens/sens-plot.R")
-	plot <- get("sens_plot")(df_plot, result, opt$name, show_trend)
+	img <- get("sens_plot")(df_plot, result, opt$name, show_trend)
 
 	# Override the default plot_name
 	plot_name <- glue("{opt$name}-estimator.png")
@@ -131,30 +133,44 @@ if (opt$name == "sens-mean" | opt$name == "sens-variance") {
 
 	# Handle the other plots
 	source(plot_path)
-	plot <- get(plot_func)(df_plot, result, show_trend)
+	img <- get(plot_func)(df_plot, result, show_trend)
 
 } else {
 
 	# Notify the user that their chosen test does not generate a plot
 	message(glue("Statistical function {opt$name} does not have a plotting script."))
-	quit()
 
 }
 
-# Generate an /img directory in report_path if it doesn't already exist
-img_path <- glue("{report_path}/img")
-if (!dir.exists(img_path)) dir.create(img_path)
+# Save the plot to disk it if exists
+if (exists("img")) {
 
-# Save the plot to the image directory
-ggsave(plot_name, plot = plot, path = img_path, width = 10, height = 8, bg = "white")
-print(glue("Figure {plot_name} generated successfully."))
+	# Generate an /img directory in report_path if it doesn't already exist
+	img_path <- glue("{report_path}/img")
+	if (!dir.exists(img_path)) dir.create(img_path)
 
-# Delete Rplots.pdf file if it was created (not sure why this happens)
-if (file.exists("Rplots.pdf")) invisible(file.remove("Rplots.pdf"))
+	# Save the plot to the image directory
+	ggsave(plot_name, plot = img, path = img_path, width = 10, height = 8, bg = "white")
+	message(glue("Figure {plot_name} generated successfully."))
+
+	# Delete Rplots.pdf file if it was created (not sure why this happens)
+	if (file.exists("Rplots.pdf")) invisible(file.remove("Rplots.pdf"))
+
+}
 
 
 ### REPORT GENERATION (IF APPLICABLE) ###
 
 
+# Set parameters for rendering the report
+rmd_path <- glue("stats/{opt$name}/{opt$name}-report.Rmd")
+args <- list(
+	output_dir = report_path,
+	alpha = alpha,
+	include_details = include_details,
+	include_code = include_code
+)
 
-
+# Render the report and inform the user
+render(rmd_path, params = c(result, args), output_dir = report_path, quiet = TRUE)
+message(glue("Report {opt$name}-report.html generated successfully."))

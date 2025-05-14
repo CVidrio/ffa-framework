@@ -27,7 +27,7 @@ spearman_test <- function(ams, alpha = 0.05) {
 
 	# Get a series of booleans for whether the serial correlation is significant
 	sig <- (ps < alpha)
-	
+
 	# Return the results as a list
 	mget(c("rho", "sig", "least_lag"))
 

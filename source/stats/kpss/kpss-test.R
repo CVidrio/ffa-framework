@@ -15,10 +15,15 @@ kpss_test <- function(ams, alpha = 0.05) {
 	# NOTE: The documentation for this test can be found below
 	# https://www.rdocumentation.org/packages/aTSA/versions/3.1.2.1/topics/kpss.test
 
-	# Run the KPSS test and return the p-value
+	# Run the KPSS test and get the p_value
 	result <- kpss.test(ams, output = FALSE)
 	p_value <- result[3, 3]
-	p_value
+
+	# Determine the outcome
+	outcome <- ifelse(p_value <= alpha, "reject", "fail to reject")
+
+	# Return the results
+	mget(c("p_value", "outcome"))
 
 }
 

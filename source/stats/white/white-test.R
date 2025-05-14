@@ -20,7 +20,10 @@ white_test <- function(ams, year, alpha = 0.05) {
 	# See the documentation for more information.
 	p_value <- 1 - pchisq(test_statistic, df = 2)
 
+	# Determine the outcome
+	outcome <- ifelse(p_value <= alpha, "reject", "fail to reject")
+
 	# Return the results of the test
-	mget(c("r_squared", "test_statistic", "p_value"))
+	mget(c("r_squared", "test_statistic", "p_value", "outcome"))
 
 }

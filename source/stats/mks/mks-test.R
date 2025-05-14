@@ -60,17 +60,26 @@ mks_test <- function(ams, year, alpha = 0.05) {
 
 	}
 
-	y_cross <- sapply(cross, get_crossing_location)
+	# Create a dataframe of all crossings
+	crossing_df <- data.frame(
+		cross = cross,
+		year = year[cross],
+		statistic = sapply(cross, get_crossing_location),
+		max = ams[cross]
+	)
 
 	# Compute the p-value of the test (i.e. the maximum crossing location)
 	p_value <- ifelse(
-		length(y_cross) > 0,
-		2 * pnorm(max(abs(y_cross)), lower.tail=FALSE),
+		nrow(crossing_df) > 0,
+		2 * (1 - pnorm(max(abs(crossing_df$statistic)))),
 		1
 	)
 
+	# Determine the outcome
+	outcome <- ifelse(p_value <= alpha, "reject", "fail to reject")
+
 	# Return a list of values results from the test
-	mget(c("s_prog", "s_regr", "bound", "cross", "y_cross", "p_value"))
+	mget(c("s_prog", "s_regr", "bound", "crossing_df", "p_value", "outcome"))
 	
 }
 

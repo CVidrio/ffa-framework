@@ -32,11 +32,17 @@ mk_test <- function(data, alpha = 0.05) {
 		(s + 1) / sqrt(s_variance) 
 	}
 
+	# Rename s to s_statistic for consistency with BBMK test
+	s_statistic <- s
+
 	# Compute the p-value for a two-sided test
 	p_value <- 2 * pnorm(abs(z), lower.tail=FALSE)
 
+	# Determine the outcome
+	outcome <- ifelse(p_value <= alpha, "reject", "fail to reject")
+
 	# Return the results of the test as a list
-	mget(c("s", "s_variance", "p_value"))
+	mget(c("s_statistic", "s_variance", "p_value", "outcome"))
 
 }
 
