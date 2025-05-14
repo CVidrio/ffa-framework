@@ -13,6 +13,10 @@ source("stats/white/white-test.R")
 source("stats/mwmk/mwmk-test.R")
 source("stats/sens/sens-estimator.R")
 
+# Source helper functions
+source("helpers/load-data.R")
+source("helpers/validate-config.R")
+
 
 # Create command line options
 option_list <- list(
@@ -25,18 +29,21 @@ args <- commandArgs(trailingOnly = TRUE)
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
+# Check for config argument and set to default value of config.yml if it doesn't exist
+config_path <- ifelse(is.null(opt$config), "config.yml", opt$config)
 
-# Check for required config argument and then load the configuration file
-if (is.null(opt$config)) {
+# Attetmpt to load from config_path, throwing an error if it doesn't work
+if (!file.exists(config_path)) {
 	print_help(opt_parser)
-	stop("Missing required argument: --config")
-} else {
-	config <- yaml::read_yaml(opt$config)
-}
+	stop("Invalid configuration file path.")
+} 
 
+# Load and validate the configuration file
+config <- read_yaml(config_path)
+validate_config(config)
 
-# Set the data_dir as an option
-options(data_dir = config$data_dir)
+# Set the data_folder as an option
+options(data_folder = config$data_folder)
 
 # Run the given test (or all the tests if -n is null)
 if (!is.null(opt$name)) {

@@ -5,7 +5,7 @@ library(patchwork)
 source("stats/plot-theme.R")
 
 # Plot the results of the Mann-Whitney-Pettitt test for abrupt changes in the mean
-pettitt_plot <- function(df, results) {
+pettitt_plot <- function(df, results, show_trend) {
 
 	# Load the results of the test into the environment
 	list2env(results, envir = environment())
@@ -56,11 +56,10 @@ pettitt_plot <- function(df, results) {
 			labels = c(ut_label, "Change Point Threshold", "Potential Change Point")
 		)
 		
-
-		
 	# Also plot the original flow data and segment means
 	p2 <- ggplot(df, aes(x = year, y = max)) +
-		geom_point(aes(color = "black")) +
+		geom_point(aes(color = "black"), size = 2.25) +
+		(if (show_trend) geom_line(color = "black", linewidth = 1.1) else NULL) + 
 		geom_segment(
 			data = segment_df, 
 			aes(x = x, xend = xend, y = y, color = "green4"),

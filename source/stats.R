@@ -6,8 +6,9 @@ library(patchwork)
 library(ggplot2)
 library(tools)
 
-# Helper function for loading data
-source("load-data.R")
+# Source helper functions
+source("helpers/load-data.R")
+source("helpers/validate-config.R")
 
 
 ### PARSING COMMANE LINE OPTIONS ###
@@ -31,14 +32,19 @@ if (is.null(opt$name)) {
 	stop("Missing required argument: --name")
 }
 
-# Check for required config argument and then load the configuration file
-if (is.null(opt$config)) {
+# Check for config argument and set to default value of config.yml if it doesn't exist
+config_path <- ifelse(is.null(opt$config), "config.yml", opt$config)
+
+# Check that a file exists at config_path
+if (!file.exists(config_path)) {
 	print_help(opt_parser)
-	stop("Missing required argument: --config")
-} else {
-	config <- yaml::read_yaml(opt$config)
-	list2env(config, envir = environment())
-}
+	stop("Invalid configuration file path.")
+} 
+
+# Load and validate the configuration file
+config <- read_yaml(config_path)
+validate_config(config)
+invisible(list2env(config, envir = environment()))
 
 
 ### DIRECTORY SETUP ###
@@ -46,12 +52,12 @@ if (is.null(opt$config)) {
 
 # Create a directory for storing reports for this csv_file
 csv_name <- file_path_sans_ext(csv_file)
-report_path <- glue("{report_dir}/{csv_name}")
+report_path <- glue("{report_folder}/{csv_name}")
 if (!dir.exists(report_path)) dir.create(report_path)
 
 # Load data from the given input file and remove leading/trailing NaNs
-data <- load(data_dir, csv_file, window_length, window_step)
-list2env(data, envir = environment())
+data <- load(data_folder, csv_file, window_length, window_step)
+invisible(list2env(data, envir = environment()))
 
 
 ### RUNNING THE STATISTICAL FUNCTION ###
@@ -59,9 +65,7 @@ list2env(data, envir = environment())
 
 # Throw an error if opt$name is 'sens' instead of 'sens-mean' or 'sens-variance'.
 if (opt$name == "sens") {
-	print(glue("Error: Please use 'sens-mean' or 'sens-variance' instead of 'sens'."))
-	quit(status = 0)
-
+	stop("Error: Please use 'sens-mean' or 'sens-variance' instead of 'sens'.")
 } 
 
 # Set the default function_path and function_name
@@ -76,8 +80,7 @@ if (opt$name %in% c("sens-mean", "sens-variance")) {
 
 # Throw an error and quit if function_path does not exist
 if (!file.exists(function_path)) {
-	print(glue("Error: /stats/{opt$name} does not have a testing script."))
-	quit(status = 0)
+	stop(glue("Error: /stats/{opt$name} does not have a testing script."))
 } 
 
 # Otherwise source the function
@@ -92,14 +95,15 @@ args <- list(
 	"mwmk"          = list(std = df_variance$std, alpha = alpha),
 	"pettitt"       = list(ams = df_clean$max, alpha = alpha),
 	"pp"            = list(ams = df_clean$max, alpha = alpha),
-	"sens-mean"     = list(data = df_clean$max, year = df_clean$year),
-	"sens-variance" = list(data = df_variance$std, year = df_variance$year),
 	"spearman"      = list(ams = df_clean$max, alpha = alpha),
-	"white"         = list(ams = df_clean$max, year = df_clean$year, alpha = alpha)
+	"white"         = list(ams = df_clean$max, year = df_clean$year, alpha = alpha),
+	"sens-mean"     = list(data = df_clean$max, year = df_clean$year),
+	"sens-variance" = list(data = df_variance$std, year = df_variance$year)
 )
 
 result <- do.call(get(function_name), args[[opt$name]])
-print(glue("Statistical function {opt$name} executed successfully."))
+message(glue("Statistical function {opt$name} executed successfully."))
+
 
 ### PLOT GENERATION (IF APPLICABLE) ###
 
@@ -112,24 +116,45 @@ df_plot <- df_clean
 
 # Handle Sen's estimator edge cases again
 if (opt$name == "sens-mean" | opt$name == "sens-variance") {
-	plot_path <- glue("stats/sens/{opt$name}-plot.R")
+
+	# Set df_plot to df_variance if we ran Sen's trend estimator on the variance  
+	if (opt$name == "sens-variance") df_plot <- df_variance
+
+	# Run the plotting function
+	source("stats/sens/sens-plot.R")
+	plot <- get("sens_plot")(df_plot, result, opt$name, show_trend)
+
+	# Override the default plot_name
 	plot_name <- glue("{opt$name}-estimator.png")
-	plot_func <- ifelse(opt$name == "sens-mean", "sens_mean_plot", "sens_variance_plot")
-	if(opt$name == "sens-variance") df_plot <- df_variance
-} 
 
-# Execute the plotting function if it exists
-if (file.exists(plot_path)) {
+} else if (file.exists(plot_path)) {
 
+	# Handle the other plots
 	source(plot_path)
-	get(plot_func)(df_plot, result)
+	plot <- get(plot_func)(df_plot, result, show_trend)
 
-	# Save the plot to the report directory
-	ggsave(plot_name, path = report_path, width = 10, height = 8, bg = "white")
-	print(glue("Figure {plot_name} generated successfully."))
+} else {
+
+	# Notify the user that their chosen test does not generate a plot
+	message(glue("Statistical function {opt$name} does not have a plotting script."))
 	quit()
 
 }
 
-# Notify the user that their chosen test does not generate a plot
-print(glue("Statistical function {opt$name} does not have a plotting script."))
+# Generate an /img directory in report_path if it doesn't already exist
+img_path <- glue("{report_path}/img")
+if (!dir.exists(img_path)) dir.create(img_path)
+
+# Save the plot to the image directory
+ggsave(plot_name, plot = plot, path = img_path, width = 10, height = 8, bg = "white")
+print(glue("Figure {plot_name} generated successfully."))
+
+# Delete Rplots.pdf file if it was created (not sure why this happens)
+if (file.exists("Rplots.pdf")) invisible(file.remove("Rplots.pdf"))
+
+
+### REPORT GENERATION (IF APPLICABLE) ###
+
+
+
+

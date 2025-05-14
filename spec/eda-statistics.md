@@ -153,16 +153,26 @@ To carry out the BB-MK test, we rely on the results of the MK test and Spearman 
 
 ### Phillips-Perron (PP) Test
 
-The **PP Test** is used to identify if an autoregressive time series has a **Unit Root**.
-Precisely, the autoregressive time series $y_{t} = \mu  + \alpha t + \rho y_{t-1} + \epsilon_{t}$ has a unit root if $\rho  = 1$.
+The **PP Test** is used to identify if an autoregressive time series has a unit root.
+Precisely, let $x_{t}$ be an [$AR(1)$](https://en.wikipedia.org/wiki/Autoregressive_model) model.
+Let $y_{t}$ be a stochastic process through $x_{t}$ with drift $\mu$ and trend $\alpha t$.
 
-- Null Hypothesis: The time series has a unit root ($\rho  = 1$).
-- Alternative Hypothesis: The time series does not have a unit root ($\rho  < 1$ ).
+$$
+\begin{aligned}
+y_{t} &= \mu + \alpha t + x_{t}\\
+x_{t} &= \rho x_{t-1} + \epsilon_{t}
+\end{aligned}
+$$
+
+The PP test aims to differentiate between two cases:
+
+- Null hypothesis: $\rho = 1$, so $y_{t}$ has a **Unit Root** and is thus **Non-Stationary**.
+- Alternative hypothesis: $\rho  < 1$, so $y_{t}$ does not have a unit root and is **Trend-Stationary**.
 
 This test is implemented using R package aTSA with the following settings:
 
 - `lag.short = TRUE`, since AMS data has minimal autocorrelation.
-- We consider `type3` results since we are assuming the presence of a trend.
+- We consider `type3` results since we are assuming the presence of a drift and trend.
 
 ---
 
@@ -178,15 +188,22 @@ Precisely, the autoregressive time series shown below has unit root if $\sigma ^
 $$
 \begin{aligned}
 y_{t} &= \mu_{t} + \alpha t + \epsilon _{t} \\[5pt]
-\mu_{t} &= \mu _{t-1} + a_{t} \\[5pt]
-a_{t} &\sim \mathcal{N}(0, \sigma ^2)
+\mu_{t} &= \mu _{t-1} + v_{t} \\[5pt]
+v_{t} &\sim \mathcal{N}(0, \sigma ^2)
 \end{aligned}
 $$
 
-Note that if $\sigma^2 = 0$, then $\mu_{t}$ is constant and $y_{t} = \mu_{t} + \alpha t + \epsilon _{t}$ is stationary.
+The KPSS test formulates the hypotheses differently from the PP test:
 
-- Null Hypothesis: The time series does not have a unit root ($\rho < 1$).
-- Alternative Hypothesis: The time series has a unit root ($\rho = 1$).
+- Null Hypothesis: $\sigma^2 = 0$, so the time series does not have a unit root ($\mu_{t}$ constant).
+- Alternative Hypothesis: $\sigma^2 > 0$, so the time series has a unit root (through $\mu_{t}$).
+
+These hypotheses are possible because the stochastic process $y_{t}$ is defined differently than in the PP test.  Here's what each term in the new formulation represents:
+
+- $\mu_{t}$ is the **Drift Term**, which is either a constant (under the null hypothesis), or a stochastic process with a unit root (under the alternative hypothesis).
+- $\alpha t$ is the **Linear Trend**, defined identically to the PP test.
+- $\epsilon_{t}$ is **Stationary Noise**, corresponding to *reversible* fluctuations in $y_{t}$. In a hydrological context, $\epsilon_{t}$ represents natural fluctuations in streamflow due to chance.
+- $v_{t}$ is **Random Walk Innovation**, or *irreversible* fluctuations in $\mu _{t}$. In a hydrological context, $v_{t}$ could represent randomness in human activity causing climate change.
 
 This test is implemented using R package aTSA with the following settings:
 
@@ -255,10 +272,38 @@ Then perform the Mann-Kendall Test (see above) on the time series of variances.
 
 ### Sen's Trend Estimator
 
-**Sen's Trend Estimator** is used to estimate the slope of a regression line. Unlike [Least Squares](https://en.wikipedia.org/wiki/Least_squares), Sen's trend estimator is robust to outliers since it uses a non-parametric approach. To compute Sen's trend estimator we use the following procedure:
+**Sen's Trend Estimator** is used to estimate the slope of a regression line.
+Unlike [Least Squares](https://en.wikipedia.org/wiki/Least_squares), Sen's trend estimator is robust to outliers since it uses a non-parametric approach.
+To compute Sen's trend estimator we use the following procedure:
 
 1. Iterate over all pairs of data points $(x_{i}, y_{i})$ and $(x_{j}, y_{j})$.
 2. If $x_{i} \neq  x_{j}$, compute the slope $(y_{j} - y_{i})/(x_{j} - x_{i})$ and add it to a list $S$.
 3. Sen's trend estimator $\hat{m}$ is the median of $S$.
 
 After computing $\hat{m}$, we can estimate the $y$-intercept $b$ by the median of $y_{i} - \hat{m}x_{i}$ for all $i$.
+
+### Wald-Wolfowitz Runs Test
+
+The **Runs Test** is a non-parametric randomness test for a two-valued sequence.
+Typically data is categorized based on whether it is above ($+$) or below ($-$) the median.
+
+>**Example**: Suppose that after categorization, the sequence of data is as follows:
+>
+>$$
+>+++--+++-+-
+>$$ 
+>
+>This sequence has six **Runs**, with length  $(3, 2, 3, 1,1, 1)$.
+
+For this test, the null hypothesis is randomness while the alternative hypothesis is non-randomness.
+The test uses the fact that the number of runs $R$ in $N$ data points (with category counts $N_{+}$ and $N_{-}$) is asymptotically normal with:
+
+$$
+\mathbb{E}[R] = \frac{2N_{+}N_{-}}{N} + 1, \quad
+\text{Var}(R) = \frac{2N_{+}N_{-}(2N_{+}N_{-} - N)}{N^2(N - 1)}
+$$ 
+
+---
+
+- https://en.wikipedia.org/wiki/Wald%E2%80%93Wolfowitz_runs_test
+- https://search.r-project.org/CRAN/refmans/randtests/html/runs.test.html

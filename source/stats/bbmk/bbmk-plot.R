@@ -4,16 +4,20 @@ library(ggplot2)
 source("stats/plot-theme.R")
 
 # Plot the results of the Mann-Whitney-Pettitt test for abrupt changes in the mean
-bbmk_plot <- function(df, results) {
+bbmk_plot <- function(df, results, show_trend) {
 
 	# Load the results of the test into the environment
 	list2env(results, envir = environment())
 
 	# First subplot: Spearman's Rho Autocorrelation
 	p1 <- ggplot() +
-		geom_histogram(aes(x = s_bootstrap, color = "gray"), fill = "lightgray")  +
-		geom_vline(aes(xintercept = bounds, color = "red")) + 
-		geom_vline(aes(xintercept = s_statistic, color = "black")) + 
+		geom_histogram(
+			aes(x = s_bootstrap, color = "gray"), 
+			fill = "lightgray",
+			bins = 30
+		)  +
+		geom_vline(aes(xintercept = bounds, color = "red"), linewidth = 1.2) + 
+		geom_vline(aes(xintercept = s_statistic, color = "black"), linewidth = 1.2) + 
 		labs(
 			title = "Block-Bootstrap Mann-Kendall Test",
 			x = "S-Statistic",

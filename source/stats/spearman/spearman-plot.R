@@ -4,7 +4,7 @@ library(ggplot2)
 source("stats/plot-theme.R")
 
 # Plot the results of the Mann-Whitney-Pettitt test for abrupt changes in the mean
-spearman_plot <- function(df, results) {
+spearman_plot <- function(df, results, show_trend) {
 
 	# Load the results of the test into the environment
 	list2env(results, envir = environment())

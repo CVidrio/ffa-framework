@@ -6,7 +6,7 @@ source("stats/plot-theme.R")
 
 
 # Plot the results of the MKS test
-mks_plot <- function(df_clean, result) {
+mks_plot <- function(df_clean, result, show_trend) {
 
 	# Load the values of result into the environment
 	list2env(result, env = environment())
@@ -63,7 +63,8 @@ mks_plot <- function(df_clean, result) {
 
 	# Plot the change points on the original dataset
 	p2 <- ggplot(df_clean, aes(x = year, y = max)) +
-		geom_point(aes(color = "black")) +
+		geom_point(aes(color = "black"), size = 2.25) +
+		(if (show_trend) geom_line(color = "black", linewidth = 1.1) else NULL) +
 		geom_point(data = crossing_df, aes(color = "blue"), size = 4) +
 		labs(x = "Year", y = flow_label, color = "Legend") +
 		scale_color_manual(

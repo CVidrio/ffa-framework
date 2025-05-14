@@ -1,21 +1,18 @@
-# Directory containing CSV files
-data_dir: "~/Code/ffa-framework/data"                 
 
-# Name of CSV file within data_dir
-csv_file: "Application_1.csv"                 
+### DIRECTORY SETTINGS ###
 
-# Path for generating reports
-report_dir: "~/Code/ffa-framework/reports"  
+data_folder: "~/Code/ffa-framework/data"         # Location of .csv files
+csv_file: "Application_1.csv"                    # Name of .csv file in data_dir
+report_folder: "~/Code/ffa-framework/reports"    # Path for generating reports
 
-# Significance level for EDA
-alpha: 0.05       
+### EDA SETTINGS ###
 
-# Number of bootstrap samples in BB-MK test
-bbmk_repetitions: 10000      
+alpha: 0.05                # Significance threshold for statistical tests
+bbmk_repetitions: 10000    # Number of bootstrap samples in BB-MK test
+window_length: 10          # Window length used to compute AMS variances
+window_step: 5             # Window step used to compute AMS variances
 
-# Window length used to compute AMS variances
-window_length: 10 
+### PLOT SETTINGS ###
 
-# Window step used to compute AMS variances
-window_step: 5    
+show_trend: True   # Add a line between data points when generating plots
 
