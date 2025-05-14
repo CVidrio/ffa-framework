@@ -4,7 +4,7 @@ library(ggplot2)
 source("stats/plot-theme.R")
 
 # Plot the results of the Mann-Whitney-Pettitt test for abrupt changes in the mean
-sens_plot <- function(df, results) {
+sens_mean_plot <- function(df, results) {
 
 	# Load the results of the test into the environment
 	m <- results$sens_slope
@@ -20,7 +20,7 @@ sens_plot <- function(df, results) {
 		geom_point(data = df, aes(x = year, y = max, color = "black")) + 
 		geom_line(data = df_line, aes(x = x, y = y, color = "blue"), linewidth = 1.2) + 
 		labs(
-			title = "Sen's Trend Estimator (means)",
+			title = "Sen's Trend Estimator (AMS Mean)",
 			x = "Year",
 			y = ams_label,
 			color = "Legend"

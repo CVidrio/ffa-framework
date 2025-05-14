@@ -37,6 +37,7 @@ if (is.null(opt$config)) {
 	stop("Missing required argument: --config")
 } else {
 	config <- yaml::read_yaml(opt$config)
+	list2env(config, envir = environment())
 }
 
 
@@ -44,38 +45,33 @@ if (is.null(opt$config)) {
 
 
 # Create a directory for storing reports for this csv_file
-csv_name <- file_path_sans_ext(config$csv_file)
-report_path <- glue("{config$report_dir}/{csv_name}")
+csv_name <- file_path_sans_ext(csv_file)
+report_path <- glue("{report_dir}/{csv_name}")
 if (!dir.exists(report_path)) dir.create(report_path)
 
 # Load data from the given input file and remove leading/trailing NaNs
-data <- load(config$data_dir, config$csv_file, config$window_length, config$window_step)
-df <- data$df
-df_clean <- data$df_clean
-df_variance <- data$df_variance
+data <- load(data_dir, csv_file, window_length, window_step)
+list2env(data, envir = environment())
 
 
 ### RUNNING THE STATISTICAL FUNCTION ###
 
 
+# Throw an error if opt$name is 'sens' instead of 'sens-mean' or 'sens-variance'.
 if (opt$name == "sens") {
-
-	# Throw an error if opt$name is 'sens' instead of 'sens-mean' or 'sens-variance'.
 	print(glue("Error: Please use 'sens-mean' or 'sens-variance' instead of 'sens'."))
 	quit(status = 0)
 
-} else if (opt$name %in% c("sens-mean", "sens-variance")) {
+} 
 
-	# Sen's estimator is a special case because it is not a statistical test
+# Set the default function_path and function_name
+function_path <- glue("stats/{opt$name}/{opt$name}-test.R")
+function_name <- glue("{opt$name}_test")
+
+# Override for Sen's trend estimator, since it is not a statistical test
+if (opt$name %in% c("sens-mean", "sens-variance")) {
 	function_path <- "stats/sens/sens-estimator.R"
 	function_name <- "sens_estimator"
-
-} else {
-
-	# Handle regular statistical tests which are located in {name}-test.R
-	function_path <- glue("stats/{opt$name}/{opt$name}-test.R")
-	function_name <- glue("{opt$name}_test")
-
 }
 
 # Throw an error and quit if function_path does not exist
@@ -88,60 +84,52 @@ if (!file.exists(function_path)) {
 source(function_path)
 
 # Pass the correct arguments for each statistical function
-func <- get(function_name)
-result <- if (opt$name == "bbmk") {
-	func(df_clean$max, config$alpha, config$bbmk_repetitions)
-} else if (opt$name == "kpss") {
-	func(df_clean$max, config$alpha)
-} else if (opt$name == "mk") {
-	func(df_clean$max, config$alpha)
-} else if (opt$name == "mks") {
-	func(df_clean$max, df_clean$year, config$alpha)
-} else if (opt$name == "mwmk") {
-	func(df_variance$std, config$alpha)
-} else if (opt$name == "pettitt") {
-	func(df_clean$max, config$alpha)
-} else if (opt$name == "pp") {
-	func(df_clean$max, config$alpha)
-} else if (opt$name == "sens-mean") {
-	func(df_clean$max, df_clean$year) 
-} else if (opt$name == "sens-variance") {
-	func(df_variance$std, df_variance$year) 
-} else if (opt$name == "spearman") {
-	func(df_clean$max, config$alpha)
-} else if (opt$name == "white") {
-	func(df_clean$max, df_clean$year, config$alpha)
-} 
+args <- list(
+	"bbmk"          = list(ams = df_clean$max, alpha = alpha, reps = bbmk_repetitions),
+	"kpss"          = list(ams = df_clean$max, alpha = alpha),
+	"mk"            = list(data = df_clean$max, alpha = alpha),
+	"mks"           = list(ams = df_clean$max, year = df_clean$year, alpha = alpha),
+	"mwmk"          = list(std = df_variance$std, alpha = alpha),
+	"pettitt"       = list(ams = df_clean$max, alpha = alpha),
+	"pp"            = list(ams = df_clean$max, alpha = alpha),
+	"sens-mean"     = list(data = df_clean$max, year = df_clean$year),
+	"sens-variance" = list(data = df_variance$std, year = df_variance$year),
+	"spearman"      = list(ams = df_clean$max, alpha = alpha),
+	"white"         = list(ams = df_clean$max, year = df_clean$year, alpha = alpha)
+)
 
+result <- do.call(get(function_name), args[[opt$name]])
 print(glue("Statistical function {opt$name} executed successfully."))
-
 
 ### PLOT GENERATION (IF APPLICABLE) ###
 
 
-# Handle Sen's estimator edge case again
-if (opt$name %in% c('sens-mean', 'sens-variance')) {
-	plot_path <- glue("stats/sens/sens-plot.R")
-	plot_func <- glue("sens_plot")
-	plot_name <- glue("{opt$name}-estimator.png")
-} else {
-	plot_path <- glue("stats/{opt$name}/{opt$name}-plot.R")
-	plot_func <- glue("{opt$name}_plot")
-	plot_name <- glue("{opt$name}-test.png")
-}
+# Set the default plot settings
+plot_path <- glue("stats/{opt$name}/{opt$name}-plot.R")
+plot_func <- glue("{opt$name}_plot")
+plot_name <- glue("{opt$name}-test.png")
+df_plot <- df_clean
 
+# Handle Sen's estimator edge cases again
+if (opt$name == "sens-mean" | opt$name == "sens-variance") {
+	plot_path <- glue("stats/sens/{opt$name}-plot.R")
+	plot_name <- glue("{opt$name}-estimator.png")
+	plot_func <- ifelse(opt$name == "sens-mean", "sens_mean_plot", "sens_variance_plot")
+	if(opt$name == "sens-variance") df_plot <- df_variance
+} 
+
+# Execute the plotting function if it exists
 if (file.exists(plot_path)) {
 
 	source(plot_path)
-	get(plot_func)(df_clean, result)
+	get(plot_func)(df_plot, result)
 
 	# Save the plot to the report directory
 	ggsave(plot_name, path = report_path, width = 10, height = 8, bg = "white")
 	print(glue("Figure {plot_name} generated successfully."))
-
-} else {
-
-	# Notify the user that their chosen test does not generate a plot
-	print(glue("Statistical function {opt$name} does not have a plotting script."))
+	quit()
 
 }
+
+# Notify the user that their chosen test does not generate a plot
+print(glue("Statistical function {opt$name} does not have a plotting script."))
