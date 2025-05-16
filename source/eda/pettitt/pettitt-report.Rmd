@@ -1,0 +1,71 @@
+---
+title: "Pettitt Test Report"
+output:
+  html_document:
+    css: ../styles.css
+  html_notebook:
+    css: ../styles.css
+params: 
+  output_dir: "[output_dir]"
+  include_details: TRUE
+  include_code: TRUE
+  alpha: "[alpha]"
+  u_t: "[u_t]"
+  k_statistic: "[k_statistic]"
+  k_alpha: "[k_alpha]"
+  p_value: "[p_value]"
+  change_index: "[change_index]"
+  change_year: "[change_year]"
+  reject: "[reject]"
+  msg: "[msg]"
+---
+
+### Pettitt Test
+
+The **Pettitt Test** is used to identify abrupt changes in the mean of a time series.
+
+- Null hypothesis: There are no abrupt changes in the time series mean.
+- Alternative hypothesis: There is _one_ abrupt change in the time series mean.
+
+<!-- Render additional details about the test. -->
+```{r, child = if(include_details) 'pettitt-details.Rmd' }
+```
+
+<!-- Include the results. -->
+
+#### Results
+
+`r params$msg`
+
+Additional information:
+
+- K-statistic: `r round(params$k_statistic, 2)`
+- K-statistic significance threshold: `r round(params$k_alpha, 2)`
+
+<!-- Render the figure. -->
+
+#### Figure
+
+```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+include_graphics(file.path(params$output_dir, "img/pettitt-test.png"))
+```
+
+<!-- Include code used to compute the results. -->
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("#### Test Code") 
+```
+
+```{r, file = "pettitt-test.R", include = include_code, eval = FALSE } 
+
+```
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("#### Plotting Code") 
+```
+
+```{r, file = "pettitt-plot.R", include = include_code, eval = FALSE } 
+
+```
+
+

@@ -23,7 +23,7 @@ option_list <- list(
 )
 
 # Parse given command line arguments
-args <- commandArgs(trailingOnly = TRUE)
+cli_args <- commandArgs(trailingOnly = TRUE)
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)
 
@@ -71,47 +71,46 @@ if (opt$name == "sens") {
 } 
 
 # Set the default function_path and function_name
-function_path <- glue("stats/{opt$name}/{opt$name}-test.R")
+function_path <- glue("eda/{opt$name}/{opt$name}-test.R")
 function_name <- glue("{opt$name}_test")
 
 # Override for Sen's trend estimator, since it is not a statistical test
 if (opt$name %in% c("sens-mean", "sens-variance")) {
-	function_path <- "stats/sens/sens-estimator.R"
+	function_path <- "eda/sens/sens-estimator.R"
 	function_name <- "sens_estimator"
 }
 
 # Throw an error and quit if function_path does not exist
 if (!file.exists(function_path)) {
-	stop(glue("Error: /stats/{opt$name} does not have a testing script."))
+	stop(glue("Error: /eda/{opt$name} does not have a testing script."))
 } 
 
 # Otherwise source the function
 source(function_path)
 
 # Pass the correct arguments for each statistical function
-args <- list(
+test_args <- list(
 	"bbmk"          = list(ams = df_clean$max, alpha = alpha, reps = bbmk_repetitions),
 	"kpss"          = list(ams = df_clean$max, alpha = alpha),
 	"mk"            = list(data = df_clean$max, alpha = alpha),
 	"mks"           = list(ams = df_clean$max, year = df_clean$year, alpha = alpha),
 	"mwmk"          = list(std = df_variance$std, alpha = alpha),
-	"pettitt"       = list(ams = df_clean$max, alpha = alpha),
+	"pettitt"       = list(ams = df_clean$max, df_clean$year, alpha = alpha),
 	"pp"            = list(ams = df_clean$max, alpha = alpha),
 	"spearman"      = list(ams = df_clean$max, alpha = alpha),
 	"white"         = list(ams = df_clean$max, year = df_clean$year, alpha = alpha),
-	"sens-mean"     = list(data = df_clean$max, year = df_clean$year),
-	"sens-variance" = list(data = df_variance$std, year = df_variance$year)
+	"sens-mean"     = list(data = df_clean$max, year = df_clean$year, alpha = alpha),
+	"sens-variance" = list(data = df_variance$std, year = df_variance$year, alpha = alpha)
 )
 
-result <- do.call(get(function_name), args[[opt$name]])
-message(glue("Statistical function {opt$name} executed successfully."))
+result <- do.call(get(function_name), test_args[[opt$name]])
 
 
 ### PLOT GENERATION (IF APPLICABLE) ###
 
 
 # Set the default plot settings
-plot_path <- glue("stats/{opt$name}/{opt$name}-plot.R")
+plot_path <- glue("eda/{opt$name}/{opt$name}-plot.R")
 plot_func <- glue("{opt$name}_plot")
 plot_name <- glue("{opt$name}-test.png")
 df_plot <- df_clean
@@ -123,7 +122,7 @@ if (opt$name == "sens-mean" | opt$name == "sens-variance") {
 	if (opt$name == "sens-variance") df_plot <- df_variance
 
 	# Run the plotting function
-	source("stats/sens/sens-plot.R")
+	source("eda/sens/sens-plot.R")
 	img <- get("sens_plot")(df_plot, result, opt$name, show_trend)
 
 	# Override the default plot_name
@@ -138,7 +137,7 @@ if (opt$name == "sens-mean" | opt$name == "sens-variance") {
 } else {
 
 	# Notify the user that their chosen test does not generate a plot
-	message(glue("Statistical function {opt$name} does not have a plotting script."))
+	message(glue("\n\nStatistical function {opt$name} does not generate a plot."))
 
 }
 
@@ -151,7 +150,7 @@ if (exists("img")) {
 
 	# Save the plot to the image directory
 	ggsave(plot_name, plot = img, path = img_path, width = 10, height = 8, bg = "white")
-	message(glue("Figure {plot_name} generated successfully."))
+	message(glue("\n\nFigure {plot_name} generated successfully."))
 
 	# Delete Rplots.pdf file if it was created (not sure why this happens)
 	if (file.exists("Rplots.pdf")) invisible(file.remove("Rplots.pdf"))
@@ -162,15 +161,42 @@ if (exists("img")) {
 ### REPORT GENERATION (IF APPLICABLE) ###
 
 
+# If report generation is disabled, end the script here
+if (!generate_report) {
+	message("No report was generated.") 
+	quit()
+}
+
 # Set parameters for rendering the report
-rmd_path <- glue("stats/{opt$name}/{opt$name}-report.Rmd")
-args <- list(
+rmd_path <- glue("eda/{opt$name}/{opt$name}-report.Rmd")
+report_args <- list(
 	output_dir = report_path,
 	alpha = alpha,
 	include_details = include_details,
 	include_code = include_code
 )
 
-# Render the report and inform the user
-render(rmd_path, params = c(result, args), output_dir = report_path, quiet = TRUE)
-message(glue("Report {opt$name}-report.html generated successfully."))
+# Handle special case for  Sen's trend estimator
+if (opt$name == "sens-mean" | opt$name == "sens-variance")  {
+
+	# Set the data_type argument
+	if (opt$name == "sens-mean") report_args$data_type <- "mean"
+	if (opt$name == "sens-variance") report_args$data_type <- "variance"
+
+	# Update rmd_path
+	rmd_path <- "eda/sens/sens-report.Rmd"
+}
+
+# Render the report using each item in report_format given
+for (format in report_format) {
+	render(
+		input = rmd_path,
+		params = c(result, report_args),
+		output_format = format,
+		output_file = glue("{opt$name}-report"),
+		output_dir = report_path,
+		quiet = TRUE
+	)
+}
+
+message(glue("Report(s) generated successfully."))

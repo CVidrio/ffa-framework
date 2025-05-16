@@ -1,0 +1,32 @@
+To compute Sen's trend estimator we use the following procedure:
+
+1. Iterate over all pairs of data points $(x_{i}, y_{i})$ and $(x_{j}, y_{j})$.
+2. If $x_{i} \neq  x_{j}$, compute the slope $(y_{j} - y_{i})/(x_{j} - x_{i})$ and add it to a list $S$.
+3. Sen's trend estimator $\hat{m}$ is the median of $S$.
+
+After computing $\hat{m}$, we can estimate the $y$-intercept $b$ by the median of $y_{i} - \hat{m}x_{i}$ for all $i$.
+
+Prior to applying the Runs test, the data is categorized based on whether it is above ($+$) or below ($-$) the median.
+
+Then, we compute the number of contiguous blocks of $+$ or $-$ (or *runs*) in the data.
+
+>**Example**: Suppose that after categorization, the sequence of data is as follows:
+>
+>$$
+>+++--+++-+-
+>$$ 
+>
+>This sequence has six runs with length  $(3, 2, 3, 1,1, 1)$.
+
+Let $R$ be the number of runs in $N$ data points (with category counts $N_{+}$ and $N_{-}$). 
+
+Then, $R$ is asymptotically normal with the following parameters:
+
+$$
+\mathbb{E}[R] = \frac{2N_{+}N_{-}}{N} + 1, \quad
+\text{Var}(R) = \frac{2N_{+}N_{-}(2N_{+}N_{-} - N)}{N^2(N - 1)}
+$$ 
+
+For more information, see the [Wikipedia](https://en.wikipedia.org/wiki/Wald%E2%80%93Wolfowitz_runs_test) entry or the [R Documentation](https://search.r-project.org/CRAN/refmans/randtests/html/runs.test.html).
+
+

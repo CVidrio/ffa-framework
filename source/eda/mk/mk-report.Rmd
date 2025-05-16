@@ -1,0 +1,50 @@
+---
+title: "Mann-Kendall Test Report"
+output:
+  html_document:
+    css: ../styles.css
+  html_notebook:
+    css: ../styles.css
+params: 
+  output_dir: "[output_dir]"
+  include_details: TRUE
+  include_code: TRUE
+  alpha: "[alpha]"
+  reject: "[reject]"
+  p_value: "[p_value]"
+  s_statistic: "[s_statistic]"
+  s_variance: "[s_variance]"
+  msg: "[msg]"
+---
+
+### Mann-Kendall Test
+
+The **MK Test** is used to assess whether there is a statistically significant monotonic trend in a time series.
+The test requires that when no trend is present, the data is independent and identically distributed.
+
+- Null hypothesis: There is no monotonic trend.
+- Alternative hypothesis: There is a monotonic upwards or downwards trend.
+
+<!-- Render additional details about the test. -->
+```{r, child = if(include_details) 'mk-details.Rmd' }
+```
+
+#### Results
+
+`r params$msg`
+
+Additional information:
+
+- S-statistic: `r round(params$s_statistic, 2)`
+- S-statistic variance: `r format(params$s_variance, scientific = TRUE, digits = 3)`
+
+<!-- Include code used to compute the results. -->
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("#### Code") 
+```
+
+```{r, file = "mk-test.R", include = include_code, eval = FALSE } 
+
+```
+

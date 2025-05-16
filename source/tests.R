@@ -4,14 +4,14 @@ library(glue)
 library(yaml)
 
 # Source statistical tests
-source("stats/pettitt/pettitt-test.R")
-source("stats/mks/mks-test.R")
-source("stats/mk/mk-test.R")
-source("stats/spearman/spearman-test.R")
-source("stats/bbmk/bbmk-test.R")
-source("stats/white/white-test.R")
-source("stats/mwmk/mwmk-test.R")
-source("stats/sens/sens-estimator.R")
+source("eda/pettitt/pettitt-test.R")
+source("eda/mks/mks-test.R")
+source("eda/mk/mk-test.R")
+source("eda/spearman/spearman-test.R")
+source("eda/bbmk/bbmk-test.R")
+source("eda/white/white-test.R")
+source("eda/mwmk/mwmk-test.R")
+source("eda/sens/sens-estimator.R")
 
 # Source helper functions
 source("helpers/load-data.R")

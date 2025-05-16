@@ -9,11 +9,13 @@
 - Add the option to run statistical tests individually using the `run-stats.R` function.
 - Implement the Wald-Wolfowitz runs test for detecting irregularities in residuals.
 - Develop a suite of unit tests using the `testthat` library.
-
-### Proposed
-
 - Use `knitr` and `rmarkdown` to generate reports with both text and images.
 - Embed test statistics, mathematical equations, and code directly into reports.
+- Export reports to `.md` (Pandoc), `.html`, and `.nb.html` (HTML notebook) 
+
+### In Progress
+
+- Export reports to `.docx` and `.pdf` using a custom $\LaTeX$ template
 
 ## Bugs
 

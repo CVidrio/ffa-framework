@@ -1,0 +1,73 @@
+---
+title: "Mann-Kendall-Sneyers Test Report"
+output:
+  html_document:
+    css: ../styles.css
+  html_notebook:
+    css: ../styles.css
+params: 
+  output_dir: "[output_dir]"
+  include_details: TRUE
+  include_code: TRUE
+  alpha: "[alpha]"
+  reject: "[reject]"
+  s_prog: "[s_prog]"
+  s_regr: "[s_regr]"
+  bound: "[bound]"
+  crossing_df: "[crossing_df]"
+  change_df: "[change_df]"
+  p_value: "[p_value]"
+  msg: "[msg]"
+---
+
+### Mann-Kendall-Sneyers Test
+
+The **MKS Test** is used to identify the beginning of a trend in a time series:
+
+- Null hypothesis: There are no change points in the time series.
+- Alternative hypothesis: There are _one or more_ change points in the time series.
+
+<!-- Render additional details about the test. -->
+```{r, child = if(include_details) 'mks-details.Rmd' }
+
+```
+<!-- Include the results. -->
+
+#### Results
+
+`r params$msg`
+
+Additional information:
+
+- Number of crossings: `r nrow(params$crossing_df)`
+- Number of significant crossings: `r nrow(params$change_df)`
+- Significance threshold: `r round(params$bound, 2)`
+
+<!-- Render the figure. -->
+
+#### Figure
+
+```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+include_graphics(file.path(params$output_dir, "img/mks-test.png"))
+```
+
+<!-- Include code used to compute the results. -->
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("#### Test Code") 
+```
+
+```{r, file = "mks-test.R", include = include_code, eval = FALSE } 
+
+```
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("#### Plotting Code") 
+```
+
+
+```{r, file = "mks-plot.R", include = include_code, eval = FALSE } 
+
+```
+
+

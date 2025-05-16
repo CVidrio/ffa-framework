@@ -1,0 +1,46 @@
+---
+title: "White Test Report"
+output:
+  html_document:
+    css: ../styles.css
+  html_notebook:
+    css: ../styles.css
+params: 
+  output_dir: "[output_dir]"
+  include_details: TRUE
+  include_code: TRUE
+  alpha: "[alpha]"
+  reject: "[reject]"
+  r_squared: "[r_squared]"
+  test_statistic: "[test_statistic]"
+  p_value: "[p_value]"
+  msg: "[msg]"
+---
+
+### White Test
+
+The **White Test** is used to detect changes in the variance of a time series.
+
+- Null hypothesis: The variance of the time series is constant (homoskedasticity).
+- Alternative hypothesis: The variance of the time series is time-dependent (heteroskedasticity).
+
+<!-- Render additional details about the test. -->
+```{r, child = if(include_details) 'white-details.Rmd' }
+```
+
+<!-- Include the results. -->
+
+#### Results
+
+`r params$msg`
+
+<!-- Include code used to compute the results. -->
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("#### Code") 
+```
+
+```{r, file = "white-test.R", include = include_code, eval = FALSE } 
+
+```
+

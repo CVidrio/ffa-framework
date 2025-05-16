@@ -1,0 +1,14 @@
+To compute the AMS variances we use a moving window:
+
+1. Set the length of the moving window $w$ and the step size $s$.
+2. Compute the standard deviation over indices $[1, w]$.
+3. Move the window forward by $s$.
+4. Check if the right boundary is beyond the end of the data. If not, go to (5).
+5. Compute the standard deviation again. Return to (3).
+
+Then, we perform the Mann-Kendall Test on the time series of variances.
+
+For more information about the Mann-Kendall test, read the documentation or run the command `Rscript stats.R -n mk` with `include_details = TRUE` in `config.yml`.
+
+ 
+

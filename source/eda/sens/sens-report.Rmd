@@ -1,0 +1,69 @@
+---
+title: "Sen's Trend Estimator Report"
+output:
+  html_document:
+    css: ../styles.css
+  html_notebook:
+    css: ../styles.css
+params: 
+  data_type: "[data_type]"
+  output_dir: "[output_dir]"
+  include_details: TRUE
+  include_code: TRUE
+  alpha: "[alpha]"
+  sens_slope: "[sens_slope]"
+  sens_intercept: "[sens_intercept]"
+  residuals: "[residuals]"
+  p_value: "[p_value]"
+  reject: "[reject]"
+  msg: "[msg]"
+---
+
+### Sen's Trend Estimator
+
+**Dataset**: AMS `r params$data_type`.
+
+**Sen's Trend Estimator** is used to estimate the slope of a regression line.
+Unlike [Least Squares](https://en.wikipedia.org/wiki/Least_squares), Sen's trend estimator uses a non-parametric approach which makes it robust to outliers.
+
+After computing the regression line using Sen's trend estimator, we use the **Runs Test** to determine whether the residuals from the regression are random.
+If the Runs test identifies a non-random pattern in the residuals, it is a strong indication that the non-stationarity in the data is non-linear.
+
+- Null hypothesis: The residuals are distributed randomly.
+- Alternative hypothesis: The residuals *are not* distributed randomly.
+
+<!-- Render additional details about the test. -->
+```{r, child = if(params$include_details) 'sens-details.Rmd' }
+```
+<!-- Include the results. -->
+
+#### Results
+
+`r params$msg`
+
+<!-- Render the figure. -->
+
+#### Figure
+
+```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+file_name <- glue("img/sens-{params$data_type}-estimator.png")
+include_graphics(file.path(params$output_dir, file_name))
+```
+
+<!-- Include code used to compute the results. -->
+
+```{r, echo = FALSE, include = params$include_code } 
+asis_output("#### Test Code") 
+```
+
+```{r, file = "sens-estimator.R", include = params$include_code, eval = FALSE } 
+
+```
+
+```{r, echo = FALSE, include = params$include_code } 
+asis_output("#### Plotting Code") 
+```
+
+```{r, file = "sens-plot.R", include = params$include_code, eval = FALSE } 
+
+```

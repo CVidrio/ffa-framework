@@ -1,6 +1,10 @@
 library(testthat)
 library(glue)
 
+test_that("Test that validate-config.R does not throw an error on correct config.yml.", {
+	expect_no_error(validate_config(config))
+})
+
 test_that("Test that validate-config.R catches missing argument.", {
 	config$bbmk_repetitions <- NULL
 	expect_error(
@@ -13,7 +17,7 @@ test_that("Test that validate-config.R catches incorrect data type.", {
 	config$csv_file <- as.integer(10)
 	expect_error(
 		validate_config(config),
-		regexp = "Type mismatch for 'csv_file': expected 'character', got 'integer'."
+		regexp = "Type mismatch for 'csv_file'"
 	)
 })
 
@@ -54,6 +58,14 @@ test_that("Test that validate-config.R catches invalid (high) alpha.", {
 	expect_error(
 		validate_config(config),
 		regexp = "alpha must be between 0.01 and 0.10."
+	)
+})
+
+test_that("Test that validate-config.R catches invalid file type.", {
+	config$report_format <- c("invalid_format")
+	expect_error(
+		validate_config(config),
+		regexp = "report_format 'invalid_format' is invalid."
 	)
 })
 

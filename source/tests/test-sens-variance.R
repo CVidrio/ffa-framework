@@ -8,7 +8,7 @@ test_that("Test sens-estimator.R on variances of data set #1", {
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
-  	expect_equal(sens_slope, 0.8474, tolerance = 1e-3 )
+  	expect_equal(sens_slope, 0.8474, tolerance = 1e-3)
 	expect_equal(sens_intercept, -794.4911, tolerance = 1e-3)
 
 })
@@ -21,7 +21,7 @@ test_that("Test sens-estimator.R on variances of data set #2", {
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
-  	expect_equal(sens_slope, -3.4902, tolerance = 1e-3 )
+  	expect_equal(sens_slope, -3.4902, tolerance = 1e-3)
 	expect_equal(sens_intercept, 7.3114e3, tolerance = 1e-3)
 
 })
@@ -34,7 +34,7 @@ test_that("Test sens-estimator.R on variances of data set #3.1", {
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
-  	expect_equal(sens_slope, -0.0094, tolerance = 1e-3 )
+  	expect_equal(sens_slope, -0.0094, tolerance = 1e-3)
 	expect_equal(sens_intercept, 71.6560, tolerance = 1e-3)
 
 })
@@ -47,7 +47,7 @@ test_that("Test sens-estimator.R on variances of data set #3.2", {
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
-  	expect_equal(sens_slope, 0.2260, tolerance = 1e-3 )
+  	expect_equal(sens_slope, 0.2260, tolerance = 1e-3)
 	expect_equal(sens_intercept, -424.3596, tolerance = 1e-3)
 
 })
@@ -60,7 +60,7 @@ test_that("Test sens-estimator.R on variances of data set #3.3", {
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
-  	expect_equal(sens_slope, 0.1346, tolerance = 1e-3 )
+  	expect_equal(sens_slope, 0.1346, tolerance = 1e-3)
 	expect_equal(sens_intercept, -249.9469, tolerance = 1e-3)
 
 })

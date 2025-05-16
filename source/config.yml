@@ -7,7 +7,7 @@
 data_folder: "~/Code/ffa-framework/data"         
 
 # Name of .csv file in data_dir
-csv_file: "Application_2.csv"                    
+csv_file: "Application_3.1.csv"                    
 
 # Path for generating reports
 report_folder: "~/Code/ffa-framework/reports"    
@@ -17,7 +17,7 @@ report_folder: "~/Code/ffa-framework/reports"
 ####################
 
 # Significance threshold for statistical tests
-alpha: 0.05                
+alpha: 0.05
 
 # Number of bootstrap samples in BB-MK test
 bbmk_repetitions: 10000    
@@ -42,8 +42,13 @@ show_trend: True
 # Enable report generation. Overrides settings below.
 generate_report: True   
 
+# Set output format for reports
+report_format: 
+  - "html_document"
+
 # Include details of the statistical test (i.e. equations)
 include_details: True  
 
 # Include the code used to run statistical tests / draw plots
 include_code: True     
+

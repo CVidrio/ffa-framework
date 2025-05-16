@@ -1,0 +1,42 @@
+---
+title: "KPSS Test Report"
+output:
+  html_document:
+    css: ../styles.css
+  html_notebook:
+    css: ../styles.css
+params: 
+  output_dir: "[output_dir]"
+  include_details: TRUE
+  include_code: TRUE
+  alpha: "[alpha]"
+  reject: "[reject]"
+  p_value: "[p_value]"
+  msg: "[msg]"
+---
+
+### KPSS Test
+
+The **KPSS Test** is used to identify if an autoregressive time series has a _unit root_.
+
+- Null hypothesis: The time series has does not have a unit root.
+- Alternative hypothesis: The time series has a unit root.
+
+<!-- Render additional details about the test. -->
+```{r, child = if(include_details) 'kpss-details.Rmd' }
+```
+
+#### Results
+
+`r params$msg`
+
+<!-- Include code used to compute the results. -->
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("#### Test Code") 
+```
+
+```{r, file = "kpss-test.R", include = include_code, eval = FALSE } 
+
+```
+

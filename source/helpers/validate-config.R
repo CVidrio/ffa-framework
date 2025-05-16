@@ -12,6 +12,7 @@ validate_config <- function(config) {
 		window_step = "integer", 
 		show_trend = "logical",
 		generate_report = "logical",
+		report_format = "character",
 		include_details = "logical",
 		include_code = "logical"
 	)
@@ -58,6 +59,18 @@ validate_config <- function(config) {
 	# Check that alpha is between 0.01 and 0.10
 	if (config$alpha < 0.01 | config$alpha > 0.10) {
 		stop(sprintf("alpha must be between 0.01 and 0.10."))
+	}
+
+	# Check that each element report_format is valid
+	valid_formats <- c("html_document", "html_notebook", "md_document")
+
+	for (format in config$report_format) {
+		if (!format %in% valid_formats) {
+			stop(sprintf(
+				"report_format '%s' is invalid.\nSupported formats: %s.",
+				format, toString(valid_formats)
+			))
+		}
 	}
 
 	# Issue a warning if bbmk_repetitions is less than 10000

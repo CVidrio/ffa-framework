@@ -1,0 +1,43 @@
+---
+title: "Phillips-Perron Test Report"
+output:
+  html_document:
+    css: ../styles.css
+  html_notebook:
+    css: ../styles.css
+params: 
+  output_dir: "[output_dir]"
+  include_details: TRUE
+  include_code: TRUE
+  alpha: "[alpha]"
+  reject: "[reject]"
+  p_value: "[p_value]"
+  msg: "[msg]"
+---
+
+### Phillips-Perron Test
+
+The **PP Test** is used to identify if an autoregressive time series $y_t$ has a unit root.
+
+- Null hypothesis: $y_{t}$ has a *unit root* and is thus *non-stationary*.
+- Alternative hypothesis: $y_{t}$ does not have a unit root and is *trend-stationary*.
+
+<!-- Render additional details about the test. -->
+```{r, child = if(include_details) 'pp-details.Rmd' }
+```
+
+#### Results
+
+`r params$msg`
+
+<!-- Include code used to compute the results. -->
+
+```{r, echo = FALSE, include = include_code } 
+asis_output("#### Test Code") 
+```
+
+```{r, file = "pp-test.R", include = include_code, eval = FALSE } 
+
+```
+
+
