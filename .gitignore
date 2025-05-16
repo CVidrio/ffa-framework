@@ -3,6 +3,7 @@ todo.md
 people.md
 notes/**
 resources/**
+spec/**
 
 # Maintain an empty reports foler but hide the reports themselves
 reports/**
