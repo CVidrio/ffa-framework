@@ -1,8 +1,8 @@
-# ffa-framework
+# FFA Framework
 
 An open-source tool for flood frequency analysis (FFA).
 
-Please see the [wiki](https://github.com/rileywheadon/ffa-framework/wiki) for instructions. 
+Please see the [wiki](https://github.com/rileywheadon/ffa-framework/wiki) for installation and usage instructions. 
 
 ## References
 
@@ -16,6 +16,4 @@ Vidrio-Sahagun, C. T., Pietroniro, A., He, J., & Ruschkowski, J. (2024). FFA fra
 
 ## License
 
-<a href="https://github.com/rileywheadon/ffa-framework">FFA Framework</a> © 2025 by Riley Wheadon, Cuauhtémoc Tonatiuh Vidrio-Sahagún, and Alain Pietroniro is licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="max-width: 1em;max-height:1em;margin-left: .2em;">
-
-
+FFA Framework © 2025 by Riley Wheadon, Cuauhtémoc Tonatiuh Vidrio-Sahagún, and Alain Pietroniro is licensed under CC BY 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/4.0/
