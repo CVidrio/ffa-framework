@@ -92,7 +92,7 @@ eda02 <- function() {
 	# Run the MKS test, generate a plot, and save it 
 	results <- mks_test(df_clean$max, df_clean$year, alpha)
 	mks_plot <- mks_plot(df_clean, results, show_trend)
-	do.call(ggsave, c(list("mks -test.png", plot = mks_plot), plot_args))
+	do.call(ggsave, c(list("mks-test.png", plot = mks_plot), plot_args))
 
 	# Return the results and go to the decision point
 	return (list(location = 3, results = results))
