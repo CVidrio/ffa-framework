@@ -5,6 +5,9 @@ notes/**
 resources/**
 spec/**
 
+# Keep my local renv folder out of source control
+**/renv/**
+
 # Maintain an empty reports foler but hide the reports themselves
-reports/**
+reports/*
 !reports/.gitkeep
