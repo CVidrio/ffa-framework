@@ -1,0 +1,5 @@
+The **KPSS Test** is used to identify if an autoregressive time series has a _unit root_.
+
+- Null hypothesis: The time series has does not have a unit root.
+- Alternative hypothesis: The time series has a unit root.
+

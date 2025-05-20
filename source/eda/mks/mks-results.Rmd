@@ -1,0 +1,16 @@
+#### Results (`r params$year_start`-`r params$year_end`)
+
+`r params$msg`
+
+Additional information:
+
+- Number of crossings: `r nrow(params$crossing_df)`
+- Number of significant crossings: `r nrow(params$change_df)`
+- Significance threshold: `r round(params$bound, 2)`
+
+<!-- Render the figure. -->
+
+```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+img_name <- glue("img/mks-test-{params$year_start}-{params$year_end}.png")
+include_graphics(file.path(params$output_dir, img_name))
+```

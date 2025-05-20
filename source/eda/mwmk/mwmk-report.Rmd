@@ -6,47 +6,47 @@ output:
   html_notebook:
     css: ../styles.css
 params: 
+  test_list: "[test_list]"
   output_dir: "[output_dir]"
+  alpha: "[alpha]"
+  include_description: TRUE
   include_details: TRUE
   include_code: TRUE
-  alpha: "[alpha]"
-  reject: "[reject]"
-  std: "[std]"
-  s_statistic: "[s_statistic]"
-  s_variance: "[s_variance]"
-  p_value: "[p_value]"
-  msg: "[msg]"
 ---
 
 ### Moving Window Mann-Kendall Test
 
-The **MW-MK Test** is used to identify a statistically significant monotonic trend in the variances of an AMS time series.
+<!-- Render the test description. -->
+```{r, child = if(include_description) 'mwmk-description.Rmd'}
 
-- Null hypothesis: There is no significant trend in the variance of the AMS.
-- Alternative hypothesis: There is a significant trend in the variance of the AMS.
-   
+```
+
 <!-- Render additional details about the test. -->
 ```{r, child = if(include_details) 'mwmk-details.Rmd' }
 ```
 
-<!-- Include the results. -->
+<!-- Render the results over all splits. -->
+```{r, echo = FALSE}
 
-#### Results
+outputs <- character()
 
-`r params$msg`
+# Iterate through the list of splits and generate the results for each one
+for (test in test_list) {
+	env <- new.env()
+	env$params <- c(list(output_dir = params$output_dir), test)
+	outputs <- c(outputs, knit_child("mwmk-results.Rmd", envir = env))
+}
 
-Additional information:
+asis_output(paste(outputs, collapse = "\n\n"))
 
-- S-statistic: `r round(params$s_statistic, 2)`
-- S-statistic variance: `r format(params$s_variance, scientific = TRUE, digits = 3)`
+```
 
-<!-- Include code used to compute the results. -->
-
+<!-- Include the test code. -->
 ```{r, echo = FALSE, include = include_code } 
-asis_output("#### Code") 
+asis_output("#### Test Code") 
 ```
 
 ```{r, file = "mwmk-test.R", include = include_code, eval = FALSE } 
-
+ 
 ```
 

@@ -20,6 +20,7 @@ config <- list(
 	show_trend = TRUE,
 	generate_report = TRUE,
 	report_format = c("md_document", "html_document"),
+	include_description = TRUE,
 	include_details = TRUE,
 	include_code = TRUE
 )

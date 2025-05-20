@@ -46,9 +46,11 @@ generate_report: True
 report_format: 
   - "html_document"
 
+# Include description of the statistical test and hypotheses
+include_description: False  
+
 # Include details of the statistical test (i.e. equations)
-include_details: True  
+include_details: False  
 
 # Include the code used to run statistical tests / draw plots
-include_code: True     
-
+include_code: False     

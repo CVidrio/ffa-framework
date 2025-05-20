@@ -1,6 +1,6 @@
 # Mann-Whitney-Pettitt hypothesis test for abrupt changes in the mean
 #  - ams: A vector of annual maximum streamflow data with no NA values
-#  - year: A vector of years correspodning to ams with no NA values
+#  - year: A vector of years corresponding to ams with no NA values
 #  - alpha: The significance level as a floating point number
 pettitt_test <- function(ams, year, alpha = 0.05) {
 

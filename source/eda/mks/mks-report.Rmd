@@ -6,68 +6,56 @@ output:
   html_notebook:
     css: ../styles.css
 params: 
+  test_list: "[test_list]"
   output_dir: "[output_dir]"
+  alpha: "[alpha]"
+  include_description: TRUE
   include_details: TRUE
   include_code: TRUE
-  alpha: "[alpha]"
-  reject: "[reject]"
-  s_prog: "[s_prog]"
-  s_regr: "[s_regr]"
-  bound: "[bound]"
-  crossing_df: "[crossing_df]"
-  change_df: "[change_df]"
-  p_value: "[p_value]"
-  msg: "[msg]"
 ---
 
 ### Mann-Kendall-Sneyers Test
 
-The **MKS Test** is used to identify the beginning of a trend in a time series:
+<!-- Render the test description. -->
+```{r, child = if(include_description) 'mks-description.Rmd'}
 
-- Null hypothesis: There are no change points in the time series.
-- Alternative hypothesis: There are _one or more_ change points in the time series.
+```
 
 <!-- Render additional details about the test. -->
 ```{r, child = if(include_details) 'mks-details.Rmd' }
 
 ```
-<!-- Include the results. -->
 
-#### Results
+<!-- Render the results over all splits. -->
+```{r, echo = FALSE}
 
-`r params$msg`
+outputs <- character()
 
-Additional information:
+# Iterate through the list of splits and generate the results for each one
+for (test in test_list) {
+	env <- new.env()
+	env$params <- c(list(output_dir = params$output_dir), test)
+	outputs <- c(outputs, knit_child("mks-results.Rmd", envir = env))
+}
 
-- Number of crossings: `r nrow(params$crossing_df)`
-- Number of significant crossings: `r nrow(params$change_df)`
-- Significance threshold: `r round(params$bound, 2)`
+asis_output(paste(outputs, collapse = "\n\n"))
 
-<!-- Render the figure. -->
-
-#### Figure
-
-```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
-include_graphics(file.path(params$output_dir, "img/mks-test.png"))
 ```
 
-<!-- Include code used to compute the results. -->
-
+<!-- Include the test code. -->
 ```{r, echo = FALSE, include = include_code } 
 asis_output("#### Test Code") 
 ```
 
 ```{r, file = "mks-test.R", include = include_code, eval = FALSE } 
-
+ 
 ```
 
+<!-- Include the plotting code. -->
 ```{r, echo = FALSE, include = include_code } 
 asis_output("#### Plotting Code") 
 ```
 
-
 ```{r, file = "mks-plot.R", include = include_code, eval = FALSE } 
 
 ```
-
-

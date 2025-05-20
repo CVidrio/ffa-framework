@@ -6,32 +6,43 @@ output:
   html_notebook:
     css: ../styles.css
 params: 
+  test_list: "[test_list]"
   output_dir: "[output_dir]"
+  alpha: "[alpha]"
+  include_description: TRUE
   include_details: TRUE
   include_code: TRUE
-  alpha: "[alpha]"
-  reject: "[reject]"
-  p_value: "[p_value]"
-  msg: "[msg]"
 ---
 
 ### KPSS Test
 
-The **KPSS Test** is used to identify if an autoregressive time series has a _unit root_.
+<!-- Render the test description. -->
+```{r, child = if(include_description) 'kpss-description.Rmd'}
 
-- Null hypothesis: The time series has does not have a unit root.
-- Alternative hypothesis: The time series has a unit root.
+```
 
 <!-- Render additional details about the test. -->
 ```{r, child = if(include_details) 'kpss-details.Rmd' }
+
 ```
 
-#### Results
+<!-- Render the results over all splits. -->
+```{r, echo = FALSE}
 
-`r params$msg`
+outputs <- character()
 
-<!-- Include code used to compute the results. -->
+# Iterate through the list of locations and generate a report for each one
+for (test in test_list) {
+	env <- new.env()
+	env$params <- c(list(output_dir = params$output_dir), test)
+	outputs <- c(outputs, knit_child("kpss-results.Rmd", envir = env))
+}
 
+asis_output(paste(outputs, collapse = "\n\n"))
+
+```
+
+<!-- Include test code. -->
 ```{r, echo = FALSE, include = include_code } 
 asis_output("#### Test Code") 
 ```

@@ -6,41 +6,47 @@ output:
   html_notebook:
     css: ../styles.css
 params: 
+  test_list: "[test_list]"
   output_dir: "[output_dir]"
+  alpha: "[alpha]"
+  include_description: TRUE
   include_details: TRUE
   include_code: TRUE
-  alpha: "[alpha]"
-  reject: "[reject]"
-  r_squared: "[r_squared]"
-  test_statistic: "[test_statistic]"
-  p_value: "[p_value]"
-  msg: "[msg]"
 ---
 
 ### White Test
 
-The **White Test** is used to detect changes in the variance of a time series.
+<!-- Render the test description. -->
+```{r, child = if(include_description) 'white-description.Rmd'}
 
-- Null hypothesis: The variance of the time series is constant (homoskedasticity).
-- Alternative hypothesis: The variance of the time series is time-dependent (heteroskedasticity).
+```
 
 <!-- Render additional details about the test. -->
 ```{r, child = if(include_details) 'white-details.Rmd' }
+
 ```
 
-<!-- Include the results. -->
+<!-- Render the results over all splits. -->
+```{r, echo = FALSE}
 
-#### Results
+outputs <- character()
 
-`r params$msg`
+# Iterate through the list of splits and generate the results for each one
+for (test in test_list) {
+	env <- new.env()
+	env$params <- c(list(output_dir = params$output_dir), test)
+	outputs <- c(outputs, knit_child("white-results.Rmd", envir = env))
+}
 
-<!-- Include code used to compute the results. -->
+asis_output(paste(outputs, collapse = "\n\n"))
 
+```
+
+<!-- Include the test code. -->
 ```{r, echo = FALSE, include = include_code } 
-asis_output("#### Code") 
+asis_output("#### Test Code") 
 ```
 
 ```{r, file = "white-test.R", include = include_code, eval = FALSE } 
-
+ 
 ```
-

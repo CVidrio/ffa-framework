@@ -1,0 +1,7 @@
+The **MK Test** is used to assess whether there is a statistically significant monotonic trend in a time series.
+The test requires that when no trend is present, the data is independent and identically distributed.
+
+- Null hypothesis: There is no monotonic trend.
+- Alternative hypothesis: There is a monotonic upwards or downwards trend.
+
+

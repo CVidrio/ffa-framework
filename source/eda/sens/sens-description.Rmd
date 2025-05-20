@@ -1,0 +1,9 @@
+**Sen's Trend Estimator** is used to estimate the slope of a regression line.
+Unlike [Least Squares](https://en.wikipedia.org/wiki/Least_squares), Sen's trend estimator uses a non-parametric approach which makes it robust to outliers.
+
+After computing the regression line using Sen's trend estimator, we use the **Runs Test** to determine whether the residuals from the regression are random.
+If the Runs test identifies a non-random pattern in the residuals, it is a strong indication that the non-stationarity in the data is non-linear.
+
+- Null hypothesis: The residuals are distributed randomly.
+- Alternative hypothesis: The residuals *are not* distributed randomly.
+

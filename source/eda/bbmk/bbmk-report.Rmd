@@ -1,64 +1,54 @@
 ---
-title: "Block-Bootstrap Mann-Kendall Test Report"
+title: "BB-MK Test Report"
 output:
   html_document:
     css: ../styles.css
   html_notebook:
     css: ../styles.css
 params: 
+  test_list: "[test_list]"
   output_dir: "[output_dir]"
+  alpha: "[alpha]"
+  include_description : TRUE
   include_details: TRUE
   include_code: TRUE
-  alpha: "[alpha]"
-  reject: "[reject]"
-  s_bootstrap: "[s_bootstrap]"
-  s_statistic: "[s_statistic]"
-  p_value: "[p_value]"
-  bounds: "[bounds]"
-  msg: "[msg]"
 ---
 
 ### Block-Bootstrap Mann-Kendall Test
 
-The **BB-MK Test** is used to assess whether there is a statistically significant monotonic trend in a time series.
+<!-- Render the test description. -->
+```{r, child = if(include_description) 'bbmk-description.Rmd'}
 
-Unlike the MK test, the BB-MK test is insensitive to autocorrelation.
-
-- Null hypothesis: There is no monotonic trend.
-- Alternative hypothesis: There is a monotonic upwards or downwards trend.
+```
 
 <!-- Render additional details about the test. -->
 ```{r, child = if(include_details) 'bbmk-details.Rmd' }
+
 ```
 
-<!-- Include the results. -->
+<!-- Render the results over all splits. -->
+```{r, echo = FALSE}
 
-#### Results
+outputs <- character()
 
-`r params$msg`
+# Iterate through the list of splits and generate the results for each one
+for (test in test_list) {
+	env <- new.env()
+	env$params <- c(list(output_dir = params$output_dir), test)
+	outputs <- c(outputs, knit_child("bbmk-results.Rmd", envir = env))
+}
 
-Additional information:
+asis_output(paste(outputs, collapse = "\n\n"))
 
-- Bootstrap samples: `r length(params$s_bootstrap)`
-- S-statistic: `r round(params$s_statistic, 2)`
-- Confidence bounds: `r round(params$bounds, 2)`
-
-<!-- Render the figure. -->
-
-#### Figure
-
-```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
-include_graphics(file.path(params$output_dir, "img/bbmk-test.png"))
 ```
 
 <!-- Include the test code. -->
-
 ```{r, echo = FALSE, include = include_code } 
 asis_output("#### Test Code") 
 ```
 
 ```{r, file = "bbmk-test.R", include = include_code, eval = FALSE } 
-
+ 
 ```
 
 <!-- Include the plotting code. -->

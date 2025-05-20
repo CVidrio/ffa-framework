@@ -1,57 +1,57 @@
 ---
 title: "Spearman Test Report"
-output: html_document:
+output: 
+  html_document:
     css: ../styles.css
   html_notebook:
     css: ../styles.css
 params: 
+  test_list: "[test_list]"
   output_dir: "[output_dir]"
+  alpha: "[alpha]"
+  include_description: TRUE
   include_details: TRUE
   include_code: TRUE
-  alpha: "[alpha]"
-  rho: "[rho]"
-  sig: "[sig]"
-  least_lag: "[least_lag]"
-  msg: "[msg]"
 ---
 
 ### Spearman Test
 
-The **Spearman Test** is used to identify autocorrelation in a time series $y_{t}$.
-A *significant lag* is a number $i$ such that the correlation between $y_{t}$ and $y_{t-i}$ is statistically significant.
-The *least insignificant lag* is the largest $i$ such that all $j < i$ are significant lags.
+<!-- Render the test description. -->
+```{r, child = if(include_description) 'spearman-description.Rmd'}
 
-- Null hypothesis: The least insignificant lag is $0$.
-- Alternative hypothesis: The least insignificant lag is greater than $0$.
+```
 
 <!-- Render additional details about the test. -->
 ```{r, child = if(include_details) 'spearman-details.Rmd' }
+
 ```
 
-<!-- Results -->
+<!-- Render the results over all splits. -->
+```{r, echo = FALSE}
 
-#### Results
+outputs <- character()
 
-`r params$msg`
+# Iterate through the list of splits and generate the results for each one
+for (test in test_list) {
+	env <- new.env()
+	env$params <- c(list(output_dir = params$output_dir), test)
+	outputs <- c(outputs, knit_child("spearman-results.Rmd", envir = env))
+}
 
-<!-- Render the figure. -->
+asis_output(paste(outputs, collapse = "\n\n"))
 
-#### Figure
-
-```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
-include_graphics(file.path(params$output_dir, "img/spearman-test.png"))
 ```
 
-<!-- Include code used to compute the results. -->
-
+<!-- Include the test code. -->
 ```{r, echo = FALSE, include = include_code } 
-asis_output("#### Testing Code") 
+asis_output("#### Test Code") 
 ```
 
 ```{r, file = "spearman-test.R", include = include_code, eval = FALSE } 
-
+ 
 ```
 
+<!-- Include the plotting code. -->
 ```{r, echo = FALSE, include = include_code } 
 asis_output("#### Plotting Code") 
 ```
@@ -59,4 +59,3 @@ asis_output("#### Plotting Code")
 ```{r, file = "spearman-plot.R", include = include_code, eval = FALSE } 
 
 ```
-

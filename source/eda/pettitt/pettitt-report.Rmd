@@ -6,60 +6,51 @@ output:
   html_notebook:
     css: ../styles.css
 params: 
+  test_list: "[test_list]"
   output_dir: "[output_dir]"
+  alpha: "[alpha]"
+  include_description: TRUE
   include_details: TRUE
   include_code: TRUE
-  alpha: "[alpha]"
-  u_t: "[u_t]"
-  k_statistic: "[k_statistic]"
-  k_alpha: "[k_alpha]"
-  p_value: "[p_value]"
-  change_index: "[change_index]"
-  change_year: "[change_year]"
-  reject: "[reject]"
-  msg: "[msg]"
 ---
 
 ### Pettitt Test
 
-The **Pettitt Test** is used to identify abrupt changes in the mean of a time series.
+<!-- Render the test description. -->
+```{r, child = if(include_description) 'pettitt-description.Rmd'}
 
-- Null hypothesis: There are no abrupt changes in the time series mean.
-- Alternative hypothesis: There is _one_ abrupt change in the time series mean.
+```
 
 <!-- Render additional details about the test. -->
 ```{r, child = if(include_details) 'pettitt-details.Rmd' }
 ```
 
-<!-- Include the results. -->
+<!-- Render the results over all splits. -->
+```{r, echo = FALSE}
 
-#### Results
+outputs <- character()
 
-`r params$msg`
+# Iterate through the list of splits and generate the results for each one
+for (test in test_list) {
+	env <- new.env()
+	env$params <- c(list(output_dir = params$output_dir), test)
+	outputs <- c(outputs, knit_child("pettitt-results.Rmd", envir = env))
+}
 
-Additional information:
+asis_output(paste(outputs, collapse = "\n\n"))
 
-- K-statistic: `r round(params$k_statistic, 2)`
-- K-statistic significance threshold: `r round(params$k_alpha, 2)`
-
-<!-- Render the figure. -->
-
-#### Figure
-
-```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
-include_graphics(file.path(params$output_dir, "img/pettitt-test.png"))
 ```
 
-<!-- Include code used to compute the results. -->
-
+<!-- Include the test code. -->
 ```{r, echo = FALSE, include = include_code } 
 asis_output("#### Test Code") 
 ```
 
 ```{r, file = "pettitt-test.R", include = include_code, eval = FALSE } 
-
+ 
 ```
 
+<!-- Include the plotting code. -->
 ```{r, echo = FALSE, include = include_code } 
 asis_output("#### Plotting Code") 
 ```
@@ -67,5 +58,3 @@ asis_output("#### Plotting Code")
 ```{r, file = "pettitt-plot.R", include = include_code, eval = FALSE } 
 
 ```
-
-

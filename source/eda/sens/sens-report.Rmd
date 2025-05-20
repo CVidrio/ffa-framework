@@ -6,64 +6,58 @@ output:
   html_notebook:
     css: ../styles.css
 params: 
-  data_type: "[data_type]"
+  test_list: "[test_list]"
   output_dir: "[output_dir]"
+  alpha: "[alpha]"
+  include_description: TRUE
   include_details: TRUE
   include_code: TRUE
-  alpha: "[alpha]"
-  sens_slope: "[sens_slope]"
-  sens_intercept: "[sens_intercept]"
-  residuals: "[residuals]"
-  p_value: "[p_value]"
-  reject: "[reject]"
-  msg: "[msg]"
+  data_type: "[data_type]"
 ---
 
-### Sen's Trend Estimator
+### Sen's Trend Estimator (AMS `r tools::toTitleCase(params$data_type)`)
 
-**Dataset**: AMS `r params$data_type`.
+<!-- Render the test description. -->
+```{r, child = if(include_description) 'sens-description.Rmd'}
 
-**Sen's Trend Estimator** is used to estimate the slope of a regression line.
-Unlike [Least Squares](https://en.wikipedia.org/wiki/Least_squares), Sen's trend estimator uses a non-parametric approach which makes it robust to outliers.
-
-After computing the regression line using Sen's trend estimator, we use the **Runs Test** to determine whether the residuals from the regression are random.
-If the Runs test identifies a non-random pattern in the residuals, it is a strong indication that the non-stationarity in the data is non-linear.
-
-- Null hypothesis: The residuals are distributed randomly.
-- Alternative hypothesis: The residuals *are not* distributed randomly.
+```
 
 <!-- Render additional details about the test. -->
-```{r, child = if(params$include_details) 'sens-details.Rmd' }
-```
-<!-- Include the results. -->
+```{r, child = if(include_details) 'sens-details.Rmd' }
 
-#### Results
-
-`r params$msg`
-
-<!-- Render the figure. -->
-
-#### Figure
-
-```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
-file_name <- glue("img/sens-{params$data_type}-estimator.png")
-include_graphics(file.path(params$output_dir, file_name))
 ```
 
-<!-- Include code used to compute the results. -->
+<!-- Render the results over all splits. -->
+```{r, echo = FALSE}
 
-```{r, echo = FALSE, include = params$include_code } 
+outputs <- character()
+
+# Iterate through the list of splits and generate the results for each one
+for (test in test_list) {
+	env <- new.env()
+	args <- list(output_dir = params$output_dir, data_type = params$data_type)
+	env$params <- c(args, test)
+	outputs <- c(outputs, knit_child("sens-results.Rmd", envir = env))
+}
+
+asis_output(paste(outputs, collapse = "\n\n"))
+
+```
+
+<!-- Include the test code. -->
+```{r, echo = FALSE, include = include_code } 
 asis_output("#### Test Code") 
 ```
 
-```{r, file = "sens-estimator.R", include = params$include_code, eval = FALSE } 
-
+```{r, file = "sens-estimator.R", include = include_code, eval = FALSE } 
+ 
 ```
 
-```{r, echo = FALSE, include = params$include_code } 
+<!-- Include the plotting code. -->
+```{r, echo = FALSE, include = include_code } 
 asis_output("#### Plotting Code") 
 ```
 
-```{r, file = "sens-plot.R", include = params$include_code, eval = FALSE } 
+```{r, file = "sens-plot.R", include = include_code, eval = FALSE } 
 
 ```

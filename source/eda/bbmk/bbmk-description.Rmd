@@ -1,0 +1,6 @@
+The **BB-MK Test** is used to assess whether there is a statistically significant monotonic trend in a time series.
+
+Unlike the MK test, the BB-MK test is insensitive to autocorrelation.
+
+- Null hypothesis: There is no monotonic trend.
+- Alternative hypothesis: There is a monotonic upwards or downwards trend.

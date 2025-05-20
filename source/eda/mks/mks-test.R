@@ -1,6 +1,6 @@
 # Mann-Kendall-Sneyers test for detecting the beginning of a trend 
 #  - ams: A vector of annual maximum streamflow data with no NA values
-#  - year: A numeric vector of years corresponding to ams with no NA values
+#  - year: A vector of years corresponding to ams with no NA values
 #  - alpha: The significance level as a floating point number
 mks_test <- function(ams, year, alpha = 0.05) {
 

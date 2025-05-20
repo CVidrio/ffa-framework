@@ -1,0 +1,5 @@
+The **MW-MK Test** is used to identify a statistically significant monotonic trend in the variances of an AMS time series.
+
+- Null hypothesis: There is no significant trend in the variance of the AMS.
+- Alternative hypothesis: There is a significant trend in the variance of the AMS.
+

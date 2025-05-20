@@ -13,6 +13,7 @@ validate_config <- function(config) {
 		show_trend = "logical",
 		generate_report = "logical",
 		report_format = "character",
+		include_description = "logical",
 		include_details = "logical",
 		include_code = "logical"
 	)
