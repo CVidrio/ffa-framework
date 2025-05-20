@@ -33,6 +33,12 @@ outputs <- character()
 
 # Iterate through the list of splits and generate the results for each one
 for (test in test_list) {
+
+	# Add a header
+	header <- glue("#### Results ({test$year_start}-{test$year_end})")
+	outputs <- c(outputs, header)
+
+	# Knit the results
 	env <- new.env()
 	env$params <- c(list(output_dir = params$output_dir), test)
 	outputs <- c(outputs, knit_child("mk-results.Rmd", envir = env))

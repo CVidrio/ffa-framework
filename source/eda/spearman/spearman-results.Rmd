@@ -1,5 +1,3 @@
-#### Results (`r params$year_start`-`r params$year_end`)
-
 `r params$msg`
 
 <!-- Render the figure. -->

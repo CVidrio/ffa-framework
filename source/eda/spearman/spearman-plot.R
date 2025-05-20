@@ -27,9 +27,9 @@ spearman_plot <- function(df, results, show_trend) {
 			stroke = 1.2
 		) +
 		labs(
-			title = "Spearman's rho Autocorrelation",
+			title = "Spearman's \u03c1 Autocorrelation",
 			x = "Lag",
-			y = "Spearman's rho",
+			y = "Spearman's \u03c1",
 			fill = "Legend"
 		) + 
 		scale_fill_manual(

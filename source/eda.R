@@ -82,7 +82,6 @@ eda01 <- function() {
 
 	# Return the results and go to the MKS test
 	return (list(location = 2, results = results))
-
 }
 
 # [2] Apply the MKS test
@@ -96,7 +95,6 @@ eda02 <- function() {
 
 	# Return the results and go to the decision point
 	return (list(location = 3, results = results))
-
 }
 
 # [3] Decision point for the [1] Pettit test and [2] MKS test
@@ -128,19 +126,27 @@ eda03 <- function(results_list) {
 		)
 
 		message(paste(option_message, collapase = "\n"))
-		cat("Enter a number: ")
-		option <- readLines(file("stdin"), 1)
 
-		# Go to the next step in the flowchart
-		if (option == 1) {
-			msg <- "Change points ignored."
-			return (list(location = 8, results = msg))
-		} else if (option == 2) {
-			return (list(location = 4))
-		} else if (option == 3) {
-			return (list(location = 6))
-		} else {
-			stop("Invalid option. Please try again.")
+		# Infinitely loop the option entry in case the user makes a mistake
+		while (TRUE) {
+
+			cat("Enter a number: ")
+			option <- readLines(file("stdin"), 1)
+
+			# Go to the next step in the flowchart
+			if (option == 1) {
+				msg <- "Change points ignored."
+				return (list(location = 8, results = msg))
+			} else if (option == 2) {
+				msg <- "Splitting on change points identified by the Pettitt test."
+				return (list(location = 4, results = msg))
+			} else if (option == 3) {
+				msg <- "Splitting on change points identified by the MKS test."
+				return (list(location = 6, results = msg))
+			} else {
+				message("Invalid option. Please try again.")
+			}
+
 		}
 
 	}
@@ -149,7 +155,15 @@ eda03 <- function(results_list) {
 
 # [4] Run the Pettitt test on a split dataset (TBD)
 eda04 <- function() {
+	message("Applying the Pettitt test for abrupt change points...\n")
 
+	# Run the Pettitt test, generate a plot, and save it 
+	results <- pettitt_test(df_clean$max, df_clean$year, alpha)
+	pettitt_plot <- pettitt_plot(df_clean, results, show_trend)
+	do.call(ggsave, c(list("pettitt-test.png", plot = pettitt_plot), plot_args))
+
+	# Return the results and go to the decision point
+	return (list(location = 5, results = results))
 }
 
 # [5] Decision point for secondary Pettitt test (TBD)
@@ -159,7 +173,15 @@ eda05 <- function() {
 
 # [6] Run the MKS test on a split dataset (TBD)
 eda06 <- function() {
+	message("\nApplying the MKS test for abrupt change points...\n")
 
+	# Run the MKS test, generate a plot, and save it 
+	results <- mks_test(df_clean$max, df_clean$year, alpha)
+	mks_plot <- mks_plot(df_clean, results, show_trend)
+	do.call(ggsave, c(list("mks-test.png", plot = mks_plot), plot_args))
+
+	# Return the results and go to the decision point
+	return (list(location = 7, results = results))
 }
 
 # [7] Decision point for secondary MKS test (TBD)

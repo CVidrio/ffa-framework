@@ -1,15 +1,10 @@
-```{r, echo = FALSE, include = FALSE}
-start <- params$year_start
-end <- params$year_end
-```
-
-#### Results (`r start`-`r end`)
-
 `r params$msg`
 
 <!-- Render the figure. -->
 
 ```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+start <- params$year_start
+end <- params$year_end
 img_name <- glue("img/sens-{params$data_type}-estimator-{start}-{end}.png")
 include_graphics(file.path(params$output_dir, img_name))
 ```
