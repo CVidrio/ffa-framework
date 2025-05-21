@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Spearman Test - FFA Framework</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Spearman Test";
+        var mkdocs_page_input_path = "eda/spearman.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> FFA Framework
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../installation/">Installation Instructions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../user-manual/">User Manual</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../">Exploratory Data Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../goals/">Goals</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../roadmap/">Roadmap</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../matlab/">MATLAB Version</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../license/">License</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">FFA Framework</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Spearman Test</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="spearman-test">Spearman Test</h1>
+<p>The <strong>Spearman Test</strong> is used to identify autocorrelation in a time series <span class="arithmatex">\(y_{t}\)</span>.
+A <em>significant lag</em> is a number <span class="arithmatex">\(i\)</span> such that the correlation between <span class="arithmatex">\(y_{t}\)</span> and <span class="arithmatex">\(y_{t-i}\)</span> is statistically significant.
+The <em>least insignificant lag</em> is the largest <span class="arithmatex">\(i\)</span> such that all <span class="arithmatex">\(j &lt; i\)</span> are significant lags.</p>
+<ul>
+<li>Null hypothesis: The least insignificant lag is <span class="arithmatex">\(0\)</span>.</li>
+<li>Alternative hypothesis: The least insignificant lag is greater than <span class="arithmatex">\(0\)</span>.</li>
+</ul>
+<p>To carry out the Spearman test, we use the following procedure:</p>
+<ol>
+<li>Compute Spearman's correlation coefficient <span class="arithmatex">\(\rho_{i}\)</span> for <span class="arithmatex">\(y_{t}\)</span> and <span class="arithmatex">\(y_{t-i}\)</span> for all <span class="arithmatex">\(0 \leq  i &lt;  n\)</span>.</li>
+<li>Determine the <span class="arithmatex">\(p\)</span>-value <span class="arithmatex">\(p_{i}\)</span> for each correlation coefficient <span class="arithmatex">\(\rho _{i}\)</span>.</li>
+<li>Iterate through <span class="arithmatex">\(p_{i}\)</span> to find the largest <span class="arithmatex">\(i\)</span> such that <span class="arithmatex">\(p_{j} \leq  \alpha\)</span> for all <span class="arithmatex">\(j \leq i\)</span>.</li>
+<li>The value of <span class="arithmatex">\(i\)</span> found in (3) is the least insignificant lag at confidence level <span class="arithmatex">\(\alpha\)</span>.</li>
+</ol>
+<p><strong>Remark</strong>: To compute the <span class="arithmatex">\(p\)</span>-value of a correlation coefficient <span class="arithmatex">\(\rho _{i}\)</span>, first compute:</p>
+<div class="arithmatex">\[
+t_{i}= \rho_{i} \sqrt{\frac{n-2}{1 - \rho _{i}^2}}
+\]</div>
+<p>Then, the test statistic <span class="arithmatex">\(t_{i}\)</span> has the <span class="arithmatex">\(t\)</span>-distribution with <span class="arithmatex">\(n-2\)</span> degrees of freedom.</p>
+<p>For more information, see the Wikipedia pages on <a href="https://en.wikipedia.org/wiki/Autocorrelation">Autocorrelation</a> and <a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman's Correlation Coefficient</a>.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml-full.min.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
