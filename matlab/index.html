@@ -100,7 +100,7 @@
 <li>All configuration details are now stored in YAML files.</li>
 <li>Implement a suite of unit tests using the <code>testthat</code> library.</li>
 <li>Use <code>knitr</code> and <code>rmarkdown</code> to generate reports with text, equations, and images.</li>
-<li>Export reports to <code>.md</code> (Pandoc), <code>.html</code>, and <code>.nb.html</code> (HTML notebook).</li>
+<li>Export reports to <code>.md</code> (Pandoc) and <code>.html</code>.</li>
 <li>Run individual statistical tests using <code>run-stats.R</code>.</li>
 </ul>
 <h2 id="exploratory-data-analysis-eda">Exploratory Data Analysis (EDA)</h2>
@@ -108,16 +108,16 @@
 <ul>
 <li>Only show statistically significant change points for the Pettitt and MKS tests.</li>
 <li>Fix bug where the Pettitt test computed the number of data points <em>before</em> removing NaN values.</li>
-<li>Fix bug where the MKS test would only identify one change point, even if change points are above the threshold for statistical significance.</li>
+<li>Fix bug where the MKS test would only identify one change point, even if multiple change points were foudn to be above the threshold for statistical significance.</li>
 <li>Remove unnecessary rounding in the moving window algorithm for AMS variability.</li>
-<li>Fix bug where the Phillips-Perron and KPSS tests failed to account for previously identified drift and trend.</li>
+<li>Fix bug where the Phillips-Perron and KPSS tests failed to account for drift and trend.</li>
 <li>Fix bug where the Phillips-Perron and KPSS tests failed to account for serial correlation.</li>
 </ul>
 <h3 id="framework-changes">Framework Changes</h3>
 <ul>
 <li>If serial correlation is identified, do not run the Phillips-Perron and KPSS tests.</li>
-<li>Implement the Wald-Wolfowitz runs test for detecting irregularities in residuals after fitting Sen's trend estimator.</li>
-<li>Run change point detection in multiple stages to prevent users from selecting unnecessary change points.</li>
+<li>Implement the Runs test to detect nonlinearity after fitting Sen's trend estimator.</li>
+<li>Run change point detection in multiple stages.</li>
 </ul>
 <h2 id="flood-frequency-analysis-ffa">Flood Frequency Analysis (FFA)</h2>
 <p>TBD</p>
