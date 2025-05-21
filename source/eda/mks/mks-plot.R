@@ -54,7 +54,7 @@ mks_plot <- function(df_clean, result, show_trend) {
 	p2 <- ggplot(df_clean, aes(x = year, y = max)) +
 		geom_point(aes(color = "black"), size = 2.25) +
 		(if (show_trend) geom_line(color = "black", linewidth = 1.1) else NULL) +
-		geom_point(data = change_df, aes(y = statistic, color = "blue"), size = 4) +
+		geom_point(data = change_df, aes(y = max, color = "blue"), size = 4) +
 		labs(x = "Year", y = flow_label, color = "Legend") +
 		scale_color_manual(
 			values = c("black" = "black", "blue" = "blue"),

@@ -1,5 +1,0 @@
-The **Pettitt Test** is used to identify abrupt changes in the mean of a time series.
-
-- Null hypothesis: There are no abrupt changes in the time series mean.
-- Alternative hypothesis: There is _one_ abrupt change in the time series mean.
-

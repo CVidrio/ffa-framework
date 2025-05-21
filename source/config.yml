@@ -7,7 +7,7 @@
 data_folder: "~/Code/ffa-framework/data"         
 
 # Name of .csv file in data_dir
-csv_file: "Application_3.1.csv"                    
+csv_file: "Application_2.csv"                    
 
 # Path for generating reports
 report_folder: "~/Code/ffa-framework/reports"    
@@ -15,6 +15,14 @@ report_folder: "~/Code/ffa-framework/reports"
 ####################
 ### EDA SETTINGS ###
 ####################
+
+# Mode for running EDA (must be "preset", "automatic", or "manual")
+mode: "automatic"
+
+# Preset split points (only works with mode: "preset")
+split: 
+  - 1960
+  - 2000
 
 # Significance threshold for statistical tests
 alpha: 0.05
@@ -39,18 +47,9 @@ show_trend: True
 ### REPORT SETTINGS ###
 #######################
 
-# Enable report generation. Overrides settings below.
+# Enable report generation 
 generate_report: True   
 
 # Set output format for reports
 report_format: 
   - "html_document"
-
-# Include description of the statistical test and hypotheses
-include_description: False  
-
-# Include details of the statistical test (i.e. equations)
-include_details: False  
-
-# Include the code used to run statistical tests / draw plots
-include_code: False     

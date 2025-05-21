@@ -1,69 +1,14 @@
----
-title: "Sen's Trend Estimator Report"
-output:
-  html_document:
-    css: ../styles.css
-  html_notebook:
-    css: ../styles.css
-params: 
-  test_list: "[test_list]"
-  output_dir: "[output_dir]"
-  alpha: "[alpha]"
-  include_description: TRUE
-  include_details: TRUE
-  include_code: TRUE
-  data_type: "[data_type]"
----
+### Sen's Trend Estimator `r if(params$show_years) glue("({params$start}-{params$end})")`
 
-### Sen's Trend Estimator (AMS `r tools::toTitleCase(params$data_type)`)
+**Dataset**: AMS `r tools::toTitleCase(params$data_type)`.
 
-<!-- Render the test description. -->
-```{r, child = if(include_description) 'sens-description.Rmd'}
+For more information, see [here](https://rileywheadon.github.io/ffa-framework/eda/sens/). 
 
-```
+`r params$msg`
 
-<!-- Render additional details about the test. -->
-```{r, child = if(include_details) 'sens-details.Rmd' }
+<!-- Render the figure. -->
 
-```
-
-<!-- Render the results over all splits. -->
-```{r, echo = FALSE}
-
-outputs <- character()
-
-# Iterate through the list of splits and generate the results for each one
-for (test in test_list) {
-
-	# Add a header
-	header <- glue("#### Results ({test$year_start}-{test$year_end})")
-	outputs <- c(outputs, header)
-
-	# Knit the results
-	env <- new.env()
-	args <- list(output_dir = params$output_dir, data_type = params$data_type)
-	env$params <- c(args, test)
-	outputs <- c(outputs, knit_child("sens-results.Rmd", envir = env))
-}
-
-asis_output(paste(outputs, collapse = "\n\n"))
-
-```
-
-<!-- Include the test code. -->
-```{r, echo = FALSE, include = include_code } 
-asis_output("#### Test Code") 
-```
-
-```{r, file = "sens-estimator.R", include = include_code, eval = FALSE } 
- 
-```
-
-<!-- Include the plotting code. -->
-```{r, echo = FALSE, include = include_code } 
-asis_output("#### Plotting Code") 
-```
-
-```{r, file = "sens-plot.R", include = include_code, eval = FALSE } 
-
+```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+img_name <- glue("img/sens-{params$data_type}-estimator-{params$start}-{params$end}.png")
+include_graphics(file.path(params$output_dir, img_name))
 ```

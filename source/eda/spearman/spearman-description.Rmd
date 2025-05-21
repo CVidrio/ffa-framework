@@ -1,7 +1,0 @@
-The **Spearman Test** is used to identify autocorrelation in a time series $y_{t}$.
-A *significant lag* is a number $i$ such that the correlation between $y_{t}$ and $y_{t-i}$ is statistically significant.
-The *least insignificant lag* is the largest $i$ such that all $j < i$ are significant lags.
-
-- Null hypothesis: The least insignificant lag is $0$.
-- Alternative hypothesis: The least insignificant lag is greater than $0$.
-

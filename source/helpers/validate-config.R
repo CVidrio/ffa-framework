@@ -6,16 +6,15 @@ validate_config <- function(config) {
 		data_folder = "character",
 		csv_file = "character",
 		report_folder = "character",
+		mode = "character",
+		split = "integer",
 		alpha = "numeric",
 		bbmk_repetitions = "integer",
 		window_length = "integer", 
 		window_step = "integer", 
 		show_trend = "logical",
 		generate_report = "logical",
-		report_format = "character",
-		include_description = "logical",
-		include_details = "logical",
-		include_code = "logical"
+		report_format = "character"
 	)
 
 	# Validate data types in the configuration file
@@ -57,13 +56,18 @@ validate_config <- function(config) {
 		stop(sprintf("report_folder '%s' does not exist.", config$report_folder))
 	}
 
+	# Check that mode is one of "preset", "automatic", and "manual"
+	if (!(config$mode %in% c("preset", "automatic", "manual"))) {
+		stop("mode must be one of 'preset', 'automatic', or 'manual'.")
+	}
+
 	# Check that alpha is between 0.01 and 0.10
 	if (config$alpha < 0.01 | config$alpha > 0.10) {
-		stop(sprintf("alpha must be between 0.01 and 0.10."))
+		stop("alpha must be between 0.01 and 0.10.")
 	}
 
 	# Check that each element report_format is valid
-	valid_formats <- c("html_document", "html_notebook", "md_document")
+	valid_formats <- c("html_document", "md_document")
 
 	for (format in config$report_format) {
 		if (!format %in% valid_formats) {

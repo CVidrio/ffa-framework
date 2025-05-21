@@ -1,8 +1,0 @@
-`r params$msg`
-
-<!-- Render the figure. -->
-
-```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
-img_name <- glue("img/spearman-test-{params$year_start}-{params$year_end}.png")
-include_graphics(file.path(params$output_dir, img_name))
-```

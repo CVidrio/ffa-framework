@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../../img/favicon.ico" />
+    <title>Mann-Kendal-Sneyers Test - FFA Framework</title>
+    <link rel="stylesheet" href="../../css/theme.css" />
+    <link rel="stylesheet" href="../../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Mann-Kendal-Sneyers Test";
+        var mkdocs_page_input_path = "eda/mks.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href="../.." class="icon icon-home"> FFA Framework
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../installation/">Installation Instructions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../user-manual/">User Manual</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../">Exploratory Data Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../../goals/">Goals</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../roadmap/">Roadmap</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../matlab/">MATLAB Version</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../../license/">License</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../..">FFA Framework</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../.." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Mann-Kendal-Sneyers Test</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="mann-kendal-sneyers-test">Mann-Kendal-Sneyers Test</h1>
+<p>The <strong>Mann-Kendall-Sneyers (MKS) Test</strong> is used to identify the beginning of a trend in a time series:</p>
+<ul>
+<li>Null hypothesis: There are no change points in the time series.</li>
+<li>Alternative hypothesis: There are <em>one or more</em> change points in the time series.</li>
+</ul>
+<p>Define <span class="arithmatex">\(\mathbb{I}(y_{i} &gt; y_{j})\)</span> to be <span class="arithmatex">\(1\)</span> if <span class="arithmatex">\(y_{i} &gt; y_{j}\)</span> and <span class="arithmatex">\(0\)</span> otherwise.</p>
+<p>Given a time series <span class="arithmatex">\(y_{1}, \dots, y_{n}\)</span>, we compute the following test statistic:</p>
+<div class="arithmatex">\[
+S_{t} = \sum_{i=i}^{t} \sum_{j=1}^{i-1} \mathbb{I}(y_{i} &gt; y_{j})
+\]</div>
+<p>Then, we compute the the <em>progressive series</em> <span class="arithmatex">\(UF_{t}\)</span>:</p>
+<div class="arithmatex">\[
+UF_{t} = \frac{S_{t} - \mathbb{E}[S_{t}]}{\sqrt{\text{Var}\,(S_{t})}}
+\]</div>
+<p>Next, we reverse the time series to create a new time series <span class="arithmatex">\(y'\)</span> such that <span class="arithmatex">\(y_{i}' = y_{n+1-i}\)</span>.</p>
+<p>Then, we use formula (1) to compute <span class="arithmatex">\(S_{t}'\)</span> for <span class="arithmatex">\(y'\)</span> and reverse <span class="arithmatex">\(S_{t}'\)</span> to get <span class="arithmatex">\(S_{t}''\)</span> .</p>
+<p>The <em>regressive series</em> <span class="arithmatex">\(UB_{t}\)</span> is defined as follows:</p>
+<div class="arithmatex">\[
+UB_{t} = \frac{S_{t}'' - \mathbb{E}[S_{t}'']}{\sqrt{\text{Var}\,(S_{t}'')}}
+\]</div>
+<p>For both the progressive and regressive series, the expectation and variance is as follows:</p>
+<div class="arithmatex">\[
+\mathbb{E}[S_{t}] = \mathbb{E}[S_{t}''] = \frac{t(t-1)}{4}, \quad
+\text{Var}(S_{t}) = \text{Var}(S_{t}'') = \frac{t(t-1)(2t+5)}{72}
+\]</div>
+<p>Finally, we plot <span class="arithmatex">\(UF_{t}\)</span> and <span class="arithmatex">\(UB_{t}\)</span> with confidence bounds at <span class="arithmatex">\(\pm z_{1 - (\alpha/2)}\)</span>, where <span class="arithmatex">\(\alpha\)</span> is the chosen significance level.
+A crossing point between <span class="arithmatex">\(UF_{t}\)</span> and <span class="arithmatex">\(UB_{t}\)</span> that lies outside the confidence bounds indicates the start of the trend.</p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "../..";</script>
+    <script src="../../js/theme_extra.js"></script>
+    <script src="../../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml-full.min.js"></script>
+      <script src="../../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

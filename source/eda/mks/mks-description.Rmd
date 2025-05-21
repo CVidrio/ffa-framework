@@ -1,5 +1,0 @@
-The **MKS Test** is used to identify the beginning of a trend in a time series:
-
-- Null hypothesis: There are no change points in the time series.
-- Alternative hypothesis: There are _one or more_ change points in the time series.
-

@@ -19,7 +19,7 @@ test_that("Test mks-test.R on data set #1", {
 	# Additional test of crossing locations (this dataset only)
 	expect_equal(
 		crossing_df$cross, 
-		c(6, 36, 38, 41, 42, 54)
+		c(6, 36, 38, 41, 42, 54) + 1, # +1 since we define crossing index differently
 	)
 
 	# Additional test of crossing statistics (this dataset only)

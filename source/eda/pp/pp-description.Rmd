@@ -1,5 +1,0 @@
-The **PP Test** is used to identify if an autoregressive time series $y_t$ has a unit root.
-
-- Null hypothesis: $y_{t}$ has a *unit root* and is thus *non-stationary*.
-- Alternative hypothesis: $y_{t}$ does not have a unit root and is *trend-stationary*.
-

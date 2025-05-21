@@ -1,0 +1,36 @@
+---
+title: "EDA Report"
+output:
+  html_document:
+    css: styles.css
+params: 
+  data_type: "[data_type]"
+  rmd_path: "[rmd_path]"
+  result_list: "[result_list]"
+  output_dir: "[output_dir]"
+---
+
+```{r, echo = FALSE}
+
+outputs <- character()
+
+# Iterate through the list of splits and generate the results for each one
+for (result in result_list) {
+
+	# Create a list containing the arguments required for the results file
+	args <- list(
+		output_dir = params$output_dir,
+		data_type = params$data_type,
+		show_years = TRUE
+	)
+
+	# Knit the results file
+	env <- new.env()
+	env$params <- c(args, result)
+	outputs <- c(outputs, knit_child(params$rmd_path, envir = env))
+}
+
+asis_output(paste(outputs, collapse = "\n\n"))
+
+```
+

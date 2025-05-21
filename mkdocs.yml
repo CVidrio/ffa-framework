@@ -1,0 +1,21 @@
+site_name: FFA Framework
+nav:
+  - Home: index.md
+  - User Guide:
+    - Installation Instructions: installation.md
+    - User Manual: user-manual.md
+  - Documentation:
+    - Exploratory Data Analysis: eda.md
+  - About:
+    - Goals: goals.md
+    - Roadmap: roadmap.md
+    - Release Notes: changelog.md
+    - MATLAB Version: matlab.md
+    - License: license.md
+theme: readthedocs
+markdown_extensions:
+  pymdownx.arithmatex:
+    generic: True
+  footnotes:
+extra_javascript:
+  - https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml-full.min.js

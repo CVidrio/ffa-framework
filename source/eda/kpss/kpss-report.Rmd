@@ -1,59 +1,6 @@
----
-title: "KPSS Test Report"
-output:
-  html_document:
-    css: ../styles.css
-  html_notebook:
-    css: ../styles.css
-params: 
-  test_list: "[test_list]"
-  output_dir: "[output_dir]"
-  alpha: "[alpha]"
-  include_description: TRUE
-  include_details: TRUE
-  include_code: TRUE
----
+### KPSS Test `r if(params$show_years) glue("({params$start}-{params$end})")`
 
-### KPSS Test
+For more information, see [here](https://rileywheadon.github.io/ffa-framework/eda/kpss/).
 
-<!-- Render the test description. -->
-```{r, child = if(include_description) 'kpss-description.Rmd'}
-
-```
-
-<!-- Render additional details about the test. -->
-```{r, child = if(include_details) 'kpss-details.Rmd' }
-
-```
-
-<!-- Render the results over all splits. -->
-```{r, echo = FALSE}
-
-outputs <- character()
-
-# Iterate through the list of locations and generate a report for each one
-for (test in test_list) {
-
-	# Add a header
-	header <- glue("#### Results ({test$year_start}-{test$year_end})")
-	outputs <- c(outputs, header)
-
-	# Knit the results
-	env <- new.env()
-	env$params <- c(list(output_dir = params$output_dir), test)
-	outputs <- c(outputs, knit_child("kpss-results.Rmd", envir = env))
-}
-
-asis_output(paste(outputs, collapse = "\n\n"))
-
-```
-
-<!-- Include test code. -->
-```{r, echo = FALSE, include = include_code } 
-asis_output("#### Test Code") 
-```
-
-```{r, file = "kpss-test.R", include = include_code, eval = FALSE } 
-
-```
+`r params$msg`
 

@@ -1,8 +1,0 @@
-`r params$msg`
-
-Additional information:
-
-- S-statistic: `r round(params$s_statistic, 2)`
-- S-statistic variance: `r format(params$s_variance, scientific = TRUE, digits = 3)`
-
-

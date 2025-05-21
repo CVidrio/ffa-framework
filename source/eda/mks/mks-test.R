@@ -37,15 +37,16 @@ mks_test <- function(ams, year, alpha = 0.05) {
 	bound <- qnorm(1 - (alpha / 2))
 
 	# Find all crossings between progressive/regressive series
+	# Increment by one so that the crossing index is the start of the time series
 	s_sign <- sign(s_prog - s_regr)
-	cross <- which(s_sign[-1] != s_sign[-length(s_sign)])
+	cross <- which(s_sign[-1] != s_sign[-length(s_sign)]) + 1
 
 	# Compute the location of each crossing using linear interpolation
-	get_crossing_location <- function(i) {
+	get_crossings <- function(i) {
 
 		# Fit linear models 
-		fit_prog <- lm(s_prog[i:(i + 1)] ~ year[i:(i + 1)])
-		fit_regr <- lm(s_regr[i:(i + 1)] ~ year[i:(i + 1)])
+		fit_prog <- lm(s_prog[(i - 1):i] ~ year[(i - 1):i])
+		fit_regr <- lm(s_regr[(i - 1):i] ~ year[(i - 1):i])
 
 		# Get the slope and y-intercept of each line
 		b_prog <- coef(fit_prog)[1]
@@ -61,11 +62,7 @@ mks_test <- function(ams, year, alpha = 0.05) {
 	}
 
 	# Get crossing locations
-	locations <- if (length(cross) == 0) { 
-		numeric() 
-	} else { 
-		sapply(cross, get_crossing_location)
-	}
+	locations <- if (length(cross) == 0) numeric() else sapply(cross, get_crossings)
 
 	# Create a dataframe of all crossings
 	crossing_df <- data.frame(

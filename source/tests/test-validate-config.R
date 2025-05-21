@@ -45,6 +45,14 @@ test_that("Test that validate-config.R catches invalid report_folder.", {
 	)
 })
 
+test_that("Test that validate-config.R catches invalid mode.", {
+	config$mode <- "does-not-exist" 
+	expect_error(
+		validate_config(config),
+		regexp = "mode must be one of 'preset', 'automatic', or 'manual'."
+	)
+})
+
 test_that("Test that validate-config.R catches invalid (low) alpha.", {
 	config$alpha <- 0.001
 	expect_error(

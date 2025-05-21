@@ -1,6 +1,0 @@
-The **White Test** is used to detect changes in the variance of a time series.
-
-- Null hypothesis: The variance of the time series is constant (homoskedasticity).
-- Alternative hypothesis: The variance of the time series is time-dependent (heteroskedasticity).
-
-

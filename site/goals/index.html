@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Goals - FFA Framework</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Goals";
+        var mkdocs_page_input_path = "goals.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> FFA Framework
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation Instructions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../user-manual/">User Manual</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../eda/">Exploratory Data Analysis</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">About</span></p>
+              <ul class="current">
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Goals</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#cran-package">CRAN Package</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#command-line-interface">Command Line Interface</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#plumber-api">Plumber API</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#web-app">Web App</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#non-goals">Non-Goals</a>
+    </li>
+    </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../roadmap/">Roadmap</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../changelog/">Release Notes</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../matlab/">MATLAB Version</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                  </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">FFA Framework</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+          <li class="breadcrumb-item">About</li>
+      <li class="breadcrumb-item active">Goals</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="goals">Goals</h1>
+<p><a href="https://doi.org/10.1080/07011784.2025.2462603">Vidrio-Sahagún et al. (2024)</a> identified a number of issues with FFA research in Canada. Our framework aims to address these issues. In particular, we hope to achieve:</p>
+<ul>
+<li><strong>Standardization</strong>: The United States uses a standardized distribution (LP3) and parameter estimation method (expected moments) for FFA. However, Canada does not provide such guidance. By developing this framework, we hope to limit subjectivity in flood estimation.</li>
+<li><strong>Reproducibility</strong>: A significant fraction of FFA studies in Canada do not provide essential information for reproduction, such as the exploratory data analysis (EDA) performed, the distribution selection mechanism, and even the probability distribution itself. Our framework will ensure all of this information is available.</li>
+<li><strong>Statistical Rigour</strong>: Historically, many FFA studies have not performed uncertainty quantification, which makes it difficult to draw accurate conclusion from the results. Our framework automatically performs uncertainty analysis to quantify potential errors.</li>
+<li><strong>Research-to-Practice Translation</strong>: The disorganization of FFA research in Canada makes it difficult for regulatory agencies to access cutting-edge advancements in FFA methodologies. By providing a common set of techniques for modellers to use, we hope to bridge the gap between research and practice. </li>
+</ul>
+<p>Development is guided by the following principles:</p>
+<ul>
+<li><strong>Software Freedom</strong>: Our framework is built on free and open source software.</li>
+<li><strong>Modularity</strong>: Users are allowed to use as much or as little of the framework as they like.</li>
+<li><strong>Interoperability</strong>: Our framework can be seamlessly integrated with other flood models.</li>
+<li><strong>Flexibility</strong>: Users can tailor their analysis to the nuances of individual watersheds.</li>
+<li><strong>Clarity</strong>: The source code is easy to read and understand without confusing tricks.</li>
+<li><strong>Robustness</strong>: The framework can handle datasets with small sample sizes or missing values.</li>
+<li><strong>Speed</strong>: The framework is fast enough to handle batch processing of many datasets.</li>
+</ul>
+<h2 id="architecture">Architecture</h2>
+<p>We believe the following architecture will allow us to achieve the goals listed above: </p>
+<p><img alt="Architecture diagram." src="../img/ffa-architecture.png" /></p>
+<h3 id="cran-package">CRAN Package</h3>
+<p>Our CRAN package will contain a suite of statistical tests, distribution selection mechanisms, and probability distributions for FFA.
+Many of the statistical tests used in our framework are sparsely documented, so providing an implementation of these tests in R will benefit the statistical community at large.</p>
+<h3 id="command-line-interface">Command Line Interface</h3>
+<p>The command line interface (CLI) will allow technical users to programmatically generate reports and run statistical models.
+Additionally, the CLI will make it possible to run each component of the FFA framework separately.
+This will allow advanced users to design custom analysis pipelines. </p>
+<h3 id="plumber-api">Plumber API</h3>
+<p>An API (built with <a href="https://www.rplumber.io/">plumber.R</a>) will provide programmatic access to our framework.</p>
+<h3 id="web-app">Web App</h3>
+<p>Finally, we will a develop a web application on top of the Plumber API which will give new users a simple GUI interface for accessing our framework. 
+We hope that this web application will make it easier for beginner modellers to learn about FFA.</p>
+<h2 id="non-goals">Non-Goals</h2>
+<p><strong>Warning</strong>: This list is not final and will be updated as development continues.</p>
+<p>This software <em>will not</em> support the following features:</p>
+<ul>
+<li>Explanations of FFA itself. We assume the modeller is familiar with basic hydrological concepts. </li>
+<li>Handling different time periods (i.e. monthly maximum streamflow data).</li>
+<li>Transforming the AMS data in any way (i.e. removing serial correlation, removing trends).</li>
+</ul>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../eda/" class="btn btn-neutral float-left" title="Exploratory Data Analysis"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../roadmap/" class="btn btn-neutral float-right" title="Roadmap">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../eda/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../roadmap/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml-full.min.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

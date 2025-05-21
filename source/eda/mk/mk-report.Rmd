@@ -1,59 +1,12 @@
----
-title: "Mann-Kendall Test Report"
-output:
-  html_document:
-    css: ../styles.css
-  html_notebook:
-    css: ../styles.css
-params: 
-  test_list: "[test_list]"
-  output_dir: "[output_dir]"
-  alpha: "[alpha]"
-  include_description: TRUE 
-  include_details: TRUE
-  include_code: TRUE
----
+### Mann-Kendall Test `r if(params$show_years) glue("({params$start}-{params$end})")`
 
-### Mann-Kendall Test
+For more information, see [here](https://rileywheadon.github.io/ffa-framework/eda/mk/). 
 
-<!-- Render the test description. -->
-```{r, child = if(include_description) 'mk-description.Rmd'}
+`r params$msg`
 
-```
+Additional information:
 
-<!-- Render additional details about the test. -->
-```{r, child = if(include_details) 'mk-details.Rmd' }
+- S-statistic: `r round(params$s_statistic, 2)`
+- S-statistic variance: `r format(params$s_variance, scientific = TRUE, digits = 3)`
 
-```
-
-<!-- Render the results over all splits. -->
-```{r, echo = FALSE}
-
-outputs <- character()
-
-# Iterate through the list of splits and generate the results for each one
-for (test in test_list) {
-
-	# Add a header
-	header <- glue("#### Results ({test$year_start}-{test$year_end})")
-	outputs <- c(outputs, header)
-
-	# Knit the results
-	env <- new.env()
-	env$params <- c(list(output_dir = params$output_dir), test)
-	outputs <- c(outputs, knit_child("mk-results.Rmd", envir = env))
-}
-
-asis_output(paste(outputs, collapse = "\n\n"))
-
-```
-
-<!-- Include the test code. -->
-```{r, echo = FALSE, include = include_code } 
-asis_output("#### Test Code") 
-```
-
-```{r, file = "mk-test.R", include = include_code, eval = FALSE } 
-
-```
 

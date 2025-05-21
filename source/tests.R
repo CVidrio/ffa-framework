@@ -16,6 +16,8 @@ source("eda/sens/sens-estimator.R")
 # Source helper functions
 source("helpers/load-data.R")
 source("helpers/validate-config.R")
+source("helpers/validate-split.R")
+source("helpers/validate-name.R")
 
 
 # Create command line options
@@ -47,6 +49,7 @@ options(data_folder = config$data_folder)
 
 # Run the given test (or all the tests if -n is null)
 if (!is.null(opt$name)) {
+	validate_name("tests", opt$name)
 	testthat::test_file(glue("tests/test-{opt$name}.R"))
 } else {
 	testthat::test_dir("tests")
