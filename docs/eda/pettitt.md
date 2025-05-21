@@ -21,4 +21,5 @@ $$
 
 If the p-value is less than the significance level $\alpha$, we reject the null hypothesis and conclude that there is evidence for an abrupt change in the mean at the potential change point.
 
+The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/pettitt).
 

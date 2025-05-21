@@ -39,4 +39,4 @@ $$
 Finally, we plot $UF_{t}$ and $UB_{t}$ with confidence bounds at $\pm z_{1 - (\alpha/2)}$, where $\alpha$ is the chosen significance level.
 A crossing point between $UF_{t}$ and $UB_{t}$ that lies outside the confidence bounds indicates the start of the trend.
 
-
+The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/mks).

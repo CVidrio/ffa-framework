@@ -16,3 +16,4 @@ To carry out the BB-MK test, we rely on the results of the MK test and Spearman 
 5. Derive the empirical distribution of the MK test statistic from the bootstrapped statistics.
 6. Estimate the significance of the observed test statistic using the empirical distribution.
 
+The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/bbmk).

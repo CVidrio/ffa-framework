@@ -38,4 +38,5 @@ $$
 
 For more information, see the [Wikipedia](https://en.wikipedia.org/wiki/Wald%E2%80%93Wolfowitz_runs_test) entry or the [R Documentation](https://search.r-project.org/CRAN/refmans/randtests/html/runs.test.html).
 
+The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/sens).
 

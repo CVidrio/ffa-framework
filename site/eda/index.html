@@ -54,13 +54,15 @@
               <ul class="current">
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Exploratory Data Analysis</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#change-point-detection">Change Point Detection</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#trend-identification">Trend Identification</a>
+    <li class="toctree-l2"><a class="reference internal" href="#list-of-statistical-tests">List of Statistical Tests</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#ams-means">AMS Means</a>
+    <li class="toctree-l3"><a class="reference internal" href="#change-point-detection">Change Point Detection</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#ams-variance">AMS Variance</a>
+    <li class="toctree-l3"><a class="reference internal" href="#trend-identification-ams-means">Trend Identification (AMS Means)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#trend-identification-ams-variance">Trend Identification (AMS Variance)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#trend-estimation">Trend Estimation</a>
     </li>
         </ul>
     </li>
@@ -113,26 +115,29 @@ These statistical tests have four purposes:</p>
 <li>Identify trends in the mean value of the AMS data.</li>
 <li>Identify trends in the variability of the AMS data.</li>
 </ol>
+<p>A diagram showing the current EDA framework is shown below:</p>
 <p><img alt="Diagram showing current EDA framework." src="../img/fig-eda-current.png" /></p>
-<h2 id="change-point-detection">Change Point Detection</h2>
+<h2 id="list-of-statistical-tests">List of Statistical Tests</h2>
+<h3 id="change-point-detection">Change Point Detection</h3>
 <ul>
 <li><a href="pettitt/">Pettitt Test</a></li>
-<li><a href="mks/">Mann-Kendall-Sneyers Test</a></li>
+<li><a href="mks/">Mann-Kendall-Sneyers (MKS) Test</a></li>
 </ul>
-<h2 id="trend-identification">Trend Identification</h2>
-<h3 id="ams-means">AMS Means</h3>
+<h3 id="trend-identification-ams-means">Trend Identification (AMS Means)</h3>
 <ul>
-<li><a href="mk/">Mann-Kendall Test</a></li>
+<li><a href="mk/">Mann-Kendall (MK) Test</a></li>
 <li><a href="spearman/">Spearman Test</a></li>
-<li><a href="bbmk/">Block Bootstrap Mann-Kendall Test</a></li>
-<li><a href="pp/">Phillips-Perron Test</a></li>
+<li><a href="bbmk/">Block Bootstrap Mann-Kendall (BB-MK) Test</a></li>
+<li><a href="pp/">Phillips-Perron (PP) Test</a></li>
 <li><a href="kpss/">KPSS Test</a></li>
-<li><a href="sens/">Sen's Trend Estimator</a></li>
 </ul>
-<h3 id="ams-variance">AMS Variance</h3>
+<h3 id="trend-identification-ams-variance">Trend Identification (AMS Variance)</h3>
 <ul>
 <li><a href="white/">White Test</a></li>
-<li><a href="mwmk/">Moving Window Mann-Kendall Test</a></li>
+<li><a href="mwmk/">Moving Window Mann-Kendall (MW-MK) Test</a></li>
+</ul>
+<h3 id="trend-estimation">Trend Estimation</h3>
+<ul>
 <li><a href="sens/">Sen's Trend Estimator</a></li>
 </ul>
               

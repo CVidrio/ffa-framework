@@ -31,3 +31,6 @@ Z_{MK} = \begin{cases}
 $$
 
 For a two-sided test, we reject the null hypothesis if $|Z_{MK}| \geq Z_{1 - (\alpha/2) }$ and conclude that there is a statistically significant monotonic trend in the data. For more information, see [here](https://vsp.pnnl.gov/help/vsample/design_trend_mann_kendall.htm). 
+
+The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/mk).
+

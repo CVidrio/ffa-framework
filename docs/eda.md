@@ -8,26 +8,30 @@ These statistical tests have four purposes:
 3. Identify trends in the mean value of the AMS data.
 4. Identify trends in the variability of the AMS data.
 
+A diagram showing the current EDA framework is shown below:
+
 ![Diagram showing current EDA framework.](img/fig-eda-current.png)
 
-## Change Point Detection
+## List of Statistical Tests
+
+### Change Point Detection
 
 - [Pettitt Test](eda/pettitt.md)
-- [Mann-Kendall-Sneyers Test](eda/mks.md)
+- [Mann-Kendall-Sneyers (MKS) Test](eda/mks.md)
 
-## Trend Identification
+### Trend Identification (AMS Means)
 
-### AMS Means
-
-- [Mann-Kendall Test](eda/mk.md)
+- [Mann-Kendall (MK) Test](eda/mk.md)
 - [Spearman Test](eda/spearman.md)
-- [Block Bootstrap Mann-Kendall Test](eda/bbmk.md)
-- [Phillips-Perron Test](eda/pp.md)
+- [Block Bootstrap Mann-Kendall (BB-MK) Test](eda/bbmk.md)
+- [Phillips-Perron (PP) Test](eda/pp.md)
 - [KPSS Test](eda/kpss.md)
-- [Sen's Trend Estimator](eda/sens.md)
 
-### AMS Variance
+### Trend Identification (AMS Variance) 
 
 - [White Test](eda/white.md)
-- [Moving Window Mann-Kendall Test](eda/mwmk.md)
+- [Moving Window Mann-Kendall (MW-MK) Test](eda/mwmk.md)
+
+### Trend Estimation
+
 - [Sen's Trend Estimator](eda/sens.md)

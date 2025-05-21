@@ -28,3 +28,6 @@ For more information, the following sources may be useful:
 - [White Test Deep Dive](https://www.numberanalytics.com/blog/white-test-deep-dive)
 - Marno Verbeek, A Guide to Modern Econometrics (2004)
 - William H. Greene, Econometric Analysis, 5th Edition (2002)
+
+The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/white).
+

@@ -35,16 +35,8 @@ window_length: 10
 # Window step used to compute AMS variances
 window_step: 5             
 
-#####################
-### PLOT SETTINGS ###
-#####################
-
 # Add a line between data points when generating plots
 show_trend: True
-
-#######################
-### REPORT SETTINGS ###
-#######################
 
 # Enable report generation 
 generate_report: True   

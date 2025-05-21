@@ -17,5 +17,5 @@ Then, we perform the Mann-Kendall Test on the time series of variances.
 
 For more information about the Mann-Kendall test, see [here](mk.md).
 
- 
+The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/mwmk).
 

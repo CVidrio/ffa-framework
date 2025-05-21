@@ -29,3 +29,5 @@ For more information, see the [documentation](https://www.rdocumentation.org/pac
 This table only contains significance thresholds for $0.01$, $0.05$ and $0.10$. 
 Therefore, p-values below $0.01$ and above $0.10$ will be truncated.
 
+The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/pp).
+

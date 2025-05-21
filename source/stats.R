@@ -22,7 +22,6 @@ source("helpers/validate-name.R")
 # Create command line options
 option_list <- list(
   make_option(c("-n","--name"), type = "character", help = "Name of statistical test."),
-  make_option(c("-s","--split"), type = "character", help = "Split points (optional)."),
   make_option(c("-c","--config"), type = "character", help = "YAML confiugration file.")
 )
 
