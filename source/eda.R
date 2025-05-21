@@ -437,7 +437,7 @@ run_eda <- function(csv_file) {
 	if (mode == "preset") {
 
 		# Validate the splits given in config.yml
-		splits <- validate_split(min_year, max_year, paste(split, collapse = ","))
+		splits <- validate_split(min_year, max_year, split_points)
 
 		# Iterate through the list of starting states and add them to the queue
 		for (i in 1:(length(splits) - 1)) {

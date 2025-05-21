@@ -7,7 +7,7 @@ validate_config <- function(config) {
 		csv_files = c("character", "NULL"),
 		report_folder = "character",
 		mode = "character",
-		split_points = "integer",
+		split_points = c("integer", "NULL"),
 		alpha = "numeric",
 		bbmk_repetitions = "integer",
 		window_length = "integer", 

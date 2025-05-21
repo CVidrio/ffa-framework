@@ -7,7 +7,8 @@
 data_folder: "~/Code/ffa-framework/data"         
 
 # Name of .csv files in data_dir. Set to null to run on all files in data_folder.
-csv_files: null
+csv_files: 
+  - "Application_1.csv"
 
 # Path for generating reports
 report_folder: "~/Code/ffa-framework/reports"    
@@ -17,12 +18,10 @@ report_folder: "~/Code/ffa-framework/reports"
 ####################
 
 # Mode for running EDA (must be "preset", "automatic", or "manual")
-mode: "automatic"
+mode: "preset"
 
 # Preset split points (only works with mode: "preset")
-split_points: 
-  - 1960
-  - 2000
+split_points: null
 
 # Significance threshold for statistical tests
 alpha: 0.05

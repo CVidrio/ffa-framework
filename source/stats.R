@@ -75,7 +75,7 @@ for (csv_file in csv_files) {
 	data <- load(data_folder, csv_file, window_length, window_step)
 
 	# Parse, validate, and get the splits from the command line argument
-	splits <- validate_split(min(data$df$year), max(data$df$year), opt$split)
+	splits <- validate_split(min(data$df$year), max(data$df$year), split_points)
 
 	# Initialize an unnamed list for storing the results
 	result_list <- vector("list", length(splits) - 1)

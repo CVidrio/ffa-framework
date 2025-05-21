@@ -1,10 +1,23 @@
 library(testthat)
 library(glue)
 
+# Correctness Tests 
 test_that("Test that validate-config.R does not throw an error on correct config.yml.", {
 	expect_no_error(validate_config(config))
 })
 
+test_that("Test that validate-config.R works with csv_files = NULL.", {
+	config$csv_files <- character(0)
+	expect_no_error(validate_config(config))
+})
+
+test_that("Test that validate-config.R works with split_points = NULL.", {
+	config$split_points <- integer(0)
+	expect_no_error(validate_config(config))
+})
+
+
+# Error Handling
 test_that("Test that validate-config.R catches missing argument.", {
 	config$bbmk_repetitions <- NULL
 	expect_error(
@@ -82,7 +95,6 @@ test_that("Test that validate-config.R warns when bbmk_repetitions < 10000.", {
 	expect_message(
 		validate_config(config), 
 		regexp = "Warning: bbmk_repetitions should be at least 10000.",
-		fixed = TRUE
 	)
 })
 
@@ -91,6 +103,5 @@ test_that("Test that validate-config.R warns when window_step > window_length.",
 	expect_message(
 		validate_config(config), 
 		regexp = "Warning: window_step should not be greater than window_length.",
-		fixed = TRUE
 	)
 })

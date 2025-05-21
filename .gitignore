@@ -1,10 +1,6 @@
-# Keep personal files outside of source control
-todo.md
-people.md
+# Keep personal notes outside of source control
 notes/**
-resources/**
-spec/**
 
-# Maintain an empty reports foler but hide the reports themselves
+# Maintain an empty reports folder hide the reports themselves
 reports/*
 !reports/.gitkeep
