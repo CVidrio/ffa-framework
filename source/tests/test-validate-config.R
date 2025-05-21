@@ -14,10 +14,10 @@ test_that("Test that validate-config.R catches missing argument.", {
 })
 
 test_that("Test that validate-config.R catches incorrect data type.", {
-	config$csv_file <- as.integer(10)
+	config$csv_files <- as.integer(c(10, 100))
 	expect_error(
 		validate_config(config),
-		regexp = "Type mismatch for 'csv_file'"
+		regexp = "Type mismatch for 'csv_files'"
 	)
 })
 
@@ -30,10 +30,10 @@ test_that("Test that validate-config.R catches invalid data_folder.", {
 })
 
 test_that("Test that validate-config.R catches invalid csv_file.", {
-	config$csv_file <- "this-file-does-not-exist.csv"
+	config$csv_files <- c("does-not-exist.csv")
 	expect_error(
 		validate_config(config),
-		regexp = glue("csv_file '{config$csv_file}' does not exist.")
+		regexp = glue("csv_file 'does-not-exist.csv' does not exist.")
 	)
 })
 

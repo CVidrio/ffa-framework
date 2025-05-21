@@ -11,10 +11,10 @@ data3_3 <- load(data_path, "Application_3.3.csv")
 # Basic configuration file list without errors
 config <- list(
 	data_folder = "~/Code/ffa-framework/data",
-	csv_file = "Application_1.csv",
+	csv_files = as.character(c("Application_1.csv", "Application_2.csv")),
 	report_folder = "~/Code/ffa-framework/reports",
 	mode = "manual",
-	split = as.integer(c(1950, 1980)),
+	split_points = as.integer(c(1950, 1980)),
 	alpha = 0.05,
 	bbmk_repetitions = as.integer(10000),
 	window_length = as.integer(10),

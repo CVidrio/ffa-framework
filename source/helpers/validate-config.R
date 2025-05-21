@@ -4,10 +4,10 @@ validate_config <- function(config) {
 	# Define expected data types for each item in config.yml
 	expected_types <- list(
 		data_folder = "character",
-		csv_file = "character",
+		csv_files = c("character", "NULL"),
 		report_folder = "character",
 		mode = "character",
-		split = "integer",
+		split_points = "integer",
 		alpha = "numeric",
 		bbmk_repetitions = "integer",
 		window_length = "integer", 
@@ -30,7 +30,7 @@ validate_config <- function(config) {
 		expected_type <- expected_types[[key]]
 
 		# Check for type mismatch
-		if (!inherits(actual_value, expected_type)) {
+		if (!any(inherits(actual_value, expected_type))) {
 			stop(sprintf(
 				"Type mismatch for '%s': expected '%s', got '%s'.",
 				key,
@@ -45,10 +45,12 @@ validate_config <- function(config) {
 		stop(sprintf("data_folder '%s' does not exist.", config$data_folder))
 	}
 
-	# Check that csv_file exists in data_folder
- 	csv_path <- glue("{config$data_folder}/{config$csv_file}")
-	if (!file.exists(csv_path)) {
-		stop(sprintf("csv_file '%s' does not exist.", config$csv_file))
+	# Check that all csv files exists in data_folder
+	for (csv_file in config$csv_files) {
+		csv_path <- glue("{config$data_folder}/{csv_file}")
+		if (!file.exists(csv_path)) {
+			stop(sprintf("csv_file '%s' does not exist.", csv_file))
+		}
 	}
 
 	# Check that report_folder exists on the disk

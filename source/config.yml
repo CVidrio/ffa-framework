@@ -6,8 +6,8 @@
 # Location of .csv files
 data_folder: "~/Code/ffa-framework/data"         
 
-# Name of .csv file in data_dir
-csv_file: "Application_2.csv"                    
+# Name of .csv files in data_dir. Set to null to run on all files in data_folder.
+csv_files: null
 
 # Path for generating reports
 report_folder: "~/Code/ffa-framework/reports"    
@@ -20,7 +20,7 @@ report_folder: "~/Code/ffa-framework/reports"
 mode: "automatic"
 
 # Preset split points (only works with mode: "preset")
-split: 
+split_points: 
   - 1960
   - 2000
 

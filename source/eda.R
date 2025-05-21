@@ -52,18 +52,26 @@ invisible(list2env(config, envir = environment()))
 ### DIRECTORY SETUP ###
 
 
-# Create a directory for storing reports for this csv_file
-csv_name <- file_path_sans_ext(csv_file)
-report_path <- glue("{report_folder}/{csv_name}")
-if (!dir.exists(report_path)) dir.create(report_path)
+# Create directories and load data for a csv_file
+initialize_eda <- function(csv_file) {
 
-# Load data from the given input file and remove leading/trailing NaNs
-data <- load(data_folder, csv_file, window_length, window_step)
-invisible(list2env(data, envir = environment()))
+	# Get the name of the csv file without the extension
+	csv_name <- file_path_sans_ext(csv_file)
 
-# Generate an /img directory in report_path if it doesn't already exist
-img_path <- glue("{report_path}/img")
-if (!dir.exists(img_path)) dir.create(img_path)
+	# Create the reports folder
+	report_path <- glue("{report_folder}/{csv_name}")
+	assign("report_path", report_path, envir = .GlobalEnv)
+	if (!dir.exists(report_path)) dir.create(report_path)
+
+	# Generate an /img directory in report_path if it doesn't already exist
+	img_path <- glue("{report_path}/img")
+	assign("img_path", img_path, envir = .GlobalEnv)
+	if (!dir.exists(img_path)) dir.create(img_path)
+
+	# Load data from the given input file and remove leading/trailing NaNs
+	data <- load(data_folder, csv_file, window_length, window_step)
+	assign("data", data, envir = .GlobalEnv)
+}
 
 
 ### DEFINE STEPS ###
@@ -410,91 +418,101 @@ eda21 <- function(state, history) {
 ### EXECUTE FLOWCHART ###
 
 
-# List of visited states, indexed by "start_year,end_year"
-results <- list()
+# Orchestrate EDA on a .csv file 
+run_eda <- function(csv_file) {
 
-# A one-dimensional list of visited states, in order
-ordered_results <- list()
+	# Initialize EDA for this .csv file
+	initialize_eda(csv_file)
 
-# Queue of states to be visited in the future
-queue <- list()
+	# Initialize list of results and the queue
+	results <- list()          
+	ordered_results <- list()  
+	queue <- list()            
 
-# Initialize the queue based on the given mode
-min_year <- min(df$year)
-max_year <- max(df$year)
+	# Populate the queue based on the given mode
+	min_year <- min(data$df$year)
+	max_year <- max(data$df$year)
 
-if (mode == "preset") {
+	# When running in "preset" mode, skip change point analysis
+	if (mode == "preset") {
 
-	# Validate the splits given in config.yml
-	splits <- validate_split(min_year, max_year, paste(split, collapse = ","))
+		# Validate the splits given in config.yml
+		splits <- validate_split(min_year, max_year, paste(split, collapse = ","))
 
-	# Iterate through the list of starting states and add them to the queue
-	for (i in 1:(length(splits) - 1)) {
-		name <- paste(c(splits[i], splits[i + 1] - 1), collapse = ",")
-		queue[[name]] = c(8)
+		# Iterate through the list of starting states and add them to the queue
+		for (i in 1:(length(splits) - 1)) {
+			name <- paste(c(splits[i], splits[i + 1] - 1), collapse = ",")
+			queue[[name]] = c(8)
+		}
+
+	} else {
+		name <- paste(c(min_year, max_year), collapse = ",")
+		queue[[name]] = c(1)
+	} 
+
+	# Run until the queue is empty
+	while (length(queue) > 0) {
+
+		# Get the minimum key in the queue
+		key <- sort(names(queue))[1]
+		subqueue <- queue[[key]]
+		years <- as.integer(strsplit(key, ",")[[1]])
+
+		# Pop the location off of the subqueue
+		location <- subqueue[1]
+		subqueue <- subqueue[-1]
+
+		# If the subqueue is now empty, remove it from the queue
+		if (length(subqueue) == 0) queue[[key]] <- NULL
+
+		# Set the state and get the correct function function name. 
+		state <- list(location = location, start = years[1], end = years[2])
+		fname <- paste0("eda", sprintf("%02d", location))
+
+		# Pass results[[key]] since decision points only use data from the active split.
+		updated <- get(fname)(state, results[[key]])
+
+		# Add all states in next_states to the queue
+		for (ns in updated$next_states) {
+			name <- glue("{ns$start},{ns$end}")
+			queue[[name]] <- c(queue[[name]], ns$location)
+		} 
+		
+		# Add the results of this step to the results and ordered_results
+		results[[key]] <- c(results[[key]], list(updated$state))
+		ordered_results <- c(ordered_results, list(updated$state))
+
+		# If this step emitted a message, print it
+		if (!is.null(updated$state$msg)) message(glue("\n\n{updated$state$msg}"))
+
 	}
 
-} else {
+	# Define arguments for the report
+	report_args = list(result_list = ordered_results, output_dir = report_path)
 
-	# Initialize queue by feeding the entire df to eda01()
-	name <- paste(c(min_year, max_year), collapse = ",")
-	queue[[name]] = c(1)
-	
-} 
+	# Render the report using each item in report_format given
+	for (format in report_format) {
+		render(
+			input = "eda/eda-report.Rmd",
+			params = report_args,
+			output_format = format,
+			output_file = "eda-report",
+			output_dir = report_path,
+			quiet = TRUE
+		)
+	}
 
-# Run until the queue is empty
-while (length(queue) > 0) {
-
-	# Get the minimum key in the queue
-	key <- sort(names(queue))[1]
-	subqueue <- queue[[key]]
-	years <- as.integer(strsplit(key, ",")[[1]])
-
-	# Pop the location off of the subqueue
-	location <- subqueue[1]
-	subqueue <- subqueue[-1]
-
-	# If the subqueue is now empty, remove it from the queue
-	if (length(subqueue) == 0) queue[[key]] <- NULL
-
-	# Set the state and get the correct function function name. 
-	state <- list(location = location, start = years[1], end = years[2])
-	fname <- paste0("eda", sprintf("%02d", location))
-
-	# Pass results[[key]] since decision points only require tests on the active split.
-	updated <- get(fname)(state, results[[key]])
-
-	# Add all states in next_states to the queue
-	for (ns in updated$next_states) {
-		name <- glue("{ns$start},{ns$end}")
-		queue[[name]] <- c(queue[[name]], ns$location)
-	} 
-	
-	# Add the results of this step to the results
-	results[[key]] <- c(results[[key]], list(updated$state))
-	ordered_results <- c(ordered_results, list(updated$state))
-
-	# If this step emitted a message, print it
-	if (!is.null(updated$state$msg)) message(glue("\n\n{updated$state$msg}"))
+	# Print a completion message
+	message()
+	message("+-----------------------------------+")
+	message("| Report(s) generated successfully. |")
+	message("+-----------------------------------+")
 
 }
 
-# Define arguments for the report
-report_args = list(result_list = ordered_results, output_dir = report_path)
-
-# Render the report using each item in report_format given
-for (format in report_format) {
-	render(
-		input = "eda/eda-report.Rmd",
-		params = report_args,
-		output_format = format,
-		output_file = "eda-report",
-		output_dir = report_path,
-		quiet = TRUE
-	)
-}
-
-message("\nReport(s) generated successfully.")
+# Call run_eda on .csv files specified config.yml
+if (length(csv_files) == 0) csv_files <- list.files(path = data_folder)
+for (csv_file in csv_files) run_eda(csv_file)
 
 # Remove Rplots.pdf if it was accidentally created
 if (file.exists("Rplots.pdf")) invisible(file.remove("Rplots.pdf"))

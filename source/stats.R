@@ -52,75 +52,83 @@ config <- read_yaml(config_path)
 validate_config(config)
 invisible(list2env(config, envir = environment()))
 
-# Load data from the .csv file specified in the config
-data <- load(data_folder, csv_file, window_length, window_step)
-
-# Create report directory for this .csv file if it doesn't already exist
-csv_name <- file_path_sans_ext(csv_file)
-report_path <- glue("{report_folder}/{csv_name}")
-if (!dir.exists(report_path)) dir.create(report_path)
-
-# Generate an /img directory in report_path if it doesn't already exist
-img_path <- glue("{report_path}/img")
-if (!dir.exists(img_path)) dir.create(img_path)
-
-# Parse, validate, and get the splits from the command line argument
-splits <- validate_split(min(data$df$year), max(data$df$year), opt$split)
-
 
 ### STATISTICAL TEST, PLOTTING FUNCTION, AND REPORT ###
 
 
-# Initialize an unnamed list for storing the results
-result_list <- vector("list", length(splits) - 1)
+# If csv_files is empty, run on every file in data_folder
+if (length(csv_files) == 0) csv_files <- list.files(path = data_folder)
 
-# Use the helper function above to run the statistical test on all splits
-for (i in 1:(length(splits) - 1)) {
+# Run the statistical test on each file in csv_files
+for (csv_file in csv_files) {
 
-	# Get start and end years
-	start <- splits[i]
-	end <- splits[i + 1] - 1
+	# Create report directory for this .csv file if it doesn't already exist
+	csv_name <- file_path_sans_ext(csv_file)
+	report_path <- glue("{report_folder}/{csv_name}")
+	if (!dir.exists(report_path)) dir.create(report_path)
 
-	# Run the statistical test and the results to results
-	result <- run_stats(opt$name, data, start, end, img_path)
-	result_list[[i]] <- c(result, list(start = start, end = end))
-}
- 
-# If report generation is disabled, end the script here
-if (!generate_report) {
-	message("No report was generated.") 
-	quit()
-}
+	# Generate an /img directory in report_path if it doesn't already exist
+	img_path <- glue("{report_path}/img")
+	if (!dir.exists(img_path)) dir.create(img_path)
 
-# Get the path to the .Rmd file and the name of the report
-prefix <- ifelse(grepl("sens", opt$name), "sens", opt$name)
-rmd_path <- glue("{prefix}/{prefix}-report.Rmd")
-report_file <- glue("{opt$name}-report")
+	# Load data from the .csv file specified in the config
+	data <- load(data_folder, csv_file, window_length, window_step)
 
-# Set parameters for rendering the report
-report_params <- list(
-	rmd_path = rmd_path,
-	result_list = result_list,
-	output_dir = report_path
-)
+	# Parse, validate, and get the splits from the command line argument
+	splits <- validate_split(min(data$df$year), max(data$df$year), opt$split)
 
-# Handle special case for Sen's trend estimator
-if (opt$name == "sens-mean") report_params$data_type <- "mean"
-if (opt$name == "sens-variance") report_params$data_type <- "variance"
+	# Initialize an unnamed list for storing the results
+	result_list <- vector("list", length(splits) - 1)
 
-# Render the report using each item in report_format given
-for (format in report_format) {
-	render(
-		input = "eda/stats-report.Rmd",
-		params = report_params,
-		output_format = format,
-		output_file = report_file,
-		output_dir = report_path,
-		quiet = TRUE
+	# Use the helper function above to run the statistical test on all splits
+	for (i in 1:(length(splits) - 1)) {
+
+		# Get start and end years
+		start <- splits[i]
+		end <- splits[i + 1] - 1
+
+		# Run the statistical test and the results to results
+		result <- run_stats(opt$name, data, start, end, img_path)
+		result_list[[i]] <- c(result, list(start = start, end = end))
+	}
+	 
+	# If report generation is disabled, end the script here
+	if (!generate_report) {
+		message("No report was generated.") 
+		quit()
+	}
+
+	# Get the path to the .Rmd file and the name of the report
+	prefix <- ifelse(grepl("sens", opt$name), "sens", opt$name)
+	rmd_path <- glue("{prefix}/{prefix}-report.Rmd")
+	report_file <- glue("{opt$name}-report")
+
+	# Set parameters for rendering the report
+	report_params <- list(
+		rmd_path = rmd_path,
+		result_list = result_list,
+		output_dir = report_path
 	)
-}
 
-message(glue("\n\nReport(s) generated successfully."))
+	# Handle special case for Sen's trend estimator
+	if (opt$name == "sens-mean") report_params$data_type <- "mean"
+	if (opt$name == "sens-variance") report_params$data_type <- "variance"
+
+	# Render the report using each item in report_format given
+	for (format in report_format) {
+		render(
+			input = "eda/stats-report.Rmd",
+			params = report_params,
+			output_format = format,
+			output_file = report_file,
+			output_dir = report_path,
+			quiet = TRUE
+		)
+	}
+
+	message(glue("\n\nReport(s) generated successfully."))
+
+}
 
 # Delete Rplots.pdf file if it was created (not sure why this happens)
 if (file.exists("Rplots.pdf")) invisible(file.remove("Rplots.pdf"))
