@@ -1,24 +1,23 @@
-
-##########################
-### DIRECTORY SETTINGS ###
-##########################
+# ------------------ #
+# DIRECTORY SETTINGS #
+# ------------------ #
 
 # Location of .csv files
-data_folder: "~/Code/ffa-framework/data"         
+data_folder: "~/Desktop/data"         
 
 # Name of .csv files in data_dir. Set to null to run on all files in data_folder.
 csv_files: 
   - "Application_1.csv"
 
-# Path for generating reports
-report_folder: "~/Code/ffa-framework/reports"    
+# Path to folder for generating reports
+report_folder: "~/Desktop/reports"    
 
-####################
-### EDA SETTINGS ###
-####################
+# ------------ #
+# EDA SETTINGS #
+# ------------ #
 
 # Mode for running EDA (must be "preset", "automatic", or "manual")
-mode: "preset"
+mode: "manual"
 
 # Preset split points (only works with mode: "preset")
 split_points: null

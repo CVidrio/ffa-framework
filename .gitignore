@@ -1,4 +1,5 @@
-# Keep personal notes outside of source control
+# Keep personal notes and configuration file outside of source control
+**/personal.yml
 notes/**
 
 # Maintain an empty reports folder hide the reports themselves
