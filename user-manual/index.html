@@ -107,28 +107,35 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="user-manual">User Manual</h1>
+<p>All configuration is done through YAML files. The default configuration file is <code>source/config.yml</code>, although it is possible to create additional configuration files and pass them to the scripts using the <code>--config</code> command line argument.</p>
 <h2 id="folder-configuration">Folder Configuration</h2>
-<p>All configuration is done through the <code>source/config.yml</code> file. It is <em>essential</em> that the <code>data_folder</code>, <code>csv_files</code>, and <code>report_folder</code> arguments are set correctly in this file.</p>
+<p><code>data_folder</code>: This argument should be an <em>absolute path</em> to a directory containing the CSV files you would like to run the framework on. <em>The framework may not work if you use a relative path</em>.</p>
 <ul>
-<li><code>data_folder</code>: This argument should be an <em>absolute path</em> to a directory containing the CSV files you would like to run the framework on. <em>The framework may not work if you use a relative path</em>.</li>
-<li><code>csv_files</code>: A list of 1 or more CSV files located in <code>data_folder</code>. Alternatively, set this option to <code>null</code> to run the framework on every file in <code>data_folder</code>.</li>
-<li><code>report_folder</code>: An <em>absolute path</em> to a directory which will be used to store EDA and FFA reports. The directory must exist. Again, <em>the framework may not work if you use a relative path</em>.</li>
+<li>Alternatively, <code>data_folder: null</code> will use the default <code>ffa-framework/data</code> folder.</li>
+</ul>
+<p><code>csv_files</code>: A list of 1 or more CSV files located in <code>data_folder</code>.</p>
+<ul>
+<li>Alternatively, <code>csv_files: null</code> will run the framework on every file in <code>data_folder</code>.</li>
+</ul>
+<p><code>report_folder</code>: An <em>absolute path</em> to a directory which will be used to store EDA and FFA reports. The directory must exist. Again, <em>the framework may not work if you use a relative path</em>.</p>
+<ul>
+<li>Alternatively, <code>report_folder: null</code> will use the default <code>ffa-framework/reports</code> folder.</li>
 </ul>
 <p><strong>Example Configuration (1)</strong></p>
 <pre><code class="language-yaml">data_folder: &quot;~/Desktop/ffa-data&quot;
 
 csv_files:
-- &quot;dataset-1.csv&quot;
-- &quot;dataset-2.csv&quot;
+  - &quot;dataset-1.csv&quot;
+  - &quot;dataset-2.csv&quot;
 
 report_folder: &quot;~/Desktop/ffa-reports&quot;
 </code></pre>
 <p><strong>Example Configuration (2)</strong></p>
-<pre><code class="language-yaml">data_folder: &quot;~/Desktop/ffa-data&quot;
+<pre><code class="language-yaml">data_folder: null
 
 csv_files: null
 
-report_folder: &quot;~/Desktop/ffa-reports&quot;
+report_folder: null
 </code></pre>
 <h2 id="exploratory-data-analysis-eda">Exploratory Data Analysis (EDA)</h2>
 <p>For more information about the statistical tests used for EDA, see <a href="../eda/">here</a>.</p>
@@ -140,14 +147,17 @@ report_folder: &quot;~/Desktop/ffa-reports&quot;
 <li><code>"manual"</code>: Manually confirm the split points identified using change point tests.</li>
 </ul>
 </li>
-<li><code>split_points</code>: Used with <code>mode: "preset"</code> to set split points ahead of time (as a list of years). Alternatively, set this option to <code>null</code> to disable splitting.</li>
+<li><code>split_points</code>: Used with <code>mode: "preset"</code> to set split points ahead of time (as a list of years).<ul>
+<li>Alternatively, <code>split_points: null</code> will disable splitting entirely.</li>
+</ul>
+</li>
 <li><code>alpha</code>: The confidence level used for statistical tests (must be between <span class="arithmatex">\(0.01\)</span> and <span class="arithmatex">\(0.10\)</span>).</li>
-<li><code>bbmk_repetitions</code>: The number of boostrap samples to use for the <a href="../eda/bbmk/">BB-MK Test</a>.</li>
+<li><code>bbmk_repetitions</code>: The number of boostrap samples to use for the <a href="../eda/#bb-mk-test">BB-MK Test</a>.</li>
 <li><code>window_length</code>: The size of the moving window used to compute the streamflow variance.</li>
 <li><code>window_step</code>: The size of the steps used to compute the streamflow variance.</li>
 <li><code>show_trend</code>: Whether or not to draw a trend line between data points (<code>true</code> or <code>false</code>).</li>
 <li><code>generate_report</code>: Whether or not to generate a report (<code>true</code> or <code>false</code>).</li>
-<li><code>report_format</code>: A list of report formats (<code>"md_document"</code> or <code>"html_document"</code>).</li>
+<li><code>report_format</code>: A list of report formats (<code>"md_document"</code>, <code>"html_document"</code>, or <code>"pdf_document"</code>).</li>
 </ul>
 <p><strong>Example Configuration</strong></p>
 <pre><code class="language-yaml">mode: &quot;manual&quot;
@@ -189,7 +199,7 @@ split_points:
 <pre><code>Rscript eda.R --config='custom-config.yml'
 </code></pre>
 <h3 id="running-individual-statistical-tests">Running Individual Statistical Tests</h3>
-<p>The <code>source/stats.R</code> script is used to run individual statistical tests. </p>
+<p>The <code>source/stats.R</code> script is used to run individual statistical tests.</p>
 <ul>
 <li><code>--name</code> (required) is used to configure the name of the statistical test. It must be one of "bbmk", "kpss", "mk", "mks", "mwmk", "pettitt", "pp", "sens-mean", "sens-variance", "spearman", and "white".</li>
 <li><code>--config</code> (optional) can be used to specify a custom configuration file.</li>
@@ -201,7 +211,7 @@ split_points:
 <pre><code>Rscript stats.R --name='white' --config='custom-config.yml'
 </code></pre>
 <h2 id="frequency-analysis">Frequency Analysis</h2>
-<p>TBD </p>
+<p>TBD</p>
               
             </div>
           </div><footer>
