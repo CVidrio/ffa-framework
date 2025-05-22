@@ -1,7 +1,7 @@
 # Spearman test for serial correlation
 #  - ams: A vector of annual maximum streamflow data (NA values permitted)
 #  - alpha: The significance level as a floating point number
-spearman_test <- function(ams, alpha = 0.05, quiet = FALSE) {
+spearman_test <- function(ams, alpha = 0.05, quiet = TRUE) {
 
 	# Assign a variable to the number of data points for convenience
 	n <- length(ams)

@@ -1,18 +1,18 @@
 # Import libraries
-library(yaml)
-library(optparse)
 library(glue)
-library(patchwork)
-library(ggplot2)
+library(tibble)
 library(tools)
 library(rmarkdown)
 library(knitr)
+library(optparse)
+library(yaml)
+
+# Silence dplyr import
+suppressPackageStartupMessages(library(dplyr))
 
 # Source all statistical test and plotting functions
 files <- list.files("eda/", pattern = "\\.R$", recursive = TRUE, full.names = TRUE)
-for (f in files) {
-	source(f)
-}
+for (f in files) source(f)
 
 # Source helper functions
 source("helpers/run-stats.R")
@@ -21,12 +21,9 @@ source("helpers/validate-config.R")
 source("helpers/validate-split.R")
 
 
-### PARSING COMMANE LINE OPTIONS ###
-
-
 # Create command line options
 option_list <- list(
-  make_option(c("-c","--config"), type="character", help="YAML confiugration file.")
+  make_option(c("-c","--config"), type = "character", help = "YAML confiugration file.")
 )
 
 # Parse given command line arguments
@@ -38,95 +35,80 @@ opt <- parse_args(opt_parser)
 config_path <- ifelse(is.null(opt$config), "config.yml", opt$config)
 
 # Check that a file exists at config_path
-if (!file.exists(config_path)) {
-	print_help(opt_parser)
-	stop("Invalid configuration file path.")
-} 
+if (!file.exists(config_path)) stop("Invalid configuration file path.")
 
 # Load and validate the configuration file
 config <- read_yaml(config_path)
-validate_config(config)
+config <- validate_config(config)
 invisible(list2env(config, envir = environment()))
 
 
-### DIRECTORY SETUP ###
-
-
-# Create directories and load data for a csv_file
-initialize_eda <- function(csv_file) {
-
-	# Get the name of the csv file without the extension
-	csv_name <- file_path_sans_ext(csv_file)
-
-	# Create the reports folder
-	report_path <- glue("{report_folder}/{csv_name}")
-	assign("report_path", report_path, envir = .GlobalEnv)
-	if (!dir.exists(report_path)) dir.create(report_path)
-
-	# Generate an /img directory in report_path if it doesn't already exist
-	img_path <- glue("{report_path}/img")
-	assign("img_path", img_path, envir = .GlobalEnv)
-	if (!dir.exists(img_path)) dir.create(img_path)
-
-	# Load data from the given input file and remove leading/trailing NaNs
-	data <- load(data_folder, csv_file, window_length, window_step)
-	assign("data", data, envir = .GlobalEnv)
-}
-
-
-### DEFINE STEPS ###
-
-
 # Helper function for generating the next state in the flowchart from a list of splits. 
-# If splits is NULL, this function will generate a single next state at location.
-get_next_states <- function(location, state, splits = NULL) {
+# NOTE: If splits is NULL, this function will generate a single next state at location.
+# NOTE: If location is NULL, this function will return an empty dataframe for next_states.
+get_next_states <- function(state, location = NULL, splits = NULL, msg = NULL) {
 
-	# Get a vector of start and end locations for the splits
-	starts <- c(state$start, splits)
-	ends <- c(splits - 1, state$end)
+	# If there is a message, print it and then add it to results
+	if (!is.null(msg)) {
+		# message(glue("\n\n{msg}"))
+		state$results <- list(message = msg)
+	}
 
-	# Generate the list of next states using a Map
-	state_function <- function(s, e) list(location = location, start = s, end = e)
-	next_states <- Map(state_function, starts, ends)
+	# Wrap state$results in a list, mark current state as complete
+	state$results <- list(state$results)
+	state$complete <- TRUE 
+
+	# If location is NULL, return with next_states = NULL 
+	if (is.null(location)) return (list(state = state, next_states = NULL))
+
+	# Generate a tibble of next states with size length(splits) + 1
+	n <- length(splits)
+	next_states <- tibble(
+		location = rep(location, n + 1),
+		start = c(state$start, splits),
+		end = c(splits - 1, state$end),
+		results = vector("list", n + 1),
+		complete = rep(FALSE, n + 1)
+	)
 
 	# Return the current state and next_states in a list
 	list(state = state, next_states = next_states)
 }
 
 # [1] Full Pettitt -> [2] Full MKS
-eda01 <- function(state, history) {
-	message("\nApplying the Pettitt test for abrupt change points...")
-	state$results <- run_stats("pettitt", data, state$start, state$end, img_path)
-	get_next_states(2, state)
+eda01 <- function(data, state, steps, img_path) {
+	state$results <- run_stats("pettitt", data, state$start, state$end, img_path, FALSE)
+	get_next_states(state, 2)
 }
 
 # [2] Full MKS -> [3] Pettitt/MKS decision point
-eda02 <- function(state, history) {
-	message("\nApplying the MKS test for abrupt change points...")
-	state$results <- run_stats("mks", data, state$start, state$end, img_path)
-	get_next_states(3, state)
+eda02 <- function(data, state, steps, img_path) {
+	state$results <- run_stats("mks", data, state$start, state$end, img_path, FALSE)
+	get_next_states(state, 3)
 }
 
 # [3] Pettitt/MKS decision point -> [4] Secondary Pettitt, [6] Secondary MKS, [8] MK
-eda03 <- function(state, history) {
+eda03 <- function(data, state, steps, img_path) {
 
 	# Get the results of the Pettitt test and MKS test
-	pettitt_results <- history[[ length(history) - 1 ]]$results
-	mks_results <- history[[ length(history) ]]$results
+	result_df <- filter(steps, start == state$start, end == state$end)
+	pettitt_results <- filter(result_df, location == 1)[[1, "results"]][[1]]
+	mks_results <- filter(result_df, location == 2)[[1, "results"]][[1]]
+
 	 
 	# If no change points were found, do nothing and go to [8] (MK test)
 	if (!pettitt_results$reject && !mks_results$reject) {
-		state$msg <-"No change points were found so the data will not be split."
-		return (get_next_states(8, state))
+		msg <-"No change points were found so the data will not be split."
+		return (get_next_states(state, 8, msg = msg))
 	} 
 
 	# If running in automatic mode, split based on the smallest p-value
 	if (mode == "automatic" & mks_results$p_value < pettitt_results$p_value) {
-		state$msg <- "Splitting on change points from the MKS test."
-		return (get_next_states(4, state, mks_results$change_df$year))
-	} else {
-		state$msg <- "Splitting on change points from the Pettitt test."
-		return (get_next_states(6, state, pettitt_results$change_year))
+		msg <- "Splitting on change points from the MKS test."
+		return (get_next_states(state, 4, mks_results$change_df$year, msg))
+	} else if (mode == "automatic") {
+		msg <- "Splitting on change points from the Pettitt test."
+		return (get_next_states(state, 6, pettitt_results$change_year, msg))
 	}
 
 	# Prompt the user to accept the change points
@@ -149,43 +131,43 @@ eda03 <- function(state, history) {
 		option <- readLines(file("stdin"), 1)
 
 		if (option == 1) {
-			state$msg <- "Change points ignored."
-			return (get_next_states(8, state))
+			msg <- "Change points ignored."
+			return (get_next_states(state, 8, msg = msg))
 		} else if (option == 2 & pettitt_results$reject) {
-			state$msg <- "Splitting on change points from the Pettitt test."
-			return (get_next_states(6, state, pettitt_results$change_year))
+			msg <- "Splitting on change points from the Pettitt test."
+			return (get_next_states(state, 6, pettitt_results$change_year, msg))
 		} else if (option == 3 & mks_results$reject) {
-			state$msg <- "Splitting on change points from the MKS test."
-			return (get_next_states(4, state, mks_results$change_df$year))
-		} else {
-			message("Invalid option. Please try again.")
+			msg <- "Splitting on change points from the MKS test."
+			return (get_next_states(state, 4, mks_results$change_df$year, msg))
 		}
+
+		message("Invalid option. Please try again.")
 	}
 }
 
 # [4] Secondary Pettitt -> [5] Secondary Pettitt decision point
-eda04 <- function(state, history) {
-	message("\nApplying the Pettitt test for abrupt change points...")
-	state$results <- run_stats("pettitt", data, state$start, state$end, img_path)
-	get_next_states(5, state) 
+eda04 <- function(data, state, steps, img_path) {
+	state$results <- run_stats("pettitt", data, state$start, state$end, img_path, FALSE)
+	get_next_states(state, 5) 
 }
 
 # [5] Secondary Pettitt decision point -> [8] MK
-eda05 <- function(state, history) {
+eda05 <- function(data, state, steps, img_path) {
 
 	# Get the results of the secondary Pettitt test
-	pettitt_results <- history[[ length(history) ]]$results
+	result_df <- filter(steps, start == state$start, end == state$end)
+	pettitt_results <- filter(result_df, location == 4)[[1, "results"]][[1]]
 	 
 	# If no change points were found, do nothing and go to [8] (MK test)
 	if (!pettitt_results$reject) {
-		state$msg <- "No change points were found so the data will not be split."
-		return (get_next_states(8, state))
+		msg <- "No change points were found so the data will not be split."
+		return (get_next_states(state, 8, msg = msg))
 	}
 
 	# If running in automatic mode, split based on the results of this test
 	if (mode == "automatic") {
-		state$msg <- "Splitting on change points identified by the Pettitt test."
-		return (get_next_states(8, state, pettitt_results$change_year))
+		msg <- "Splitting on change points identified by the Pettitt test."
+		return (get_next_states(state, 8, pettitt_results$change_year, msg))
 	}
 
 	# Prompt the user to accept the change points
@@ -204,40 +186,40 @@ eda05 <- function(state, history) {
 		option <- readLines(file("stdin"), 1)
 
 		if (option == 1) {
-			state$msg <- "Change points ignored."
-			return (get_next_states(8, state))
+			msg <- "Change points ignored."
+			return (get_next_states(state, 8))
 		} else if (option == 2) {
-			state$msg <- "Splitting on change points identified by the Pettitt test."
-			return (get_next_states(8, state, pettitt_results$change_year))
-		} else {
-			message("Invalid option. Please try again.")
-		}
+			msg <- "Splitting on change points identified by the Pettitt test."
+			return (get_next_states(state, 8, pettitt_results$change_year))
+		} 
+
+		message("Invalid option. Please try again.")
 	}
 }
 
 # [6] Secondary MKS -> [7] Secondary MKS decision point
-eda06 <- function(state, history) {
-	message("\nApplying the MKS test for abrupt change points...")
-	state$results <- run_stats("mks", data, state$start, state$end, img_path)
-	get_next_states(7, state)
+eda06 <- function(data, state, steps, img_path) {
+	state$results <- run_stats("mks", data, state$start, state$end, img_path, FALSE)
+	get_next_states(state, 7)
 }
 
 # [7] Secondary MKS decision point -> [8] MK
-eda07 <- function(state, history) {
+eda07 <- function(data, state, steps, img_path) {
 
 	# Get the results of the secondary Pettitt test
-	mks_results <- history[[ length(history) ]]$results
+	result_df <- filter(steps, start == state$start, end == state$end)
+	mks_results <- filter(result_df, location == 6)[[1, "results"]][[1]]
 	 	 
 	# If no change points were found, do nothing and go to [8] (MK test)
 	if (!mks_results$reject) {
-		state$msg <- "No change points were found so the data will not be split."
-		return (get_next_states(8, state))
+		msg <- "No change points were found so the data will not be split."
+		return (get_next_states(state, 8, msg = msg))
 	}
 
 	# If running in automatic mode, split based on the results of this test
 	if (mode == "automatic") {
-		state$msg <- "Splitting on change points identified by the MKS test."
-		return (get_next_states(8, state, mks_results$change_df$year))
+		msg <- "Splitting on change points identified by the MKS test."
+		return (get_next_states(state, 8, mks_results$change_df$year, msg))
 	}
 
 	# Prompt the user to accept the change points
@@ -256,109 +238,108 @@ eda07 <- function(state, history) {
 		option <- readLines(file("stdin"), 1)
 
 		if (option == 1) {
-			state$msg <- "Change points ignored."
-			return (get_next_states(8, state))
+			msg <- "Change points ignored."
+			return (get_next_states(state, 8, msg = msg))
 		} else if (option == 2) {
-			state$msg <- "Splitting on change points identified by the MKS test."
-			return (get_next_states(8, state, mks_results$change_df$year))
-		} else {
-			message("Invalid option. Please try again.")
-		}
+			msg <- "Splitting on change points identified by the MKS test."
+			return (get_next_states(state, 8, mks_results$change_df$year, msg))
+		} 
+
+		message("Invalid option. Please try again.")
 	}
 }
  
 # [8] MK -> [9] MK branching point
-eda08 <- function(state, history) {
-	message("\nApplying the Mann-Kendall trend test...")
+eda08 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("mk", data, state$start, state$end, img_path)
-	get_next_states(9, state)
+	get_next_states(state, 9)
 }
 
 # [9] MK branching point -> [10] Spearman, [18] White
-eda09 <- function(state, history) {
+eda09 <- function(data, state, steps, img_path) {
 
 	# Get the results of the Mann-Kendall test
-	mk_results <- history[[ length(history) ]]$results
+	result_df <- filter(steps, start == state$start, end == state$end)
+	mk_results <- filter(result_df, location == 8)[[1, "results"]][[1]]
 	
 	# Handle the branching point
 	if (mk_results$reject) {
-		state$msg <- "Monotonic trend found. Testing for serial correlation."
-		return (get_next_states(10, state))
+		msg <- "Monotonic trend found. Testing for serial correlation."
+		return (get_next_states(state, 10, msg = msg))
 	} else {
-		state$msg <- "No trend found. Testing the AMS variance for trends."
-		return (get_next_states(18, state))
+		msg <- "No trend found. Testing the AMS variance for trends."
+		return (get_next_states(state, 18, msg = msg))
 	}
 }
 
 # [10] Spearman -> [11] Spearman branching point
-eda10 <- function(state, history) {
-	message("\nApplying the Spearman test for serial correlation...")
+eda10 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("spearman", data, state$start, state$end, img_path)
-	get_next_states(11, state)
+	get_next_states(state, 11)
 }
 
 # [11] Spearman branching point -> [12] BB-MK, [17] Sen's estimator (means)
-eda11 <- function(state, history) {
+eda11 <- function(data, state, steps, img_path) {
 
 	# Get the results of the Spearman test
-	spearman_results <- history[[ length(history) ]]$results
+	result_df <- filter(steps, start == state$start, end == state$end)
+	spearman_results <- filter(result_df, location == 10)[[1, "results"]][[1]]
 
 	# Handle the branching point
 	if (spearman_results$least_lag > 0) {
-		state$msg <- "Serial correlation found. Confirming the monotonic trend."
-		return (get_next_states(12, state))
+		msg <- "Serial correlation found. Confirming the monotonic trend."
+		return (get_next_states(state, 12, msg = msg))
 	} else {
-		state$msg <- "No serial correlation found. Estimating the monotonic trend."
-		return (get_next_states(17, state))
+		msg <- "No serial correlation found. Estimating the monotonic trend."
+		return (get_next_states(state, 17, msg = msg))
 	}
 }
 
 # [12] BB-MK -> [13] BB-MK branching point 
-eda12 <- function(state, history) {
-	message("\nApplying BB-MK test for a monotonic trend under serial correlation...")
+eda12 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("bbmk", data, state$start, state$end, img_path)
-	get_next_states(13, state)
+	get_next_states(state, 13)
 }
 
 # [13] BB-MK branching point -> [14] PP, [18] White
-eda13 <- function(state, history) {
+eda13 <- function(data, state, steps, img_path) {
 
 	# Get the results of the BB-MK test
-	bbmk_results <- history[[ length(history) ]]$results
+	result_df <- filter(steps, start == state$start, end == state$end)
+	bbmk_results <- filter(result_df, location == 12)[[1, "results"]][[1]]
 
 	# Handle the branching point
 	if (bbmk_results$reject > 0) {
-		state$msg <- "Significant trend identified. Identifying the trend type."
-		return (get_next_states(14, state))
+		msg <- "Significant trend identified. Identifying the trend type."
+		return (get_next_states(state, 14, msg = msg))
 	} else {
-		state$msg <- "Trend was caused by serial correlation."
-		return (get_next_states(18, state))
+		msg <- "Trend was caused by serial correlation."
+		return (get_next_states(state, 18, msg = msg))
 	}
 }
 
 # [14] PP -> [15] KPSS
-eda14 <- function(state, history) {
-	message("\nApplying PP test for the presence of a unit root...")
+eda14 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("pp", data, state$start, state$end, img_path)
-	get_next_states(15, state)
+	get_next_states(state, 15)
 }
 
 # [15] KPSS -> [16] PP/KPSS branching point
-eda15 <- function(state, history) {
-	message("\nApplying KPSS test for the presence of a unit root...")
+eda15 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("kpss", data, state$start, state$end, img_path)
-	get_next_states(16, state)
+	get_next_states(state, 16)
 }
 
 # [16] PP/KPSS branching point -> [17] Sen's estimator (means)
-eda16 <- function(state, history) {
+eda16 <- function(data, state, steps, img_path) {
 
 	# Get the results of the PP test and KPSS test
-	pp_results <- history[[ length(history) - 1]]$results
-	kpss_results <- history[[ length(history) ]]$results
+	result_df <- filter(steps, start == state$start, end == state$end)
+	pp_results <- filter(result_df, location == 14)[[1, "results"]][[1]]
+	kpss_results <- filter(result_df, location == 15)[[1, "results"]][[1]]
 
 	# Handle the branching point
-	state$msg <- if (!pp_results$reject && kpss_results$reject) {
+	msg <- if (!pp_results$reject && kpss_results$reject) {
 		"The PP/KPSS tests have identified a stochastic trend (unit root)."
 	} else if (pp_results$reject && !kpss_results$reject) {
 		"The PP/KPSS tests have identified a deterministic trend (no unit root)."
@@ -366,129 +347,129 @@ eda16 <- function(state, history) {
 		"The PP/KPSS tests are inconclusive, indicating an unknown trend."
 	}
 
-	get_next_states(17, state)
+	get_next_states(state, 17, msg = msg)
 }
 
 # [17] Sen's estimator (means) -> [18] White
-eda17 <- function(state, history) {
-	message("\nEstimating the trend in the AMS means using Sen's estimator...")
+eda17 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("sens-mean", data, state$start, state$end, img_path)
-	get_next_states(18, state)
+	get_next_states(state, 18)
 }
 
 # [18] White -> [19] MW-MK
-eda18 <- function(state, history) {
-	message("\nApplying the White test for heteroskedasticity...")
+eda18 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("white", data, state$start, state$end, img_path)
-	get_next_states(19, state)
+	get_next_states(state, 19)
 }
 
 # [19] MW-MK -> [20] White/MW-MK branching point
-eda19 <- function(state, history) {
-	message("\nApplying the MW-MK test for trends in the AMS variance...")
+eda19 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("mwmk", data, state$start, state$end, img_path)
-	get_next_states(20, state)
+	get_next_states(state, 20)
 }
 
 # [20] White/MW-MK branching point -> [21] Sen's estimator (variance), [END]
-eda20 <- function(state, history) {
+eda20 <- function(data, state, steps, img_path) {
 
 	# Get the results of the White test and MW-MK test
-	white_results <- history[[ length(history) - 1 ]]$results
-	mwmk_results <- history[[ length(history) ]]$results
+	result_df <- filter(steps, start == state$start, end == state$end)
+	white_results <- filter(result_df, location == 18)[[1, "results"]][[1]]
+	mwmk_results <- filter(result_df, location == 19)[[1, "results"]][[1]]
 
 	# Handle the branching point
 	if (white_results$reject | mwmk_results$reject) {
-		state$msg <- "Time-dependence identified in the AMS variance."
-		return (get_next_states(21, state))
+		msg <- "Time-dependence identified in the AMS variance."
+		return (get_next_states(state, 21, msg = msg))
 	} else {
-		state$msg <- "No time-dependence identified in the AMS variance."
-		return (list(state = state, next_states = vector(mode = "list", length = 0)))
+		msg <- "No time-dependence identified in the AMS variance."
+		return (get_next_states(state, msg = msg))
 	}
 }
 
 # [21] Sen's estimator (variance) -> [END]
-eda21 <- function(state, history) {
-	message("\nEstimating the trend in the AMS variance using Sen's estimator...")
+eda21 <- function(data, state, steps, img_path) {
 	state$results <- run_stats("sens-variance", data, state$start, state$end, img_path)
-	list(state = state, next_states = vector(mode = "list", length = 0))
+	return (get_next_states(state))
 }
 
 
-### EXECUTE FLOWCHART ###
+# If csv_files is empty, get every file in data_folder 
+if (length(csv_files) == 0) csv_files <- list.files(path = data_folder)
 
+# Orchestrate EDA on each .csv file 
+for (csv_file in csv_files) {
 
-# Orchestrate EDA on a .csv file 
-run_eda <- function(csv_file) {
+	# Create the reports folder if it doesn't already exist
+	csv_name <- file_path_sans_ext(csv_file)
+	report_path <- glue("{report_folder}/{csv_name}")
+	if (!dir.exists(report_path)) dir.create(report_path)
 
-	# Initialize EDA for this .csv file
-	initialize_eda(csv_file)
+	# Generate an /img directory in report_path if it doesn't already exist
+	img_path <- glue("{report_path}/img")
+	if (!dir.exists(img_path)) dir.create(img_path)
 
-	# Initialize list of results and the queue
-	results <- list()          
-	ordered_results <- list()  
-	queue <- list()            
+	# Load data from the given input file and remove leading/trailing NaNs
+	data <- load(data_folder, csv_file, window_length, window_step)
 
-	# Populate the queue based on the given mode
-	min_year <- min(data$df$year)
-	max_year <- max(data$df$year)
+	# Set the initial state
+	state <- list(start = min(data$df$year), end = max(data$df$year))
 
-	# When running in "preset" mode, skip change point analysis
+	# In preset mode, split the data and begin at [8] MK test.
 	if (mode == "preset") {
-
-		# Validate the splits given in config.yml
-		splits <- validate_split(min_year, max_year, split_points)
-
-		# Iterate through the list of starting states and add them to the queue
-		for (i in 1:(length(splits) - 1)) {
-			name <- paste(c(splits[i], splits[i + 1] - 1), collapse = ",")
-			queue[[name]] = c(8)
-		}
-
+		splits <- validate_split(state$start, state$end, split_points)
+		steps <- get_next_states(state, 8, splits)$next_states
 	} else {
-		name <- paste(c(min_year, max_year), collapse = ",")
-		queue[[name]] = c(1)
+		steps <- get_next_states(state, 1)$next_states
 	} 
 
-	# Run until the queue is empty
-	while (length(queue) > 0) {
+	# Run until there are no incomplete steps 
+	while (any(!steps$complete)) {
 
-		# Get the minimum key in the queue
-		key <- sort(names(queue))[1]
-		subqueue <- queue[[key]]
-		years <- as.integer(strsplit(key, ",")[[1]])
+		# Get the index and row of the first incomplete step
+		index <- which(!steps$complete)[1]
+		state <- as.list(steps[index, ])
 
-		# Pop the location off of the subqueue
-		location <- subqueue[1]
-		subqueue <- subqueue[-1]
+		# Call the flowchart step function 
+		fname <- paste0("eda", sprintf("%02d", state$location))
+		updated <- get(fname)(data, state, steps, img_path)
 
-		# If the subqueue is now empty, remove it from the queue
-		if (length(subqueue) == 0) queue[[key]] <- NULL
+		# Update current step and then add new steps 
+		steps[index, ] <- updated$state
+		steps <- rbind(steps, updated$next_states)
 
-		# Set the state and get the correct function function name. 
-		state <- list(location = location, start = years[1], end = years[2])
-		fname <- paste0("eda", sprintf("%02d", location))
-
-		# Pass results[[key]] since decision points only use data from the active split.
-		updated <- get(fname)(state, results[[key]])
-
-		# Add all states in next_states to the queue
-		for (ns in updated$next_states) {
-			name <- glue("{ns$start},{ns$end}")
-			queue[[name]] <- c(queue[[name]], ns$location)
-		} 
-		
-		# Add the results of this step to the results and ordered_results
-		results[[key]] <- c(results[[key]], list(updated$state))
-		ordered_results <- c(ordered_results, list(updated$state))
-
-		# If this step emitted a message, print it
-		if (!is.null(updated$state$msg)) message(glue("\n\n{updated$state$msg}"))
+		# Sort steps in lexigraphical order 
+		steps <- arrange(steps, start, desc(end), location)
 
 	}
 
+	# Create a dataframe for storing the identified trends
+	trends <- steps |>
+		group_by(start, end) |>
+		filter(any(location == 8)) |>
+		summarise(
+			mean = any(location == 17),
+			variance = any(location == 21),
+			recommendation = ifelse(mean | variance, "NS-FFA", "S-FFA"),
+			.groups = "drop"
+		)
+
+	# Print the results of trend identification
+	message("\nEDA Complete.")
+	for (s in purrr::pmap(trends, list)) {
+		message(glue("\n\nSplit {s$start}-{s$end}:"))
+		message(glue(" - Trend in AMS mean: {s$mean}"))
+		message(glue(" - Trend in AMS variance: {s$variance}"))
+		message(glue(" - Recomendation: {s$recommendation}"))
+	}
+
+	# If report generation is disabled, go to next file
+	if (!generate_report) {
+		message("No report was generated.") 
+		next
+	}
+
 	# Define arguments for the report
-	report_args = list(result_list = ordered_results, output_dir = report_path)
+	report_args = list(steps = steps, trends = trends, output_dir = report_path)
 
 	# Render the report using each item in report_format given
 	for (format in report_format) {
@@ -502,17 +483,9 @@ run_eda <- function(csv_file) {
 		)
 	}
 
-	# Print a completion message
-	message()
-	message("+-----------------------------------+")
-	message("| Report(s) generated successfully. |")
-	message("+-----------------------------------+")
-
+	# Print completion message
+	message("\nReport(s) generated successfully.")
 }
-
-# Call run_eda on .csv files specified config.yml
-if (length(csv_files) == 0) csv_files <- list.files(path = data_folder)
-for (csv_file in csv_files) run_eda(csv_file)
 
 # Remove Rplots.pdf if it was accidentally created
 if (file.exists("Rplots.pdf")) invisible(file.remove("Rplots.pdf"))

@@ -4,10 +4,10 @@ source("eda/mk/mk-test.R")
 # Perform the MW-MK test to check for trends in the variance
 #  - std: A vector of annual maximum streamflow standard deviations
 #  - alpha: The significance level as a floating point number
-mwmk_test <- function(std, alpha = 0.05) {
+mwmk_test <- function(std, alpha = 0.05, quiet = TRUE) {
 
 	# Run the Mann-Kendall test on the variance series
-	results <- mk_test(std, alpha, quiet = TRUE)
+	results <- mk_test(std, alpha)
 
 	# Print the results of the test
 	part1 <- ifelse(results$reject, "reject", "fail to reject")
@@ -20,7 +20,7 @@ mwmk_test <- function(std, alpha = 0.05) {
 	)
 
 	msg <- glue(paste0("\n - ", lines, collapse = ""))
-	message(msg)
+	if (!quiet) message(msg)
 
 	# Add the variance series to results and return 
 	c(results, list(std = std, msg = msg))

@@ -2,7 +2,7 @@
 #  - ams: A vector of annual maximum streamflow data with no NA values
 #  - year: A vector of years corresponding to ams with no NA values
 #  - alpha: The significance level as a floating point number
-pettitt_test <- function(ams, year, alpha = 0.05) {
+pettitt_test <- function(ams, year, alpha = 0.05, quiet = TRUE) {
 
 	# Extract the length of ams for convenience
 	n <- length(ams)
@@ -53,7 +53,7 @@ pettitt_test <- function(ams, year, alpha = 0.05) {
 	)
 
 	msg <- glue(paste0("\n - ", lines, collapse = ""))
-	message(msg)
+	if (!quiet) message(msg)
 
 	# Return a list containing the results of the test
 	mget(c(

@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library(aTSA))
 # Conduct the Phillips-Perron unit root test
 #  - ams: A vector of annual maximum streamflow data with no NA values
 #  - alpha: The significance level as a floating point number
-pp_test <- function(ams, alpha = 0.05) {
+pp_test <- function(ams, alpha = 0.05, quiet = TRUE) {
 
 	# NOTE: The implementation of the Phillips-Perron test in the aTSA package
 	# interpolates the p-value using a table from Banerjee et al. (1993). 
@@ -42,7 +42,7 @@ pp_test <- function(ams, alpha = 0.05) {
 	)
 
 	msg <- glue(paste0("\n - ", lines, collapse = ""))
-	message(msg)
+	if (!quiet) message(msg)
 
 	# Return the results as a list
 	mget(c("p_value", "reject", "msg"))

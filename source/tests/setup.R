@@ -1,5 +1,5 @@
 # Get the data path from the environment options
-data_path <- getOption("data_folder", default = "../../data")
+data_path <- file.path(renv::project(), "..", "data")
 
 # Load CSV files in the data path
 data1 <- load(data_path, "Application_1.csv")
@@ -21,6 +21,5 @@ config <- list(
 	window_step = as.integer(5),
 	show_trend = TRUE,
 	generate_report = TRUE,
-	report_format = c("md_document", "html_document")
+	report_format = c("md_document", "html_document", "pdf_document")
 )
-

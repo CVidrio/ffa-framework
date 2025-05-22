@@ -3,9 +3,9 @@ validate_config <- function(config) {
 
 	# Define expected data types for each item in config.yml
 	expected_types <- list(
-		data_folder = "character",
+		data_folder = c("character", "NULL"),
 		csv_files = c("character", "NULL"),
-		report_folder = "character",
+		report_folder = c("character", "NULL"),
 		mode = "character",
 		split_points = c("integer", "NULL"),
 		alpha = "numeric",
@@ -40,6 +40,15 @@ validate_config <- function(config) {
 		}
 	}
 
+	# Set data_folder and report_folder based on the working directory if not already set
+	if (length(config$data_folder) == 0) {
+		config$data_folder <- file.path(renv::project(), "..", "data")
+	}
+
+	if (length(config$report_folder) == 0) {
+		config$report_folder <- file.path(renv::project(), "..", "reports")
+	}
+
 	# Check that data_folder exists on the disk
 	if (!dir.exists(config$data_folder)) {
 		stop(sprintf("data_folder '%s' does not exist.", config$data_folder))
@@ -69,7 +78,7 @@ validate_config <- function(config) {
 	}
 
 	# Check that each element report_format is valid
-	valid_formats <- c("html_document", "md_document")
+	valid_formats <- c("html_document", "md_document", "pdf_document")
 
 	for (format in config$report_format) {
 		if (!format %in% valid_formats) {
@@ -89,5 +98,7 @@ validate_config <- function(config) {
 	if (config$window_step > config$window_length) {
 		message("Warning: window_step should not be greater than window_length.")
 	}
+
+	return (config)
 
 }

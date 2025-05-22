@@ -8,7 +8,7 @@ For more information, see [here](https://rileywheadon.github.io/ffa-framework/ed
 
 <!-- Render the figure. -->
 
-```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+```{r, echo = FALSE, out.width = "80%", fig.align = "center", dpi = 150}
 img_name <- glue("img/sens-{params$data_type}-estimator-{params$start}-{params$end}.png")
 include_graphics(file.path(params$output_dir, img_name))
 ```

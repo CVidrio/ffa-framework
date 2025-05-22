@@ -12,7 +12,7 @@ Additional information:
 
 <!-- Render the figure. -->
 
-```{r, echo = FALSE, out.width = "720px", fig.align = "center"}
+```{r, echo = FALSE, out.width = "80%", fig.align = "center", dpi = 150}
 img_name <- glue("img/mks-test-{params$start}-{params$end}.png")
 include_graphics(file.path(params$output_dir, img_name))
 ```

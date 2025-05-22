@@ -2,9 +2,7 @@
 
 ## Command Line Interface
 
-**Exploratory Data Analysis**: 
-
-- Add support for more report types (PDF through $\LaTeX$ and MS Word)
+**Exploratory Data Analysis**: COMPLETE
 
 **Flood Frequency Analysis**: TBD
 

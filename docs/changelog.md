@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.0.3
+
+May 22nd, 2025
+
+- Return information about non-stationary structure(s) at the end of EDA
+- Use the `/data` and `/reports` directories as defaults in `config.yml`
+- Refactor code for batching EDA in `stats.R`, `eda.R`
+- Implement support for PDF reports using a custom $\LaTeX$ template
+
 ## v0.0.2
  
 May 21st, 2025

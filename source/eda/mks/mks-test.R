@@ -2,7 +2,7 @@
 #  - ams: A vector of annual maximum streamflow data with no NA values
 #  - year: A vector of years corresponding to ams with no NA values
 #  - alpha: The significance level as a floating point number
-mks_test <- function(ams, year, alpha = 0.05) {
+mks_test <- function(ams, year, alpha = 0.05, quiet = TRUE) {
 
 	# Compute number of elements such that ams[i] > ams[j] for all j < i < t for all t.
 	s_statistic <- function(vt, ams) {
@@ -100,7 +100,7 @@ mks_test <- function(ams, year, alpha = 0.05) {
 	)
 
 	msg <- glue(paste0("\n - ", lines, collapse = ""))
-	message(msg)
+	if (!quiet) message(msg)
 
 	# Return a list of values results from the test
 	mget(c(

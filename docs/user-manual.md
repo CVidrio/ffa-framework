@@ -1,12 +1,20 @@
 # User Manual
 
+All configuration is done through YAML files. The default configuration file is `source/config.yml`, although it is possible to create additional configuration files and pass them to the scripts using the `--config` command line argument.
+
 ## Folder Configuration
 
-All configuration is done through the `source/config.yml` file. It is *essential* that the `data_folder`, `csv_files`, and `report_folder` arguments are set correctly in this file.
+`data_folder`: This argument should be an _absolute path_ to a directory containing the CSV files you would like to run the framework on. _The framework may not work if you use a relative path_.
 
-- `data_folder`: This argument should be an *absolute path* to a directory containing the CSV files you would like to run the framework on. *The framework may not work if you use a relative path*.
-- `csv_files`: A list of 1 or more CSV files located in `data_folder`. Alternatively, set this option to `null` to run the framework on every file in `data_folder`.
-- `report_folder`: An *absolute path* to a directory which will be used to store EDA and FFA reports. The directory must exist. Again, *the framework may not work if you use a relative path*.
+- Alternatively, `data_folder: null` will use the default `ffa-framework/data` folder.
+
+`csv_files`: A list of 1 or more CSV files located in `data_folder`.
+
+- Alternatively, `csv_files: null` will run the framework on every file in `data_folder`.
+
+`report_folder`: An _absolute path_ to a directory which will be used to store EDA and FFA reports. The directory must exist. Again, _the framework may not work if you use a relative path_.
+
+- Alternatively, `report_folder: null` will use the default `ffa-framework/reports` folder.
 
 **Example Configuration (1)**
 
@@ -14,8 +22,8 @@ All configuration is done through the `source/config.yml` file. It is *essential
 data_folder: "~/Desktop/ffa-data"
 
 csv_files:
-- "dataset-1.csv"
-- "dataset-2.csv"
+  - "dataset-1.csv"
+  - "dataset-2.csv"
 
 report_folder: "~/Desktop/ffa-reports"
 ```
@@ -23,11 +31,11 @@ report_folder: "~/Desktop/ffa-reports"
 **Example Configuration (2)**
 
 ```yaml
-data_folder: "~/Desktop/ffa-data"
+data_folder: null
 
 csv_files: null
 
-report_folder: "~/Desktop/ffa-reports"
+report_folder: null
 ```
 
 ## Exploratory Data Analysis (EDA)
@@ -40,14 +48,15 @@ The configuration options for the EDA portion of the framework are as follows:
     - `"preset"`: Specify split points ahead of time using the `split_points` option.
     - `"automatic"`: Automatically determine split points using change point tests.
     - `"manual"`: Manually confirm the split points identified using change point tests.
-- `split_points`: Used with `mode: "preset"` to set split points ahead of time (as a list of years). Alternatively, set this option to `null` to disable splitting.
+- `split_points`: Used with `mode: "preset"` to set split points ahead of time (as a list of years).
+    - Alternatively, `split_points: null` will disable splitting entirely.
 - `alpha`: The confidence level used for statistical tests (must be between $0.01$ and $0.10$).
-- `bbmk_repetitions`: The number of boostrap samples to use for the [BB-MK Test](eda/bbmk.md).
+- `bbmk_repetitions`: The number of boostrap samples to use for the [BB-MK Test](eda.md/#bb-mk-test).
 - `window_length`: The size of the moving window used to compute the streamflow variance.
 - `window_step`: The size of the steps used to compute the streamflow variance.
 - `show_trend`: Whether or not to draw a trend line between data points (`true` or `false`).
 - `generate_report`: Whether or not to generate a report (`true` or `false`).
-- `report_format`: A list of report formats (`"md_document"` or `"html_document"`).
+- `report_format`: A list of report formats (`"md_document"`, `"html_document"`, or `"pdf_document"`).
 
 **Example Configuration**
 
@@ -89,7 +98,7 @@ split_points:
   - 1980
 ```
 
-### Running the Complete EDA Framework 
+### Running the Complete EDA Framework
 
 The `source/eda.R` script is used to run the complete EDA framework. The optional command line argument `--config` can be used to specify a custom configuration file. If `--config` is not specified, the framework will use `config.yml` as a default.
 
@@ -105,9 +114,9 @@ Rscript eda.R
 Rscript eda.R --config='custom-config.yml'
 ```
 
-### Running Individual Statistical Tests 
+### Running Individual Statistical Tests
 
-The `source/stats.R` script is used to run individual statistical tests. 
+The `source/stats.R` script is used to run individual statistical tests.
 
 - `--name` (required) is used to configure the name of the statistical test. It must be one of "bbmk", "kpss", "mk", "mks", "mwmk", "pettitt", "pp", "sens-mean", "sens-variance", "spearman", and "white".
 - `--config` (optional) can be used to specify a custom configuration file.
@@ -123,7 +132,7 @@ Rscript stats.R --name='mks'
 ```
 Rscript stats.R --name='white' --config='custom-config.yml'
 ```
- 
+
 ## Frequency Analysis
 
-TBD 
+TBD

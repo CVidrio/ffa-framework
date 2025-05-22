@@ -16,9 +16,6 @@ source("helpers/validate-split.R")
 source("helpers/validate-name.R")
 
 
-### PARSING COMMANE LINE OPTIONS ###
-
-
 # Create command line options
 option_list <- list(
   make_option(c("-n","--name"), type = "character", help = "Name of statistical test."),
@@ -48,12 +45,12 @@ if (!file.exists(config_path)) {
 
 # Load and validate the configuration file
 config <- read_yaml(config_path)
-validate_config(config)
+config <- validate_config(config)
 invisible(list2env(config, envir = environment()))
 
-
-### STATISTICAL TEST, PLOTTING FUNCTION, AND REPORT ###
-
+# Set data_folder and report_folder relative to the working directory if not configured
+if (is.null(data_folder)) data_folder <- file.path(getwd(), "..", "data")
+if (is.null(report_folder)) report_folder <- file.path(getwd(), "..", "reports")
 
 # If csv_files is empty, run on every file in data_folder
 if (length(csv_files) == 0) csv_files <- list.files(path = data_folder)
@@ -87,7 +84,7 @@ for (csv_file in csv_files) {
 		end <- splits[i + 1] - 1
 
 		# Run the statistical test and the results to results
-		result <- run_stats(opt$name, data, start, end, img_path)
+		result <- run_stats(opt$name, data, start, end, img_path, quiet = FALSE)
 		result_list[[i]] <- c(result, list(start = start, end = end))
 	}
 	 

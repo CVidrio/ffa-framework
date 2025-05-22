@@ -2,7 +2,7 @@
 #  - ams: A vector of annual maximum streamflow data with no NA values
 #  - year: A numeric vector of years corresponding to ams with no NA values
 #  - alpha: The significance level as a floating point number
-white_test <- function(ams, year, alpha = 0.05) {
+white_test <- function(ams, year, alpha = 0.05, quiet = TRUE) {
 
 	# Do a linear regression of ams against year, get the squared residuals
 	primary_model <- lm(ams ~ year)
@@ -34,7 +34,7 @@ white_test <- function(ams, year, alpha = 0.05) {
 	)
 
 	msg <- glue(paste0("\n - ", lines, collapse = ""))
-	message(msg)
+	if (!quiet) message(msg)
 
 	# Return the results of the test
 	mget(c("r_squared", "test_statistic", "p_value", "reject", "msg"))

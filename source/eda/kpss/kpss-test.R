@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library(aTSA))
 # Conduct the KPSS unit root test
 #  - ams: A vector of annual maximum streamflow data with no NA values
 #  - alpha: The significance level as a floating point number
-kpss_test <- function(ams, alpha = 0.05) {
+kpss_test <- function(ams, alpha = 0.05, quiet = TRUE) {
 
 	# NOTE: The implementation of the KPSS test in the aTSA package
 	# interpolates the p-value using a table from Hobjin et al. (2004). 
@@ -42,7 +42,7 @@ kpss_test <- function(ams, alpha = 0.05) {
 	)
 
 	msg <- glue(paste0("\n - ", lines, collapse = ""))
-	message(msg)
+	if (!quiet) message(msg)
 
 	# Return the results
 	mget(c("p_value", "reject", "msg"))

@@ -3,7 +3,7 @@ library(randtests)
 # Compute Sen's trend estimator for a dataframe
 #  - data: A vector of AMS data or AMS variances with no NA values
 #  - year: A numeric vector of years corresponding to data with no NA values
-sens_estimator <- function(data, year, alpha = 0.05) {
+sens_estimator <- function(data, year, alpha = 0.05, quiet = TRUE) {
 
 	# Get the length of data for convenience
 	n <- length(data)
@@ -50,7 +50,7 @@ sens_estimator <- function(data, year, alpha = 0.05) {
 	)
 
 	msg <- glue(paste0("\n - ", lines, collapse = ""))
-	message(msg)
+	if (!quiet) message(msg)
 
 	# Return the results as a list
 	mget(c("sens_slope", "sens_intercept", "residuals", "p_value", "reject", "msg"))

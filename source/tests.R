@@ -42,7 +42,7 @@ if (!file.exists(config_path)) {
 
 # Load and validate the configuration file
 config <- read_yaml(config_path)
-validate_config(config)
+config <- validate_config(config)
 
 # Set the data_folder as an option
 options(data_folder = config$data_folder)

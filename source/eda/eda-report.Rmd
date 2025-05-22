@@ -1,14 +1,32 @@
 ---
 title: "EDA Report"
 output:
+  pdf_document:
+    toc: true
+    toc_depth: 2
   html_document:
     toc: true
     toc_depth: 2
     css: styles.css
 params: 
-  result_list: "[result_list]"
+  steps: "[steps]"
+  trends: "[trends]"
   output_dir: "[output_dir]"
 ---
+
+## Results
+
+```{r, echo = FALSE}
+names = c(
+	"Start Year",
+	"End Year",
+	"Trend in AMS Mean",
+	"Trend in AMS Variance",
+	"Recommendation"
+)
+
+knitr::kable(trends, col.names = names, align = "ccccc")
+```
 
 ```{r, echo = FALSE}
 
@@ -33,58 +51,55 @@ rmd_paths <- list(
 outputs <- character()
 
 # Iterate through the list of locations and generate a report for each one
-for (result in params$result_list) {
+for (step in purrr::pmap(steps, list)) {
 
-# Get a bunch of variables from result for convenience
-start <- result$start	
-end <- result$end
-location <- result$location
-index <- toString(result$location)
+	# Get a bunch of variables from result for convenience
+	start <- step$start	
+	end <- step$end
+	location <- step$location
+	index <- toString(step$location)
 
-# If the location is a decision/branching point, add the message
-if (location %in% c(3, 5, 7, 9, 11, 13, 16, 20)) {
+	# If the location is a decision/branching point, add the message
+	if (location %in% c(3, 5, 7, 9, 11, 13, 16, 20)) {
+		point <- ifelse(location %in% c(3, 5, 7), "Decision", "Branching")
+		msg <- glue("*{point} Point*: {step$results$msg}")
+		outputs <- c(outputs, glue("---\n\n{msg}\n\n---"))
+		next	
+	}
 
-	# Determine whether the point is a decision point or branching point
-	point <- ifelse(location %in% c(3, 5, 7), "Decision", "Branching")
+	# Generate a subheader if this location is the beginning of a section
+	if (location %in% c(1, 4, 6)) { 
+		header <- glue("## Change Point Analysis ({start}-{end})")
+		outputs <- c(outputs, header)
+	} else if (location == 8) {
+		header <- glue("## Trend Identification in AMS Means ({start}-{end})")
+		outputs <- c(outputs, header)
+	} else if (location == 18) {
+		header <- glue("## Trend Identification in AMS Variance ({start}-{end})")
+		outputs <- c(outputs, header)
+	}
 
-	# Add the decision/branching point message to the report	
-	msg <- glue("*{point} Point*: {result$msg}")
-	outputs <- c(outputs, glue("---\n\n{msg}\n\n---"))
-	next	
-}
+	# Define a list containing the other arguments
+	args <- list(
+		output_dir = params$output_dir,
+		show_years = FALSE,
+		start = start,
+		end = end
+	)
 
-# Generate a subheader if this location is the beginning of a section
-if (location %in% c(1, 4, 6)) { 
-	header <- glue("## Change Point Analysis ({start}-{end})")
-	outputs <- c(outputs, header)
-} else if (location == 8) {
-	header <- glue("## Trend Identification in AMS Means ({start}-{end})")
-	outputs <- c(outputs, header)
-} else if (location == 18) {
-	header <- glue("## Trend Identification in AMS Variance ({start}-{end})")
-	outputs <- c(outputs, header)
-}
+	# Handle special case for  Sen's trend estimator
+	if (location == 17) args$data_type <- "mean"
+	if (location == 21) args$data_type <- "variance"
 
-# Define a list containing the other arguments
-args <- list(
-	output_dir = params$output_dir,
-	show_years = FALSE,
-	start = start,
-	end = end
-)
-
-# Handle special case for  Sen's trend estimator
-if (location == 17) args$data_type <- "mean"
-if (location == 21) args$data_type <- "variance"
-
-# Then generate a report for this test
-env <- new.env()
-env$params <- c(result$results, args)
-outputs <- c(outputs, knit_child(rmd_paths[[index]], envir = env))
+	# Then generate a report for this test
+	env <- new.env()
+	env$params <- c(step$results, args)
+	outputs <- c(outputs, knit_child(rmd_paths[[index]], envir = env))
 
 }
 
 # Annoying hack (see above)
 asis_output(paste(outputs, collapse = "\n\n"))
+
 ```
 

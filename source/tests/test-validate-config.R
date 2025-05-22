@@ -6,8 +6,18 @@ test_that("Test that validate-config.R does not throw an error on correct config
 	expect_no_error(validate_config(config))
 })
 
+test_that("Test that validate-config.R works with data_folder = NULL.", {
+	config$data_folder <- character(0) 
+	expect_no_error(validate_config(config))
+})
+
 test_that("Test that validate-config.R works with csv_files = NULL.", {
 	config$csv_files <- character(0)
+	expect_no_error(validate_config(config))
+})
+
+test_that("Test that validate-config.R works with report_folder = NULL.", {
+	config$report_folder <- character(0)
 	expect_no_error(validate_config(config))
 })
 

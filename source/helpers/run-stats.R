@@ -4,10 +4,10 @@
 # - start: The first year in the split
 # - end: The last year in the split
 # - img_path: A path to save the image
-run_stats <- function(name, data, start, end, img_path) {
+run_stats <- function(name, data, start, end, img_path, quiet = TRUE) {
 
 	# Print an informational messsage
-	message(glue("\n\nRunning function '{name}' on data from {start} to {end}.\n\n"))
+	if (!quiet) message(glue("\n\nRunning '{name}' on data from {start} to {end}.\n\n"))
 
 	# Set the prefix (folder name) and suffix ('test' or 'estimator')
 	prefix <- ifelse(grepl("sens", name), "sens", name)
@@ -42,7 +42,8 @@ run_stats <- function(name, data, start, end, img_path) {
 	
 	# Run the statistical test
 	source(test_path)
-	result <- do.call(get(test_function), test_args[[name]])
+	args <- c(list(quiet = quiet), test_args[[name]])
+	result <- do.call(get(test_function), args)
 
 	# Define arguments for plotting function, handling edge case for Sen's estimator
 	plot_args <- if (name == "sens-mean") {
@@ -63,7 +64,9 @@ run_stats <- function(name, data, start, end, img_path) {
 	# Save the plot to disk
 	name <- glue("{name}-{suffix}-{start}-{end}.png")
 	ggsave(name, plot = img, path = img_path, width = 10, height = 8, bg = "white")
-	message(glue("\n\nFigure {name} generated successfully."))
-	return (result)
+	if (!quiet) message(glue("\n\nFigure {name} generated successfully."))
+
+	# Return the result
+	result
 
 } 

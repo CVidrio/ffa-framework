@@ -1,7 +1,7 @@
 # Mann-Kendall test for trends
 #  - data: A vector of AMS data or AMS variances with no NA values
 #  - alpha: The significance level as a floating point number
-mk_test <- function(data, alpha = 0.05, quiet = FALSE) {
+mk_test <- function(data, alpha = 0.05, quiet = TRUE) {
 
 	# Assign a variable to number of data points for convenience
 	n <- length(data)
