@@ -13,6 +13,11 @@ source("eda/white/white-test.R")
 source("eda/mwmk/mwmk-test.R")
 source("eda/sens/sens-estimator.R")
 
+# Source selection functions
+source("models/selection/l-distance.R")
+source("models/selection/l-kurtosis.R")
+source("models/selection/z-statistic.R")
+
 # Source helper functions
 source("helpers/load-data.R")
 source("helpers/validate-config.R")
