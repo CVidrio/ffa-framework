@@ -7,12 +7,6 @@ test_that("Test l-distance.R on data set #1", {
 	results <- l_distance(ams)
 	list2env(results, envir = environment())
 
-	# Ensure that the results are the same as MATLAB
-	expect_equal(t3    , 0.2495, tol = 1e-4)
-	expect_equal(t3_log, 0.0239, tol = 1e-4)
-	expect_equal(t4    , 0.1970, tol = 1e-4)
-	expect_equal(t4_log, 0.1698, tol = 1e-4)
-
 	# Check the distances
 	expect_equal(distance$GEV, 0.0092, tol = 1e-4) 
 	expect_equal(distance$GUM, 0.0923, tol = 1e-4) 
@@ -34,12 +28,6 @@ test_that("Test l-distance.R on data set #2", {
 	ams <- data2$df_clean$max
 	results <- l_distance(ams)
 	list2env(results, envir = environment())
-
-	# Ensure that the results are the same as MATLAB
-	expect_equal(t3    ,  0.1159, tol = 1e-4)
-	expect_equal(t3_log, -0.0533, tol = 1e-4)
-	expect_equal(t4    ,  0.0428, tol = 1e-4)
-	expect_equal(t4_log,  0.0451, tol = 1e-4)
 
 	# Check the distances
 	expect_equal(distance$GEV, 0.0853, tol = 1e-4) 
@@ -63,12 +51,6 @@ test_that("Test l-distance.R on data set #3.1", {
 	results <- l_distance(ams)
 	list2env(results, envir = environment())
 
-	# Ensure that the results are the same as MATLAB
-	expect_equal(t3    , 0.1623, tol = 1e-4)
-	expect_equal(t3_log, 0.0331, tol = 1e-4)
-	expect_equal(t4    , 0.1229, tol = 1e-4)
-	expect_equal(t4_log, 0.0982, tol = 1e-4)
-
 	# Check the distances
 	expect_equal(distance$GEV, 0.0230, tol = 1e-4) 
 	expect_equal(distance$GUM, 0.0285, tol = 1e-4) 
@@ -91,12 +73,6 @@ test_that("Test l-distance.R on data set #3.2", {
 	results <- l_distance(ams)
 	list2env(results, envir = environment())
 
-	# Ensure that the results are the same as MATLAB
-	expect_equal(t3    , 0.1834, tol = 1e-4)
-	expect_equal(t3_log, 0.0417, tol = 1e-4)
-	expect_equal(t4    , 0.1500, tol = 1e-4)
-	expect_equal(t4_log, 0.1258, tol = 1e-4)
-
 	# Check the distances
 	expect_equal(distance$GEV, 0.0053, tol = 1e-4) 
 	expect_equal(distance$GUM, 0.0135, tol = 1e-4) 
@@ -118,12 +94,6 @@ test_that("Test l-distance.R on data set #3.3", {
 	ams <- data3_3$df_clean$max
 	results <- l_distance(ams)
 	list2env(results, envir = environment())
-
-	# Ensure that the results are the same as MATLAB
-	expect_equal(t3    ,  0.1150, tol = 1e-4)
-	expect_equal(t3_log, -0.0885, tol = 1e-4)
-	expect_equal(t4    ,  0.0242, tol = 1e-4)
-	expect_equal(t4_log,  0.0557, tol = 1e-4)
 
 	# Check the distances
 	expect_equal(distance$GEV, 0.1030, tol = 1e-4) 

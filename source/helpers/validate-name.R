@@ -47,6 +47,7 @@ validate_name <- function(mode, opt_name) {
 		"validate-name",
 		"validate-split",
 		"white",
+		"sample-l-moments",
 		"l-distance",
 		"l-kurtosis",
 		"z-statistic"

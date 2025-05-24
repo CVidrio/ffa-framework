@@ -1,18 +1,18 @@
 library(lmom)
 
+# Load sample L-moments helper function
+source("models/selection/sample-l-moments.R")
+
 # Select a distribution using the l-distance method
 #  - ams is a vector of streamflow data without NA values
 l_kurtosis <- function(ams) {
 	
-	# Compute the L-moments and Log L-moments
-	moments <- unname(samlmu(ams))
-	log_moments <- unname(samlmu(log(ams)))
-
-	# Get the L-moment ratios (t3, t4) and (t3_log, t4_log) 
-	t3 <- moments[3]
-	t4 <- moments[4]
-	t3_log <- log_moments[3]
-	t4_log <- log_moments[4]
+	# Get the L-moment ratios and Log L-moment ratios
+	slm <- sample_l_moments(ams)
+	t3 <- slm$lm$t3
+	t4 <- slm$lm$t4
+	t3_log <- slm$log_lm$t3
+	t4_log <- slm$log_lm$t4
 
 	# Helper function for generating and comparing a vector of L-moments
 	#  - f_lmr is the likelihood moment ratio function from the 'lmom' library

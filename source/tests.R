@@ -17,6 +17,7 @@ source("eda/sens/sens-estimator.R")
 source("models/selection/l-distance.R")
 source("models/selection/l-kurtosis.R")
 source("models/selection/z-statistic.R")
+source("models/selection/sample-l-moments.R")
 
 # Source helper functions
 source("helpers/load-data.R")
