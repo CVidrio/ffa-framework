@@ -1,5 +1,3 @@
-library(testthat)
-
 test_that("Test spearman-test.R on data set #1", {
 
 	# Load dataset and run Spearman test
@@ -11,6 +9,7 @@ test_that("Test spearman-test.R on data set #1", {
 	expect_equal(least_lag, 0)
 	
 })
+
 
 test_that("Test spearman-test.R on data set #2", {
 
@@ -24,6 +23,7 @@ test_that("Test spearman-test.R on data set #2", {
 	
 })
 
+
 test_that("Test spearman-test.R on data set #3.1", {
 
 	# Load dataset and run Spearman test
@@ -35,6 +35,7 @@ test_that("Test spearman-test.R on data set #3.1", {
 	expect_equal(least_lag, 0)
 	
 })
+
 
 test_that("Test spearman-test.R on data set #3.2", {
 
@@ -48,6 +49,7 @@ test_that("Test spearman-test.R on data set #3.2", {
 	
 })
 
+
 test_that("Test spearman-test.R on data set #3.3", {
 
 	# Load dataset and run Spearman test
@@ -59,5 +61,3 @@ test_that("Test spearman-test.R on data set #3.3", {
 	expect_equal(least_lag, 4)
 	
 })
-
-

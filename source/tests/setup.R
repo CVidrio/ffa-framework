@@ -21,5 +21,8 @@ config <- list(
 	window_step = as.integer(5),
 	show_trend = TRUE,
 	generate_report = TRUE,
-	report_format = c("md_document", "html_document", "pdf_document")
+	report_format = c("md_document", "html_document", "pdf_document"),
+	selection_metric = "L-distance",
+	estimation_method = "L-moments",
+	uncertainty_method = "S-bootstrap"
 )

@@ -1,5 +1,3 @@
-library(testthat)
-
 test_that("Test sens-estimator.R on means of data set #1", {
 
 	# Load the data for the means
@@ -12,6 +10,7 @@ test_that("Test sens-estimator.R on means of data set #1", {
 	expect_equal(sens_intercept, -477.5581, tolerance = 1e-3)
 
 })
+
 
 test_that("Test sens-estimator.R on means of data set #2", {
 
@@ -26,6 +25,7 @@ test_that("Test sens-estimator.R on means of data set #2", {
 
 })
 
+ 
 test_that("Test sens-estimator.R on means of data set #3.1", {
 
 	# Load the data for the means
@@ -38,6 +38,7 @@ test_that("Test sens-estimator.R on means of data set #3.1", {
 	expect_equal(sens_intercept, 1.1597e3, tolerance = 1e-3)
 
 })
+
 
 test_that("Test sens-estimator.R on means of data set #3.2", {
 
@@ -52,6 +53,7 @@ test_that("Test sens-estimator.R on means of data set #3.2", {
 
 })
 
+
 test_that("Test sens-estimator.R on means of data set #3.3", {
 
 	# Load the data for the means
@@ -64,8 +66,3 @@ test_that("Test sens-estimator.R on means of data set #3.3", {
 	expect_equal(sens_intercept, -756.2370, tolerance = 1e-3)
 
 })
-
-
-# ### TEST VARIANCE ESTIMATES ###
-
-

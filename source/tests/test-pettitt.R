@@ -1,5 +1,3 @@
-library(testthat)
-
 test_that("Test pettitt-test.R on data set #1", {
 
 	# Load dataset and run Pettitt test
@@ -14,6 +12,7 @@ test_that("Test pettitt-test.R on data set #1", {
 	expect_equal(p_value, 0.461, tolerance = 1e-3)
 
 })
+
 
 test_that("Test pettitt-test.R on data set #2", {
 
@@ -30,6 +29,7 @@ test_that("Test pettitt-test.R on data set #2", {
 
 })
 
+
 test_that("Test pettitt-test.R on data set #3.1", {
 
 	# Load dataset and run Pettitt test
@@ -45,6 +45,7 @@ test_that("Test pettitt-test.R on data set #3.1", {
 
 })
 
+
 test_that("Test pettitt-test.R on data set #3.2", {
 
 	# Load dataset and run Pettitt test
@@ -59,6 +60,7 @@ test_that("Test pettitt-test.R on data set #3.2", {
 	expect_equal(p_value, 0.071, tolerance = 1e-3)
 
 })
+
 
 test_that("Test pettitt-test.R on data set #3.3", {
 

@@ -27,4 +27,6 @@ This page documents changes from [original MATLAB code](https://zenodo.org/recor
 
 ## Flood Frequency Analysis (FFA)
 
-TBD
+### Bug Fixes
+
+- L-moments parameter estimation for GEV and GPA distributions has an unnecessary sign change.

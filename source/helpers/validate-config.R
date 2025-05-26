@@ -14,7 +14,8 @@ validate_config <- function(config) {
 		window_step = "integer", 
 		show_trend = "logical",
 		generate_report = "logical",
-		report_format = "character"
+		report_format = "character",
+		selection_metric = "character"
 	)
 
 	# Validate data types in the configuration file
@@ -97,6 +98,36 @@ validate_config <- function(config) {
 	# Issue a warning if window_step is greater than window_length
 	if (config$window_step > config$window_length) {
 		message("Warning: window_step should not be greater than window_length.")
+	}
+
+	# Check that the selection metric is valid
+	valid_metrics <- c("L-distance", "L-kurtosis", "Z-statistic")
+
+	if (!(config$selection_metric %in% valid_metrics)) {
+		stop(sprintf(
+			"selection_metric '%s' is invalid.\nSupported options: %s.",
+			config$selection_metric, toString(valid_metrics)
+		))
+	}
+
+	# Check that the estimation method is valid
+	valid_estimation_methods <- c("L-moments", "MLE", "GMLE")
+
+	if (!(config$estimation_method %in% valid_estimation_methods)) {
+		stop(sprintf(
+			"estimation_method '%s' is invalid.\nSupported options: %s.",
+			config$estimation_method, toString(valid_estimation_methods)
+		))
+	}
+
+	# Check that the uncertainty method is valid
+	valid_uncertainty_methods <- c("S-bootstrap", "RFPL", "RFGPL")
+
+	if (!(config$uncertainty_method %in% valid_uncertainty_methods)) {
+		stop(sprintf(
+			"uncertainty_method '%s' is invalid.\nSupported options: %s.",
+			config$uncertainty_method, toString(valid_uncertainty_methods)
+		))
 	}
 
 	return (config)

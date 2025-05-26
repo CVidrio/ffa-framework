@@ -14,10 +14,17 @@ source("eda/mwmk/mwmk-test.R")
 source("eda/sens/sens-estimator.R")
 
 # Source selection functions
-source("models/selection/l-distance.R")
-source("models/selection/l-kurtosis.R")
-source("models/selection/z-statistic.R")
-source("models/selection/sample-l-moments.R")
+source("ffa/selection/l-distance.R")
+source("ffa/selection/l-kurtosis.R")
+source("ffa/selection/z-statistic.R")
+source("ffa/selection/sample-lm.R")
+source("ffa/selection/distribution-lm.R")
+
+# Source estimation functions
+source("ffa/estimation/l-moments.R")
+
+# Source uncertainty functions
+source("ffa/uncertainty/s-bootstrap.R")
 
 # Source helper functions
 source("helpers/load-data.R")

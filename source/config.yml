@@ -43,3 +43,16 @@ generate_report: True
 # Output format for reports ("md_document", "html_document", or "pdf_document")
 report_format: 
   - "html_document"
+
+# ------------ #
+# FFA SETTINGS #
+# ------------ #
+
+# Distribution selection metric ("L-distance", "L-kurtosis", "Z-statistic")
+selection_metric: "L-distance"
+
+# Parameter estimation method ("L-moments", "MLE", "GMLE")
+estimation_method: "L-moments"
+
+# Uncertainty quantification method ("S-bootstrap", "RFPL", "RFGPL")
+uncertainty_method: "S-bootstrap"

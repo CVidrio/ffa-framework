@@ -1,25 +1,26 @@
-library(testthat)
-library(glue)
-
 # Correctness Tests 
 test_that("Test that validate-config.R does not throw an error on correct config.yml.", {
 	expect_no_error(validate_config(config))
 })
+
 
 test_that("Test that validate-config.R works with data_folder = NULL.", {
 	config$data_folder <- character(0) 
 	expect_no_error(validate_config(config))
 })
 
+
 test_that("Test that validate-config.R works with csv_files = NULL.", {
 	config$csv_files <- character(0)
 	expect_no_error(validate_config(config))
 })
 
+
 test_that("Test that validate-config.R works with report_folder = NULL.", {
 	config$report_folder <- character(0)
 	expect_no_error(validate_config(config))
 })
+
 
 test_that("Test that validate-config.R works with split_points = NULL.", {
 	config$split_points <- integer(0)
@@ -36,6 +37,7 @@ test_that("Test that validate-config.R catches missing argument.", {
 	)
 })
 
+
 test_that("Test that validate-config.R catches incorrect data type.", {
 	config$csv_files <- as.integer(c(10, 100))
 	expect_error(
@@ -44,29 +46,33 @@ test_that("Test that validate-config.R catches incorrect data type.", {
 	)
 })
 
+
 test_that("Test that validate-config.R catches invalid data_folder.", {
-	config$data_folder <- "~/this/folder/does/not/exist"
+	config$data_folder <- "~/does/not/exist"
 	expect_error(
 		validate_config(config),
-		regexp = glue("data_folder '{config$data_folder}' does not exist.")
+		regexp = "data_folder '~/does/not/exist' does not exist."
 	)
 })
+
 
 test_that("Test that validate-config.R catches invalid csv_file.", {
 	config$csv_files <- c("does-not-exist.csv")
 	expect_error(
 		validate_config(config),
-		regexp = glue("csv_file 'does-not-exist.csv' does not exist.")
+		regexp = "csv_file 'does-not-exist.csv' does not exist."
 	)
 })
 
+
 test_that("Test that validate-config.R catches invalid report_folder.", {
-	config$report_folder <- "~/this/folder/does/not/exist" 
+	config$report_folder <- "~/does/not/exist" 
 	expect_error(
 		validate_config(config),
-		regexp = glue("report_folder '{config$report_folder}' does not exist.")
+		regexp = "report_folder '~/does/not/exist' does not exist."
 	)
 })
+
 
 test_that("Test that validate-config.R catches invalid mode.", {
 	config$mode <- "does-not-exist" 
@@ -76,6 +82,7 @@ test_that("Test that validate-config.R catches invalid mode.", {
 	)
 })
 
+
 test_that("Test that validate-config.R catches invalid (low) alpha.", {
 	config$alpha <- 0.001
 	expect_error(
@@ -84,6 +91,7 @@ test_that("Test that validate-config.R catches invalid (low) alpha.", {
 	)
 })
 
+
 test_that("Test that validate-config.R catches invalid (high) alpha.", {
 	config$alpha <- 0.50  
 	expect_error(
@@ -91,6 +99,7 @@ test_that("Test that validate-config.R catches invalid (high) alpha.", {
 		regexp = "alpha must be between 0.01 and 0.10."
 	)
 })
+ 
 
 test_that("Test that validate-config.R catches invalid file type.", {
 	config$report_format <- c("invalid_format")
@@ -100,6 +109,27 @@ test_that("Test that validate-config.R catches invalid file type.", {
 	)
 })
 
+
+test_that("Test that validate-config.R catches invalid distribution selection metric.", {
+	config$selection_metric <- "invalid_metric"
+	expect_error(
+		validate_config(config),
+		regexp = "selection_metric 'invalid_metric' is invalid."
+	)
+})
+
+
+test_that("Test that validate-config.R catches invalid distribution selection metric.", {
+	config$estimation_method <- "invalid_method"
+	expect_error(
+		validate_config(config),
+		regexp = "estimation_method 'invalid_method' is invalid."
+	)
+})
+
+
+
+# Warnings
 test_that("Test that validate-config.R warns when bbmk_repetitions < 10000.", {
 	config$bbmk_repetitions <- as.integer(9999)
 	expect_message(
@@ -107,6 +137,7 @@ test_that("Test that validate-config.R warns when bbmk_repetitions < 10000.", {
 		regexp = "Warning: bbmk_repetitions should be at least 10000.",
 	)
 })
+
 
 test_that("Test that validate-config.R warns when window_step > window_length.", {
 	config$window_step <- as.integer(20)

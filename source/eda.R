@@ -20,7 +20,6 @@ source("helpers/load-data.R")
 source("helpers/validate-config.R")
 source("helpers/validate-split.R")
 
-
 # Create command line options
 option_list <- list(
   make_option(c("-c","--config"), type = "character", help = "YAML confiugration file.")

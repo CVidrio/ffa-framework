@@ -8,6 +8,7 @@ add_theme <- function(p) {
 	scale_y_continuous(breaks = scales::pretty_breaks(n = 10)) +
 	theme_minimal() +
 	theme(
+		plot.background = element_rect(fill = "white", color = NA),
 		plot.title = element_text(size = 20, hjust = 0.5),
 		plot.margin = margin(5, 15, 5, 15),
 		axis.title = element_text(size = 16),

@@ -1,5 +1,3 @@
-library(testthat)
-
 test_that("Test mwmk-test.R on data set #1", {
 
 	# Load dataset and run MK test
@@ -38,6 +36,7 @@ test_that("Test mwmk-test.R on data set #1", {
 
 })
 
+
 test_that("Test mwmk-test.R on data set #2", {
 
 	# Load dataset and run MK test
@@ -51,6 +50,7 @@ test_that("Test mwmk-test.R on data set #2", {
 	expect_equal(p_value, 0.0045, tolerance = 1e-3)
 
 })
+
 
 test_that("Test mwmk-test.R on data set #3.1", {
 
@@ -66,6 +66,7 @@ test_that("Test mwmk-test.R on data set #3.1", {
 
 })
 
+
 test_that("Test mwmk-test.R on data set #3.2", {
 
 	# Load dataset and run MK test
@@ -80,6 +81,7 @@ test_that("Test mwmk-test.R on data set #3.2", {
 
 })
 
+
 test_that("Test mwmk-test.R on data set #3.3", {
 
 	# Load dataset and run MK test
@@ -93,5 +95,3 @@ test_that("Test mwmk-test.R on data set #3.3", {
 	expect_equal(p_value, 0.0024, tolerance = 1e-3)
 
 })
-
-

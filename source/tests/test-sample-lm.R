@@ -1,10 +1,8 @@
-library(testthat)
-
-test_that("Test sample-l-moments.R on data set #1", {
+test_that("Test sample-lm.R on data set #1", {
 
 	# Load dataset and compute sample L-moments
 	ams <- data1$df_clean$max
-	results <- sample_l_moments(ams)
+	results <- sample_lm(ams)
 	list2env(results, envir = environment())
 
 	# Test the L-moments
@@ -27,11 +25,12 @@ test_that("Test sample-l-moments.R on data set #1", {
 
 })
 
-test_that("Test sample-l-moments.R on data set #2", {
+
+test_that("Test sample-lm.R on data set #2", {
 
 	# Load dataset and compute sample L-moments
 	ams <- data2$df_clean$max
-	results <- sample_l_moments(ams)
+	results <- sample_lm(ams)
 	list2env(results, envir = environment())
 
 	# Test the L-moments
@@ -54,11 +53,12 @@ test_that("Test sample-l-moments.R on data set #2", {
 
 })
 
-test_that("Test sample-l-moments.R on data set #3.1", {
+
+test_that("Test sample-lm.R on data set #3.1", {
 
 	# Load dataset and compute sample L-moments
 	ams <- data3_1$df_clean$max
-	results <- sample_l_moments(ams)
+	results <- sample_lm(ams)
 	list2env(results, envir = environment())
 
 	# Test the L-moments
@@ -81,11 +81,12 @@ test_that("Test sample-l-moments.R on data set #3.1", {
 
 })
 
-test_that("Test sample-l-moments.R on data set #3.2", {
+
+test_that("Test sample-lm.R on data set #3.2", {
 
 	# Load dataset and compute sample L-moments
 	ams <- data3_2$df_clean$max
-	results <- sample_l_moments(ams)
+	results <- sample_lm(ams)
 	list2env(results, envir = environment())
 
 	# Test the L-moments
@@ -108,11 +109,12 @@ test_that("Test sample-l-moments.R on data set #3.2", {
 
 })
 
-test_that("Test sample-l-moments.R on data set #3.3", {
+
+test_that("Test sample-lm.R on data set #3.3", {
 
 	# Load dataset and compute sample L-moments
 	ams <- data3_3$df_clean$max
-	results <- sample_l_moments(ams)
+	results <- sample_lm(ams)
 	list2env(results, envir = environment())
 
 	# Test the L-moments
@@ -134,4 +136,3 @@ test_that("Test sample-l-moments.R on data set #3.3", {
 	expect_equal(log_lm$t4,  0.0557, tol = 1e-4)
 
 })
-

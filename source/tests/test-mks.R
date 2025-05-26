@@ -1,5 +1,3 @@
-library(testthat)
-
 test_that("Test mks-test.R on data set #1", {
 
 	# Load dataset and run MKS test
@@ -17,9 +15,10 @@ test_that("Test mks-test.R on data set #1", {
 	expect_equal(bound, 1.960, tolerance = 1e-3)
 
 	# Additional test of crossing locations (this dataset only)
+	# NOTE: +1 since we define crossing index differently
 	expect_equal(
 		crossing_df$cross, 
-		c(6, 36, 38, 41, 42, 54) + 1, # +1 since we define crossing index differently
+		c(6, 36, 38, 41, 42, 54) + 1, 
 	)
 
 	# Additional test of crossing statistics (this dataset only)
@@ -30,6 +29,7 @@ test_that("Test mks-test.R on data set #1", {
 	)
 
 })
+
 
 test_that("Test mks-test.R on data set #2", {
 
@@ -46,6 +46,7 @@ test_that("Test mks-test.R on data set #2", {
 
 })
 
+
 test_that("Test mks-test.R on data set #3.1", {
 
 	# Load dataset and run MKS test
@@ -61,6 +62,7 @@ test_that("Test mks-test.R on data set #3.1", {
 
 })
 
+
 test_that("Test mks-test.R on data set #3.2", {
 
 	# Load dataset and run MKS test
@@ -75,6 +77,7 @@ test_that("Test mks-test.R on data set #3.2", {
 	expect_equal(p_value, 0.156, tolerance = 1e-3)
 
 })
+
 
 test_that("Test mks-test.R on data set #3.3", {
 

@@ -47,10 +47,12 @@ validate_name <- function(mode, opt_name) {
 		"validate-name",
 		"validate-split",
 		"white",
-		"sample-l-moments",
+		"sample-lm",
 		"l-distance",
 		"l-kurtosis",
-		"z-statistic"
+		"z-statistic",
+		"l-moments",
+		"s-bootstrap"
 	)
 
 	if (mode == "tests" & !(opt_name %in% test_names)) {

@@ -1,12 +1,8 @@
 # Model Selection
 
-Model selection takes place in three steps:
-
-1. Select a _metric_ for comparing distributions.
-2. Select a probability distribution using the metric chosen in (1).
-3. Incorporate the non-stationary structure to obtain a model for FFA.
-
-We use the CRAN package [lmom](https://cran.r-project.org/web/packages/lmom/index.html) to compute the sample L-moments.
+Our framework uses the method of L-moment ratios to choose a suitable probability model for frequency analysis.
+This technique involves comparing the L-moments of the data with the known L-moments of various probability distributions.
+The CRAN package [lmom](https://cran.r-project.org/web/packages/lmom/index.html) is used extensively in this portion of the framework.
 
 ## An Introduction to L-Moments
 
@@ -30,7 +26,7 @@ $$
 b_{r} = \frac{1}{n} \sum_{i=1}^{r} x_{i:n} \left(\frac{i-1}{n-1}\right) ^{r}
 $$
 
-**Remark**: The first four L-moments can be computed as linear combinations of the PWMs:
+**Remark**: The first four sample L-moments can be computed as linear combinations of the PWMs:
 
 $$
 \begin{aligned}
@@ -41,56 +37,76 @@ l_{4} &= 20b_{3} - 30b_{2} + 12b_{1} - b_{0}
 \end{aligned}
 $$
 
-The L-moments are used to compute the **L-skewness** $t_{3} = l_{3} / l_{2}$ and the **L-kurtosis** $t_{4} = l_{4} / l_{2}$. We can use these two statistics to select a distribution by comparing them to their theoretical values.
+The L-moments are used to compute the **Sample L-variance** $t_{2}$, **Sample L-skewness** $t_{3}$ and the **Sample L-kurtosis** $t_{4}$ using the following formulas:
+
+$$
+\begin{aligned}
+t_{2} &= l_{2} / l_{1} \\
+t_{3} &= l_{3} / l_{2} \\ 
+t_{4} &= l_{4} / l_{2}
+\end{aligned}
+$$ 
+
+Then, we compare these statistics to their theoretical values to select a distribution.
 
 ## List of Candidate Distributions
-
-Based on the selection metric, we choose a distribution from the following list:
 
 | Distribution              | Abbreviation | Number of Parameters |
 | ------------------------- | ------------ | -------------------- |
 | Generalized Extreme Value | GEV          | 3                    |
-| Generalized Logistic      | GLO          | 3                    |
-| Generalized Normal        | GNO          | 3                    |
-| (Log) Pearson Type III    | PE3/LP3      | 3                    |
-| (Log) Normal              | NOR/LNO      | 2                    |
 | Gumbel[^1]                | GUM          | 2                    |
-| Logistic                  | LOG          | 2                    |
-| Exponential               | EXP          | 1                    |
+| (Log) Normal              | NOR/LNO      | 2                    |
+| Generalized Logistic      | GLO          | 3                    |
+| (Log) Pearson Type III    | PE3/LP3      | 3                    |
+| Generalized Normal        | GNO          | 3                    |
+| Weibull                   | WEI          | 3                    |
+| Generalized Pareto        | GPA          | 3                    |
 
 [^1]: The Gumbel distribution is equivalent to the GEV distribution with $\xi = 0$.
 
-The four-parameter kappa distribution (K4D), generalizes all eight of the distributions above.
+The four-parameter kappa distribution (K4D), generalizes all ten of the distributions above.
 
-**Note**: Probability distributions with less than $3$ parameters have constant L-skewness and L-kurtosis regardless of their parameters. Probability distributions with $3$ parameters have 
+**Note**: Probability distributions with less than three parameters have constant L-skewness $\tau_{3}$ and L-kurtosis $\tau_{4}$ regardless of their parameters. The L-skewness and L-kurtosis of probability distributions with three parameters is a function of the shape parameter $\kappa$.
 
-## (1) Selection Metrics
+## Selection Metrics
 
 ### L-Distance
 
-Select the probability distribution by comparing the euclidean distance between the sample L-skewness and sample L-kurtosis $(t_{3}, t_{4})$ and the L-moment ratios for each candidate distribution.
+Compare the euclidean distance between the sample L-skewness and sample L-kurtosis $(t_{3}, t_{4})$ and the known L-moment ratios $(\tau_{3}, \tau_{4})$ for each candidate distribution.
+For probability distributions with three parameters, we use the *minimum distance* between the L-moment ratio curve $(\tau _{3}(\kappa ), \tau _{4}(\kappa ))$and the L-moment ratios of the sample $(t_{3}, t_{4})$.
 
 ### L-Kurtosis
 
-Select the probability distribution by comparing the sample L-kurtosis $t_{4}$ with the theoretical value for each probability distribution. This method only works with 3-parameter candidate distributions.
+The L-kurtosis method is only used for three parameter probability distributions. 
+First, identify the shape parameter $\kappa^{*}$ such that $t_{3} = \tau _{3}(\kappa ^{*})$.
+Then, compare the difference between the sample L-kurtosis and the theoretical L-kurtosis using the metric $|\tau_{4}(\kappa ^{*}) - t_{4} |$.
 
 ### Z-statistic
 
-The Z-statistic selection metric is calculated as follows:
+The Z-statistic selection metric is calculated as follows (for three parameter distributions):
 
-1. Fit the K4D distribution to the sample AMS with sample size $n$, considering its sample L-moment ratios (denoted herein as $t_{r}^{s}$) and $l_{1} = 1$.
-2. Generate $N_{\text{sim}}$ synthetic series from the fitted K4D distribution of size $n$.
-3. Calculate the L-skewness $t_{3}^{[i]}$ and L-kurtosis $t_{4}^{[i]}$ of each synthetic dataset.
-4. Calculate the bias and standard deviation of $t_{4}^{s}$:
+1. Fit the four-parameter Kappa (K4D) distribution to the data using $t_{2}$, $t_{3}$, and $t_{4}$.
+2. Generate $N_{\text{sim}}$ bootstrap samples from the fitted K4D distribution.
+3. Calculate the sample L-kurtosis $t_{4}^{[i]}$ of each synthetic dataset.
+4. Calculate the bias and standard deviation of the bootstrap distribution:
 
-$$
-B_{4} = N_{\text{sim} }^{-1} \sum_{i = 1}^{N_{\text{sim} }} \left(t_{4}^{[i]} - t_{4}^{s}\right)
-$$
+    $$
+    B_{4} = N_{\text{sim} }^{-1} \sum_{i = 1}^{N_{\text{sim} }} \left(t_{4}^{[i]} - t_{4}^{s}\right)
+    $$
 
-$$
-\sigma _{4} = \left[(N_{\text{sim} } - 1)^{-1} \left\{\sum_{i - 1}^{N_{\text{sim} }} \left(t_{4}^{[i]} - t_{4}^{s}\right)^2 - N_{\text{sim} } B_{4}^2\right\} \right] ^{\frac{1}{2}}
-$$
+    $$
+    \sigma _{4} = \left[(N_{\text{sim} } - 1)^{-1} \left\{\sum_{i - 1}^{N_{\text{sim} }} \left(t_{4}^{[i]} - t_{4}^{s}\right)^2 - N_{\text{sim} } B_{4}^2\right\} \right] ^{\frac{1}{2}}
+    $$
 
-This method only works with 3-parameter candidate distributions.
+5. Identify the shape parameter $\kappa^{*}$ such that $t_{3} = \tau _{3}(\kappa ^{*})$.
+6. Use bootstrap distribution to compute the Z-statistic for each distribution:
 
-## (3) FFA Model
+    $$
+    z = \frac{\tau_{4} (\kappa ^{*}) - t_{4} + B_{4} }{ \sigma _{4}}
+    $$ 
+
+7. Choose the distribution with the *smallest* Z-statistic.
+
+## Handling Non-Stationarity
+
+TBD

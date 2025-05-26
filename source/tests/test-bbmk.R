@@ -1,14 +1,11 @@
-library(testthat)
+# Set seed for reproducibility
+set.seed(1)
 
 # NOTE: The BB-MK test uses bootstrapping which introduces randomness
 # Therefore, these unit tests have higher tolerance than the other ones
 # Additionally, the MATLAB scripts only run this test if least_lag > 0
 # Therefore, we only unit test on datasets #2 and #3.3
-
 test_that("Test bbmk-test.R on data set #2", {
-
-	# Set seed for reproducibility
-	set.seed(1)
 
 	# Load dataset and run BB-MK test
 	df_clean <- data2$df_clean
@@ -21,10 +18,8 @@ test_that("Test bbmk-test.R on data set #2", {
 	
 })
 
-test_that("Test bbmk-test.R on data set #3.3", {
 
-	# Set seed for reproducibility
-	set.seed(1)
+test_that("Test bbmk-test.R on data set #3.3", {
 
 	# Load dataset and run BB-MK test
 	df_clean <- data3_3$df_clean

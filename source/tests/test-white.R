@@ -1,5 +1,3 @@
-library(testthat)
-
 test_that("Test white-test.R on data set #1", {
 
 	# Load dataset and run White test
@@ -13,6 +11,7 @@ test_that("Test white-test.R on data set #1", {
 	expect_equal(p_value, 0.5713, tolerance = 1e-3)
 
 })
+
 
 test_that("Test white-test.R on data set #2", {
 
@@ -28,6 +27,7 @@ test_that("Test white-test.R on data set #2", {
 
 })
 
+
 test_that("Test white-test.R on data set #3.1", {
 
 	# Load dataset and run White test
@@ -41,6 +41,7 @@ test_that("Test white-test.R on data set #3.1", {
 	expect_equal(p_value, 0.0874, tolerance = 1e-3)
 
 })
+
 
 test_that("Test white-test.R on data set #3.2", {
 
@@ -56,6 +57,7 @@ test_that("Test white-test.R on data set #3.2", {
 
 })
 
+
 test_that("Test white-test.R on data set #3.3", {
 
 	# Load dataset and run White test
@@ -69,5 +71,3 @@ test_that("Test white-test.R on data set #3.3", {
 	expect_equal(p_value, 0.1337, tolerance = 1e-3)
 
 })
-
-

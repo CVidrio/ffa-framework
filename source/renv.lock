@@ -851,6 +851,51 @@
       "Maintainer": "Trevor L Davis <trevor.l.davis@gmail.com>",
       "Repository": "CRAN"
     },
+    "ggmagnify": {
+      "Package": "ggmagnify",
+      "Version": "0.4.1",
+      "Source": "Repository",
+      "Title": "Create a Magnified Inset of Part of a \"Ggplot\" Object",
+      "Author": "David Hugh-Jones [aut, cre]",
+      "Maintainer": "David Hugh-Jones <davidhughjones@gmail.com>",
+      "Authors@R": "person(\"David\", \"Hugh-Jones\", , \"davidhughjones@gmail.com\", role = c(\"aut\", \"cre\"))",
+      "Description": "Creates a magnified inset of a ggplot, with projection lines and borders around the target area and inset, plus optional shadow. Rectangular, elliptical or arbitrary regions can be magnified. Works with facets and maps. Geoms can optionally be recomputed within the inset area.",
+      "License": "MIT + file LICENSE",
+      "Encoding": "UTF-8",
+      "Language": "en",
+      "Roxygen": "list(markdown = TRUE, roclets = c(\"collate\", \"rd\", \"namespace\", \"doctest::dt_roclet\"), packages = \"doctest\")",
+      "RoxygenNote": "7.3.1",
+      "Depends": [
+        "R (>= 4.1.0)"
+      ],
+      "Imports": [
+        "cli",
+        "ggplot2 (>= 3.3.4)",
+        "grid",
+        "gridExtra",
+        "gridGeometry",
+        "rlang"
+      ],
+      "Suggests": [
+        "doctest",
+        "ggfx",
+        "hexbin",
+        "maps",
+        "rmarkdown",
+        "sf",
+        "testthat (>= 3.0.0)"
+      ],
+      "URL": "https://github.com/hughjonesd/ggmagnify, https://hughjonesd.github.io/ggmagnify/",
+      "BugReports": "https://github.com/hughjonesd/ggmagnify/issues",
+      "Config/testthat/edition": "3",
+      "Collate": "'compute-shape-grob.R' 'stat-magnify.R' 'geom-magnify.R' 'geom-magnify-tile.R' 'ggplot-utils.R' 'helpers.R' 'inset-theme.R' 'projection.R'",
+      "Remotes": "thomasp85/ggforce",
+      "Repository": "https://hughjonesd.r-universe.dev",
+      "RemoteUrl": "https://github.com/hughjonesd/ggmagnify",
+      "RemoteRef": "v0.4.1",
+      "RemoteSha": "55ca1ac0a5581695b8f04804b470424ad2f729ed",
+      "NeedsCompilation": "no"
+    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.5.2",
@@ -959,6 +1004,63 @@
       "NeedsCompilation": "yes",
       "Author": "Jim Hester [aut] (<https://orcid.org/0000-0002-2739-7082>), Jennifer Bryan [aut, cre] (<https://orcid.org/0000-0002-6983-2759>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Jennifer Bryan <jenny@posit.co>",
+      "Repository": "CRAN"
+    },
+    "gridExtra": {
+      "Package": "gridExtra",
+      "Version": "2.3",
+      "Source": "Repository",
+      "Authors@R": "c(person(\"Baptiste\", \"Auguie\", email = \"baptiste.auguie@gmail.com\", role = c(\"aut\", \"cre\")), person(\"Anton\", \"Antonov\", email = \"tonytonov@gmail.com\", role = c(\"ctb\")))",
+      "License": "GPL (>= 2)",
+      "Title": "Miscellaneous Functions for \"Grid\" Graphics",
+      "Type": "Package",
+      "Description": "Provides a number of user-level functions to work with \"grid\" graphics, notably to arrange multiple grid-based plots on a page, and draw tables.",
+      "VignetteBuilder": "knitr",
+      "Imports": [
+        "gtable",
+        "grid",
+        "grDevices",
+        "graphics",
+        "utils"
+      ],
+      "Suggests": [
+        "ggplot2",
+        "egg",
+        "lattice",
+        "knitr",
+        "testthat"
+      ],
+      "RoxygenNote": "6.0.1",
+      "NeedsCompilation": "no",
+      "Author": "Baptiste Auguie [aut, cre], Anton Antonov [ctb]",
+      "Maintainer": "Baptiste Auguie <baptiste.auguie@gmail.com>",
+      "Repository": "CRAN"
+    },
+    "gridGeometry": {
+      "Package": "gridGeometry",
+      "Version": "0.4-0",
+      "Source": "Repository",
+      "Type": "Package",
+      "Title": "Polygon Geometry in 'grid'",
+      "Authors@R": "c(person(\"Paul\", \"Murrell\", role = c(\"aut\", \"cre\"), email = \"paul@stat.auckland.ac.nz\"), person(\"Jack\", \"Wong\", role = \"aut\"))",
+      "Description": "Functions for performing polygon geometry with 'grid' grobs. This allows complex shapes to be defined by combining simpler shapes.",
+      "URL": "https://github.com/pmur002/gridgeometry, https://stattech.wordpress.fos.auckland.ac.nz/2019/03/04/2019-01-a-geometry-engine-interface-for-grid/, https://stattech.blogs.auckland.ac.nz/2022/06/01/2022-02-constructive-geometry-for-complex-grobs/, https://stattech.wordpress.fos.auckland.ac.nz/2022/12/14/2022-03-offsetting-lines-and-polygons-in-grid/",
+      "Depends": [
+        "R (>= 3.6.0)",
+        "grid"
+      ],
+      "Imports": [
+        "grDevices",
+        "polyclip (>= 1.10-0)"
+      ],
+      "Suggests": [
+        "graphics",
+        "lattice"
+      ],
+      "License": "GPL (>= 2)",
+      "NeedsCompilation": "no",
+      "Author": "Paul Murrell [aut, cre], Jack Wong [aut]",
+      "Maintainer": "Paul Murrell <paul@stat.auckland.ac.nz>",
       "Repository": "CRAN"
     },
     "gtable": {
@@ -1811,6 +1913,27 @@
       "NeedsCompilation": "no",
       "Author": "Hadley Wickham [aut], Winston Chang [aut], Jim Hester [aut], Lionel Henry [aut, cre], Posit Software, PBC [cph, fnd], R Core team [ctb] (Some namespace and vignette code extracted from base R)",
       "Maintainer": "Lionel Henry <lionel@posit.co>",
+      "Repository": "CRAN"
+    },
+    "polyclip": {
+      "Package": "polyclip",
+      "Version": "1.10-7",
+      "Source": "Repository",
+      "Date": "2024-07-23",
+      "Title": "Polygon Clipping",
+      "Authors@R": "c(person(\"Angus\", \"Johnson\", role = \"aut\",  comment=\"C++ original, http://www.angusj.com/delphi/clipper.php\"), person(\"Adrian\", \"Baddeley\", role = c(\"aut\", \"trl\", \"cre\"), email = \"Adrian.Baddeley@curtin.edu.au\"), person(\"Kurt\", \"Hornik\", role = \"ctb\"), person(c(\"Brian\", \"D.\"), \"Ripley\", role = \"ctb\"), person(\"Elliott\", \"Sales de Andrade\", role=\"ctb\"), person(\"Paul\", \"Murrell\", role = \"ctb\"), person(\"Ege\", \"Rubak\", role=\"ctb\"), person(\"Mark\", \"Padgham\", role=\"ctb\"))",
+      "Maintainer": "Adrian Baddeley <Adrian.Baddeley@curtin.edu.au>",
+      "Depends": [
+        "R (>= 3.5.0)"
+      ],
+      "Description": "R port of Angus Johnson's open source library 'Clipper'. Performs polygon clipping operations (intersection, union, set minus, set difference) for polygonal regions of arbitrary complexity, including holes. Computes offset polygons (spatial buffer zones, morphological dilations, Minkowski dilations) for polygonal regions and polygonal lines. Computes Minkowski Sum of general polygons. There is a function for removing self-intersections from polygon data.",
+      "License": "BSL",
+      "URL": "https://www.angusj.com, https://sourceforge.net/projects/polyclipping, https://github.com/baddstats/polyclip",
+      "BugReports": "https://github.com/baddstats/polyclip/issues",
+      "ByteCompile": "true",
+      "Note": "built from Clipper C++ version 6.4.0",
+      "NeedsCompilation": "yes",
+      "Author": "Angus Johnson [aut] (C++ original, http://www.angusj.com/delphi/clipper.php), Adrian Baddeley [aut, trl, cre], Kurt Hornik [ctb], Brian D. Ripley [ctb], Elliott Sales de Andrade [ctb], Paul Murrell [ctb], Ege Rubak [ctb], Mark Padgham [ctb]",
       "Repository": "CRAN"
     },
     "praise": {
