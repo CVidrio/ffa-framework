@@ -64,14 +64,17 @@ selection_results <- if (selection_metric == "L-distance") {
 	z_statistic(sml, dml, ams)
 }
 
+# Save the distribution to a variable
+distribution <- selection_results$recommendation
+
 # Generate a plot
 lm_plot <- plot_lm(selection_metric, selection_results, sml, dml)
 name <- glue("{ tolower(selection_metric) }-selection.png")
-ggsave(name, plot = lm_plot, path = img_path, width = 10, height = 8, bg = "white")
+ggsave(name, plot = lm_plot, path = img_path, width = 10, height = 8)
 
 # Run parameter estimation
 estimation_results <- if(estimation_method == "L-moments") {
-	l_moments(sml)
+	l_moments(ams, distribution)
 } else if (estimation_method == "MLE") {
 	NULL	
 } else if (estimation_method == "GMLE") {
@@ -80,12 +83,14 @@ estimation_results <- if(estimation_method == "L-moments") {
 
 # Run uncertainty quantification
 uncertainty_results <- if(uncertainty_method == "S-bootstrap") {
-	s_bootstrap(sml)
+	s_bootstrap(ams, distribution, estimation_method)
 } else if (uncertainty_method == "RFPL") {
 	NULL	
 } else if (uncertainty_method == "RFGPL") {
 	NULL
 }
 
-
-
+# Generate a plot
+uncertainty_plot <- plot_uncertainty(uncertainty_results, distribution)
+name <- glue("{ tolower(uncertainty_method) }-results.png")
+ggsave(name, plot = uncertainty_plot, path = img_path, width = 10, height = 8)

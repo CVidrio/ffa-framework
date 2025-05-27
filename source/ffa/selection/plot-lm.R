@@ -22,7 +22,6 @@ plot_lm <- function(metric, results, slm, dlm) {
 	})
 
 	# Initilaize the color palette
-	groups <- c("1", "2", "3", "4", "5", "6", "7", "8")
 	labels <- c("Sample", "Log-Sample", "GEV/GUM", "GLO", "GNO/NOR/LNO", "PE3/LP3", "WEI", "GPA")
 	colors <- c("#000000", "#000000", "#e69f00", "#56b4e9", "#009e73", "#0072b2", "#d55e00", "#cc79a7")
 	shapes <- c(24, 15, 16, NA, 16, NA, NA, NA)

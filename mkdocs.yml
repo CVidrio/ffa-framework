@@ -7,6 +7,9 @@ nav:
   - Documentation:
     - Exploratory Data Analysis: eda.md
     - Model Selection: model-selection.md
+    - Parameter Estimation: parameter-estimation.md
+    - Frequency Analysis: frequency-analysis.md
+    - Uncertainty Quantification: uncertainty-quantification.md
   - About:
     - Goals: goals.md
     - Roadmap: roadmap.md
