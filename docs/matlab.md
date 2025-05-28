@@ -29,4 +29,15 @@ This page documents changes from [original MATLAB code](https://zenodo.org/recor
 
 ### Bug Fixes
 
-- L-moments parameter estimation for GEV and GPA distributions has an unnecessary sign change.
+- L-moments parameter estimation for GEV/GPA distributions has an unnecessary sign change.
+
+### Framework Changes
+
+Parameterization of the LP3 distribution failed for some datasets because MATLAB is unable to handle large numbers. To manage this issue, the MATLAB version used the conventional moments when this occurred. This behaviour is no longer necessary and has been removed.
+
+The procedure for computing the Z-statistic selection metric has been changed slightly. In the MATLAB version, kappa and log-kappa distributions were fitted to the data. Then, two bootstrap samples were generated, one from the kappa distribution and one from the log-kappa distribution. In the new version, we do not fit the log-kappa distribution and use a *single* bootstrap sample to compute the sample L-moments and log-L-moments. We do this for three reasons:
+
+1. Consistency with the other metrics, which do not use the L-moments for the log-normal/log-pearson distributions. Instead, they use the fact that under the log-normal/log-pearson models, the log-transformed data has the same L-moments as the normal/pearson distributions.
+2. It is hard to estimate the parameters of the log-kappa distribution from L-moments.
+3. By taking less bootstrap samples, we improve the speed of our code.
+

@@ -10,6 +10,7 @@ nav:
     - Parameter Estimation: parameter-estimation.md
     - Frequency Analysis: frequency-analysis.md
     - Uncertainty Quantification: uncertainty-quantification.md
+    - Model Assessment: model-assessment.md
   - About:
     - Goals: goals.md
     - Roadmap: roadmap.md

@@ -1,0 +1,82 @@
+---
+title: "FFA Report"
+output:
+  html_document:
+    css: styles.css
+params: 
+    selection_metric: "[selection_metric]"
+    selection_results: "[selection_results]"
+    estimation_method: "[estimation_method]"
+    estimation_results: "[estimation_results]"
+    uncertainty_method: "[uncertainty_method]"
+    uncertainty_results: "[uncertainty_results]"
+    assessment: "[assessment]"
+    output_dir: "[output_dir]"
+---
+
+## '`r selection_metric`' Distribution Selection
+
+**Recommended Distribution**: `r selection_results$recommendation`
+
+<!-- Model Selection Table -->
+```{r, echo = FALSE}
+distance <- selection_results$distance
+metrics <- sapply(distance, function(x) round(x$metric, 4))
+
+df <- data.frame(
+	Distribution = names(distance),
+	Metric = unname(metrics)
+)
+
+knitr::kable(df, align = "cc")
+```
+
+<!-- Model Selection Plot -->
+```{r, echo = FALSE}
+img_name <- glue("img/{ tolower(selection_metric) }-selection.png")
+include_graphics(file.path(params$output_dir, img_name))
+```
+
+## '`r estimation_method`' Parameter Estimation
+
+<!-- Parameter Estimation Table -->
+**Estimated Parameters**: `r round(estimation_results, 4)`
+
+## '`r uncertainty_method`' Uncertainty Quantification
+
+<!-- Uncertainty Quantification Table -->
+```{r, echo = FALSE}
+columns <- c("Estimates", "CI (Lower)", "CI (Upper)", "Years")
+knitr::kable(as.data.frame(uncertainty_results), col.names = columns, align = "cccc")
+```
+
+<!-- Uncertainty Quantification Plot -->
+```{r, echo = FALSE}
+img_name <- glue("img/{ tolower(uncertainty_method) }-results.png")
+include_graphics(file.path(params$output_dir, img_name))
+```
+
+## Model Assessment
+
+<!-- Model Assessment Table -->
+```{r, echo = FALSE}
+assessment_df <- data.frame(
+	R2 = round(assessment$R2, 4),
+	RMSE = round(assessment$RMSE, 4),
+	Bias = round(assessment$Bias, 4),
+	AIC = round(assessment$AIC, 4), 
+	BIC = round(assessment$BIC, 4), 
+	AW = round(assessment$AW, 4), 
+	POC = round(assessment$POC, 4),
+	CWI = round(assessment$CWI, 4)
+)
+
+knitr::kable(assessment_df, align = "cccccccc")
+```
+
+<!-- Model Selection Plot -->
+```{r, echo = FALSE}
+include_graphics(file.path(params$output_dir, "img/assessment-results.png"))
+```
+
+

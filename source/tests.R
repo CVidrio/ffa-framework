@@ -26,6 +26,9 @@ source("ffa/estimation/l-moments.R")
 # Source uncertainty functions
 source("ffa/uncertainty/s-bootstrap.R")
 
+# Source model sasessment function
+source("ffa/assessment//model-assessment.R")
+
 # Source helper functions
 source("helpers/load-data.R")
 source("helpers/validate-config.R")

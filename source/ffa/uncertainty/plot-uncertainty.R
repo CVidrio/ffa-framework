@@ -1,10 +1,5 @@
 library(ggplot2)
-library(dplyr)
-library(patchwork)
 library(glue)
-
-# Source the plot theme (working directory is /source)
-source("helpers/plot-theme.R")
 
 plot_uncertainty <- function(results, distribution) {
 
@@ -22,7 +17,6 @@ plot_uncertainty <- function(results, distribution) {
 	# Define labels for the plot 
 	x_label <- "Time (Years)"
 	y_label <- expression("AMS (" * m^3/s * ")")
-	title <- glue("Frequency Curve ({distribution})")
 
 	# Define properties for the legend
 	labels <- c("Confidence Bounds", "Estimates")
@@ -35,25 +29,26 @@ plot_uncertainty <- function(results, distribution) {
 		geom_ribbon(aes(ymin = ci_lower, ymax = ci_upper), fill = "gray", alpha = 0.4) +
 		geom_line(aes(y = estimates, linetype = "2"), color = "blue", linewidth = 1) +
 		scale_linetype_manual(labels = labels, values = styles) +
-		labs(x = x_label, y = y_label, title = title, linetype = NULL)
+		labs(x = x_label, y = y_label, linetype = "Legend")
 
-	# Add the theme and scale the x-axis
-	p1 <- add_theme(p1) + scale_x_log10(breaks = df$t) 
+	# Add the theme without plot-theme.R (since there is a different scale) and return
+	p1 <- p1 + 
+		scale_x_log10(breaks = df$t) +
+		theme_minimal() +
+		theme(
+			plot.background = element_rect(fill = "white", color = NA),
+			plot.margin = margin(5, 15, 5, 15),
+			axis.title = element_text(size = 16),
+			axis.text = element_text(size = 12),
+			panel.grid.minor = element_blank(),
+			legend.title = element_text(hjust = 0.5),
+			legend.background = element_rect(fill = "white", color = "black"),
+			legend.box.background = element_rect(color = "black"),
+			legend.direction = "vertical"
+		)
 
 
-	# Move the legend to the bottom
-	p1 <- p1 + theme(legend.position = "bottom", legend.direction = "horizontal")
-
-	# Mutate df so that it displays better
-	df <- df[ , c("t", "estimates")] |> mutate(estimates = round(estimates, 2))
-	names(df) <- c("Years", "Estimate")
-
-	# Create a table
-	table <- tableGrob(df, rows = NULL, theme = ttheme_minimal(base_size = 14))
-
-	# Add the summary table and a title
-	(wrap_elements(full = p1) + wrap_elements(full = table)) +
-		plot_layout(widths = c(0.8, 0.2), guides = "collect")
+	return(p1)
 
 }
 

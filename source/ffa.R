@@ -52,7 +52,7 @@ data <- load(data_folder, csv_files, window_length, window_step)
 # Run distribution selection selection metric specified in config.yml
 message(glue("Running distribution selection with method '{selection_metric}'."))
 
-ams <- data$df$max
+ams <- data$df_clean$max
 sml <- sample_lm(ams)
 dml <- distribution_lm()
 
@@ -94,3 +94,52 @@ uncertainty_results <- if(uncertainty_method == "S-bootstrap") {
 uncertainty_plot <- plot_uncertainty(uncertainty_results, distribution)
 name <- glue("{ tolower(uncertainty_method) }-results.png")
 ggsave(name, plot = uncertainty_plot, path = img_path, width = 10, height = 8)
+
+# Run model assessment
+assessment <- model_assessment(ams, distribution, estimation_results, uncertainty_results)
+
+# Generate a plot
+assessment_plot <- plot_assessment(ams, assessment)
+name <- "assessment-results.png"
+ggsave(name, plot = assessment_plot, path = img_path, width = 10, height = 8)
+
+# Print the results of FFA
+message("\nFFA Complete.")
+message(glue(" - Distribution selection metric: {selection_metric}"))
+message(glue(" - Selected distribution: {distribution}"))
+message(glue(" - Parameter estimation method: {estimation_method}"))
+message(glue(" - Uncertainty quantification method: {uncertainty_method}"))
+
+# If report generation is disabled, go to next file
+if (!generate_report) {
+	message("No report was generated.") 
+	quit()
+}
+
+# Define arguments for the report
+report_args = list(
+	selection_metric = selection_metric,
+	selection_results = selection_results,
+	estimation_method = estimation_method,
+	estimation_results = estimation_results,
+	uncertainty_method = uncertainty_method,
+	uncertainty_results = uncertainty_results,
+	assessment = assessment,
+	output_dir = report_path
+)
+
+# Render the report using each item in report_format given
+for (format in report_format) {
+	render(
+		input = "ffa/ffa-report.Rmd",
+		params = report_args,
+		output_format = format,
+		output_file = "ffa-report",
+		output_dir = report_path,
+		quiet = TRUE
+	)
+}
+
+# Print completion message
+message("\nReport(s) generated successfully.")
+

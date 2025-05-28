@@ -52,7 +52,8 @@ validate_name <- function(mode, opt_name) {
 		"l-kurtosis",
 		"z-statistic",
 		"l-moments",
-		"s-bootstrap"
+		"s-bootstrap",
+		"model-assessment"
 	)
 
 	if (mode == "tests" & !(opt_name %in% test_names)) {
