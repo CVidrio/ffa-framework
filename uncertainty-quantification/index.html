@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Roadmap - FFA Framework</title>
+    <title>Uncertainty Quantification - FFA Framework</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Roadmap";
-        var mkdocs_page_input_path = "roadmap.md";
+        var mkdocs_page_name = "Uncertainty Quantification";
+        var mkdocs_page_input_path = "uncertainty-quantification.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -51,7 +51,7 @@
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">Documentation</span></p>
-              <ul>
+              <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eda/">Exploratory Data Analysis</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../model-selection/">Model Selection</a>
@@ -60,24 +60,24 @@
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../frequency-analysis/">Frequency Analysis</a>
                   </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty-quantification/">Uncertainty Quantification</a>
+                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Uncertainty Quantification</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#sample-bootstrap">Sample Bootstrap</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#regula-falsi-profile-likelihood-rfpl">Regula-Falsi Profile Likelihood (RFPL)</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#regula-falsi-generalized-profile-likelihood-rfgpl">Regula-Falsi Generalized Profile Likelihood (RFGPL)</a>
+    </li>
+    </ul>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../model-assessment/">Model Assessment</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
-              <ul class="current">
+              <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../goals/">Goals</a>
                   </li>
-                  <li class="toctree-l1 current"><a class="reference internal current" href="#">Roadmap</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#command-line-interface">Command Line Interface</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#plumber-api">Plumber API</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#web-app">Web App</a>
-    </li>
-    </ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../roadmap/">Roadmap</a>
                   </li>
                   <li class="toctree-l1"><a class="reference internal" href="../changelog/">Release Notes</a>
                   </li>
@@ -100,8 +100,8 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">About</li>
-      <li class="breadcrumb-item active">Roadmap</li>
+          <li class="breadcrumb-item">Documentation</li>
+      <li class="breadcrumb-item active">Uncertainty Quantification</li>
     <li class="wy-breadcrumbs-aside">
     </li>
   </ul>
@@ -110,20 +110,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="roadmap">Roadmap</h1>
-<h2 id="command-line-interface">Command Line Interface</h2>
-<p><strong>Exploratory Data Analysis</strong>: COMPLETE</p>
-<p><strong>Flood Frequency Analysis</strong>: TBD</p>
-<h2 id="plumber-api">Plumber API</h2>
-<p>TBD</p>
-<h2 id="web-app">Web App</h2>
-<p>TBD</p>
+                <h1 id="uncertainty-quantification">Uncertainty Quantification</h1>
+<p>The FFA framework implements three methods for uncertainty quantification: </p>
+<ol>
+<li>Sample bootstrap</li>
+<li>Regula-Falsi profile likelihood (RFPL)</li>
+<li>Regula-Falsi generalized profile likelihood (RFGPL)</li>
+</ol>
+<h2 id="sample-bootstrap">Sample Bootstrap</h2>
+<p>The sample bootstrap is a flexible method for uncertainty quantification that works with all probability models and parameter estimation methods. Let <span class="arithmatex">\(n\)</span> be the size of the original dataset.</p>
+<ol>
+<li>Draw <span class="arithmatex">\(N_{\text{sim}}\)</span> bootstrap samples of size <span class="arithmatex">\(n\)</span> from the selected probability distribution.</li>
+<li>Fit a probability distribution to each bootstrap sample. For consistency, we use the same <a href="../model-selection/">model selection method</a> and <a href="../parameter-estimation/">parameter estimation method</a> as before.</li>
+<li>Compute the quantiles for each of the bootstrapped distributions. </li>
+<li>Generate confidence intervals using the mean and variance of the bootstrapped quantiles .</li>
+</ol>
+<h2 id="regula-falsi-profile-likelihood-rfpl">Regula-Falsi Profile Likelihood (RFPL)</h2>
+<h2 id="regula-falsi-generalized-profile-likelihood-rfgpl">Regula-Falsi Generalized Profile Likelihood (RFGPL)</h2>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../goals/" class="btn btn-neutral float-left" title="Goals"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../changelog/" class="btn btn-neutral float-right" title="Release Notes">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../frequency-analysis/" class="btn btn-neutral float-left" title="Frequency Analysis"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../model-assessment/" class="btn btn-neutral float-right" title="Model Assessment">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -146,10 +155,10 @@
   <span class="rst-current-version" data-toggle="rst-current-version">
     
     
-      <span><a href="../goals/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../frequency-analysis/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../changelog/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../model-assessment/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>
