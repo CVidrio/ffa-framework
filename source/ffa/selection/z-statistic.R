@@ -1,4 +1,5 @@
 library(lmom)
+library(parallel)
 
 # Select a distribution using the l-distance method
 #  - slm is a list of sample L-moments
@@ -10,23 +11,16 @@ z_statistic <- function(slm, dlm, ams, n_sim = 100000) {
 	# Fit Kappa distribution to AMS using the L-moments
 	params <- unname(pelkap(samlmu(ams)))
 
-	# Initialize lists of bootstrapped L-moments
-	sim_t4 <- numeric(n_sim)
-	sim_log_t4 <- numeric(n_sim)
-
-	# Compute bootstrapped L-moments
-	for (i in 1:n_sim) {
-
-		# Use ITS to get a random sample from the fitted Kappa distribution
+	# Compute bootstrapped L-moments using ITS on the fitted Kappa distribution
+	bootstrap_list <- mclapply(1:n_sim, function(i) {
 		p <- runif(length(ams))	
 		x <- quakap(p, params)
+		moments <- sample_lm(x)
+		c(moments$lm$t4, moments$log_lm$t4)
+	})
 
-		# Compute the L-moments and add them to bootstrap and log_bootstrap
-		bootstrap_lm <- sample_lm(x)
-		sim_t4[i] <- bootstrap_lm$lm$t4
-		sim_log_t4[i] <- bootstrap_lm$log_lm$t4
-
-	}
+	sim_t4 <- sapply(bootstrap_list, function(x) x[1])
+	sim_log_t4 <- sapply(bootstrap_list, function(x) x[2])
 
 	# Compute bias of tau4 estimates
 	b4 <- sum(sim_t4 - slm$lm$t4) / n_sim

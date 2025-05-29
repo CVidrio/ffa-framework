@@ -31,7 +31,7 @@ test_that("Test mwmk-test.R on data set #1", {
 
 	# Ensure the test results are the same as MATLAB
 	expect_equal(s_statistic, 2)
-	expect_equal(s_variance, 950, tolerance = 1)
+	expect_equal(s_variance, 950, tolerance = 1e-3)
 	expect_equal(p_value, 0.9741, tolerance = 1e-3)
 
 })
@@ -46,7 +46,7 @@ test_that("Test mwmk-test.R on data set #2", {
 
 	# Ensure the test results are the same as MATLAB
 	expect_equal(s_statistic, -70)
-	expect_equal(s_variance, 589.3333, tolerance = 1)
+	expect_equal(s_variance, 589.3333, tolerance = 1e-3)
 	expect_equal(p_value, 0.0045, tolerance = 1e-3)
 
 })
@@ -61,7 +61,7 @@ test_that("Test mwmk-test.R on data set #3.1", {
 
 	# Ensure the test results are the same as MATLAB
 	expect_equal(s_statistic, -2)
-	expect_equal(s_variance, 1.0967e3, tolerance = 1)
+	expect_equal(s_variance, 1.0967e3, tolerance = 1e-3)
 	expect_equal(p_value, 0.9759, tolerance = 1e-3)
 
 })
@@ -76,7 +76,7 @@ test_that("Test mwmk-test.R on data set #3.2", {
 
 	# Ensure the test results are the same as MATLAB
 	expect_equal(s_statistic, 85)
-	expect_equal(s_variance, 697, tolerance = 1)
+	expect_equal(s_variance, 697, tolerance = 1e-3)
 	expect_equal(p_value, 0.0015, tolerance = 1e-3)
 
 })
@@ -91,7 +91,7 @@ test_that("Test mwmk-test.R on data set #3.3", {
 
 	# Ensure the test results are the same as MATLAB
 	expect_equal(s_statistic, 81)
-	expect_equal(s_variance, 697, tolerance = 1)
+	expect_equal(s_variance, 697, tolerance = 1e-3)
 	expect_equal(p_value, 0.0024, tolerance = 1e-3)
 
 })

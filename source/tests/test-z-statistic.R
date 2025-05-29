@@ -4,11 +4,16 @@ set.seed(1)
 # NOTE: Tolerance is higher in some tests because of randomness in the bootstrap
 test_that("Test z-statistic.R on data set #1", {
 
-	# Load dataset and run Z-statistic selection
+	# Load dataset, get L-moments
 	ams <- data1$df_clean$max
 	slm <- sample_lm(ams)
 	dlm <- distribution_lm()
+
+	# Run Z-statistic selection with optional profiling
+	start <- Sys.time()
 	results <- z_statistic(slm, dlm, ams)
+	end <- Sys.time()
+	print(end - start)
 	list2env(results, envir = environment())
 
 	# Check the Kappa distribution parameters
@@ -18,8 +23,8 @@ test_that("Test z-statistic.R on data set #1", {
 	expect_equal(params[4],   -0.1704, tol = 1e-4)
 
 	# Check the bootstrap summary statistics
-	expect_equal(bootstrap$b4,     -0.0026, tol = 5e-3)
-	expect_equal(bootstrap$s4,      0.0514, tol = 5e-3)
+	expect_equal(bootstrap$b4, -0.0026, tol = 5e-3)
+	expect_equal(bootstrap$s4,  0.0514, tol = 5e-3)
 
 	# Check the Z-distances
 	expect_equal(distance$GEV$metric, -0.2524, tol = 5e-3)
@@ -109,7 +114,7 @@ test_that("Test z-statistic.R on data set #3.2", {
 
 	# Check the bootstrap summary statistics
 	expect_equal(bootstrap$b4, -0.0006, tol = 5e-3)
-	expect_equal(bootstrap$s4, 0.0409, tol = 5e-3)
+	expect_equal(bootstrap$s4,  0.0409, tol = 5e-3)
 
 	# Check the Z-distances
 	expect_equal(distance$GEV$metric,  0.1264, tol = 5e-3)

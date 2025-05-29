@@ -1,10 +1,14 @@
 test_that("Test that validate-name works with valid statistical test.", {
-	expect_no_error(validate_name("stats", "mk"))
+	expect_no_error(
+		validate_name("stats", "mk")
+	)
 })
 
 
 test_that("Test that validate-name works with valid testing file.", {
-	expect_no_error(validate_name("tests", "sens-mean"))
+	expect_no_error(
+		validate_name("tests", "sens-mean")
+	)
 })
 
 

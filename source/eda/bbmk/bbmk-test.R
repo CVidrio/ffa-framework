@@ -1,3 +1,5 @@
+library(parallel)
+
 # Load auxillary tests
 source("eda/mk/mk-test.R")
 source("eda/spearman/spearman-test.R")
@@ -20,9 +22,8 @@ bbmk_test <- function(ams, alpha = 0.05, reps = 10000, quiet = TRUE) {
 	n_blocks <- ceiling(n / block_size)
 	blocks <- split(ams[1:(n_blocks * block_size)], rep(1:n_blocks, each = block_size))
 
-	# Loop through the bootstrap
-	s_bootstrap <- numeric(reps )
-	for (sample in 1:reps ) {
+	# Loop through the bootstrap in parallel
+	bootstrap_list <- mclapply(1:reps, function(i) { 
 
 		# Sample blocks for this iteration
 		sampled_blocks <- sample(blocks, n_blocks, replace = FALSE)
@@ -37,18 +38,20 @@ bbmk_test <- function(ams, alpha = 0.05, reps = 10000, quiet = TRUE) {
 			}
 		}
 
-		s_bootstrap[sample] = s
-	}
+		return (s)
+	})
+
+	bootstrap_results <- as.numeric(bootstrap_list)
 
 	# Compute the p-value empirically using the bootstrap distribution
 	p_value <- ifelse(
 		s_statistic < 0, 
-		2 * mean(s_statistic >= s_bootstrap),
-		2 * mean(s_statistic <= s_bootstrap)
+		2 * mean(s_statistic >= bootstrap_results),
+		2 * mean(s_statistic <= bootstrap_results)
 	)
 
 	# Compute the CI bounds
-	bounds <- quantile(s_bootstrap, c(alpha / 2, 1 - (alpha / 2)))
+	bounds <- quantile(bootstrap_results, c(alpha / 2, 1 - (alpha / 2)))
 
 	# Determine whether we reject or fail to reject based on p_value and alpha
 	reject <- (p_value <= alpha)
@@ -67,7 +70,7 @@ bbmk_test <- function(ams, alpha = 0.05, reps = 10000, quiet = TRUE) {
 	if (!quiet) message(msg)
 
 	# Return the results as a list
-	mget(c("s_bootstrap", "s_statistic", "p_value", "bounds", "reject", "msg"))
+	mget(c("bootstrap_results", "s_statistic", "p_value", "bounds", "reject", "msg"))
 
 }
 

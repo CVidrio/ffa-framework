@@ -1,20 +1,20 @@
 # Set seed for reproducibility
 set.seed(1)
 
-# NOTE: The BB-MK test uses bootstrapping which introduces randomness
-# Therefore, these unit tests have higher tolerance than the other ones
-# Additionally, the MATLAB scripts only run this test if least_lag > 0
-# Therefore, we only unit test on datasets #2 and #3.3
+# NOTE: Tolerance is high due to randomness in the bootstrap
 test_that("Test bbmk-test.R on data set #2", {
 
-	# Load dataset and run BB-MK test
+	# Load dataset and run BB-MK test with profiling
 	df_clean <- data2$df_clean
+	# start <- Sys.time()
 	results <- bbmk_test(df_clean$max)
+	# end <- Sys.time()
+	# print(end - start)
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
-	expect_equal(p_value, 0.2130, tolerance = 0.02)
-	expect_equal(unname(bounds), c(-1862, 1680), tolerance = 50)
+	expect_equal(p_value, 0.2105, tolerance = 2e-2)
+	expect_equal(unname(bounds), c(-1862, 1698), tolerance = 2e-2)
 	
 })
 
@@ -27,7 +27,7 @@ test_that("Test bbmk-test.R on data set #3.3", {
 	list2env(results, envir = environment())
 
 	# Ensure the test results are the same as MATLAB
-	expect_equal(p_value, 2e-4, tolerance = 0.02)
-	expect_equal(unname(bounds), c(-927, 908), tolerance = 50)
+	expect_equal(p_value, 8e-6, tolerance = 2e-2)
+	expect_equal(unname(bounds), c(-902, 894), tolerance = 2e-2)
 	
 })

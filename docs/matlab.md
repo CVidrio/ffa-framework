@@ -33,7 +33,7 @@ This page documents changes from [original MATLAB code](https://zenodo.org/recor
 
 ### Framework Changes
 
-Parameterization of the LP3 distribution failed for some datasets because MATLAB is unable to handle large numbers. To manage this issue, the MATLAB version used the conventional moments when this occurred. This behaviour is no longer necessary and has been removed.
+Parameterization of the PE3/LP3 distributions fails for some datasets because MATLAB is unable to handle the large numbers created by the gamma function. To manage this issue, the MATLAB version used the conventional moments (i.e. sample mean/variance/skewness) when this occurred. This behaviour is no longer necessary and has been removed.
 
 The procedure for computing the Z-statistic selection metric has been changed slightly. In the MATLAB version, kappa and log-kappa distributions were fitted to the data. Then, two bootstrap samples were generated, one from the kappa distribution and one from the log-kappa distribution. In the new version, we do not fit the log-kappa distribution and use a *single* bootstrap sample to compute the sample L-moments and log-L-moments. We do this for three reasons:
 

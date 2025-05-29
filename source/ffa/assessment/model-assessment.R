@@ -1,4 +1,4 @@
-model_assessment <- function(ams, distribution, estimation_results, uncertainty_results, alpha = 0.05) {
+model_assessment <- function(ams, distribution, estimation, uncertainty, alpha = 0.05) {
 
 	# Compute plotting positions using Weibull formula 
 	n <- length(ams)                          # Number of data points
@@ -21,7 +21,7 @@ model_assessment <- function(ams, distribution, estimation_results, uncertainty_
 	)
 
 	# Compute the R2, RMSE, and Bias
-	estimates <- qfuncs[[ distribution ]](1 - p_empirical, estimation_results)
+	estimates <- qfuncs[[ distribution ]](1 - p_empirical, estimation)
 	R2 <- summary(lm(estimates ~ x))$r.squared
 	RMSE <- sqrt(mean((estimates - x)^2))
 	Bias <- mean(estimates - x)
@@ -45,8 +45,8 @@ model_assessment <- function(ams, distribution, estimation_results, uncertainty_
 	BIC <- n * log(RMSE) + (log(n) * nparams[[ distribution ]])
 
 	# Interpolate confidence intervals at empirical return periods
-	ci_lower <- approx(log(uncertainty_results$t), uncertainty_results$ci_lower, log(t_return))
-	ci_upper <- approx(log(uncertainty_results$t), uncertainty_results$ci_upper, log(t_return))
+	ci_lower <- approx(log(uncertainty$t), uncertainty$ci_lower, log(t_return))
+	ci_upper <- approx(log(uncertainty$t), uncertainty$ci_upper, log(t_return))
 	w <- ci_upper$y - ci_lower$y
 
 	# Compute the AW, POC, and CWI
