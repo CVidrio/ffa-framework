@@ -40,6 +40,16 @@ include_graphics(file.path(params$output_dir, img_name))
 ## '`r estimation_method`' Parameter Estimation
 
 <!-- Parameter Estimation Table -->
+
+```{r, echo = FALSE, include = FALSE} 
+
+# Flip shape parameter sign for GPA/GEV (see documentation)
+if (selection_results$recommendation %in% c("GPA", "GEV")) {
+	estimation_results[3] <- -estimation_results[3]
+}
+
+```
+
 **Estimated Parameters**: `r round(estimation_results, 4)`
 
 ## '`r uncertainty_method`' Uncertainty Quantification

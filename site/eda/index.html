@@ -62,7 +62,7 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#mann-kendall-test">Mann-Kendall Test</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#mann-kendal-sneyers-test">Mann-Kendal-Sneyers Test</a>
+    <li class="toctree-l3"><a class="reference internal" href="#mann-kendall-sneyers-test">Mann-Kendall-Sneyers Test</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#mw-mk-test">MW-MK Test</a>
     </li>
@@ -79,6 +79,16 @@
         </ul>
     </li>
     </ul>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model-selection/">Model Selection</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameter-estimation/">Parameter Estimation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../frequency-analysis/">Frequency Analysis</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty-quantification/">Uncertainty Quantification</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model-assessment/">Model Assessment</a>
                   </li>
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
@@ -206,7 +216,7 @@ Z_{MK} = \begin{cases}
 \]</div>
 <p>For a two-sided test, we reject the null hypothesis if <span class="arithmatex">\(|Z_{MK}| \geq Z_{1 - (\alpha/2) }\)</span> and conclude that there is a statistically significant monotonic trend in the data. For more information, see <a href="https://vsp.pnnl.gov/help/vsample/design_trend_mann_kendall.htm">here</a>.</p>
 <p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/mk">here</a>.</p>
-<h3 id="mann-kendal-sneyers-test">Mann-Kendal-Sneyers Test</h3>
+<h3 id="mann-kendall-sneyers-test">Mann-Kendall-Sneyers Test</h3>
 <p>The <strong>Mann-Kendall-Sneyers (MKS) Test</strong> is used to identify the beginning of a trend in a time series:</p>
 <ul>
 <li>Null hypothesis: There are no change points in the time series.</li>
@@ -380,7 +390,7 @@ If <span class="arithmatex">\(nR^2 &gt; \chi_{1-\alpha }\)</span>, we reject the
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../user-manual/" class="btn btn-neutral float-left" title="User Manual"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../goals/" class="btn btn-neutral float-right" title="Goals">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../model-selection/" class="btn btn-neutral float-right" title="Model Selection">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -406,7 +416,7 @@ If <span class="arithmatex">\(nR^2 &gt; \chi_{1-\alpha }\)</span>, we reject the
       <span><a href="../user-manual/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../goals/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../model-selection/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

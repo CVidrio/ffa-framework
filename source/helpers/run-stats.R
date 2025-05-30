@@ -27,7 +27,7 @@ run_stats <- function(name, data, start, end, img_path, quiet = TRUE) {
 
 	# Execute the statistical test
 	test_args <- list(
-		"bbmk"          = list(sb_mean$max, alpha = alpha, reps = bbmk_repetitions),
+		"bbmk"          = list(sb_mean$max, alpha = alpha, n_sim = bbmk_repetitions),
 		"kpss"          = list(sb_mean$max, alpha = alpha),
 		"mk"            = list(sb_mean$max, alpha = alpha),
 		"mks"           = list(sb_mean$max, sb_mean$year, alpha = alpha),

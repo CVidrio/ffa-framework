@@ -1,7 +1,7 @@
 library(ggplot2)
 library(glue)
 
-plot_uncertainty <- function(results, distribution) {
+plot_uncertainty <- function(results) {
 
 	# Load the distribution selection results into the environment
 	list2env(results, env = environment())

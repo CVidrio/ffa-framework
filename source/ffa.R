@@ -50,29 +50,32 @@ data <- load(data_folder, csv_files, window_length, window_step)
 
 
 # Run distribution selection selection metric specified in config.yml
-message(glue("Running distribution selection with method '{selection_metric}'."))
+message(glue("\n\nRunning distribution selection with method '{selection_metric}'."))
 
 ams <- data$df_clean$max
-sml <- sample_lm(ams)
-dml <- distribution_lm()
+sml <- get_sample_lm(ams)
+distributions <- get_distributions()
 
 selection_results <- if (selection_metric == "L-distance") {
-	l_distance(sml, dml)		
+	l_distance(sml, distributions)		
 } else if (selection_metric == "L-kurtosis") {
-	l_kurtosis(sml, dml)
+	l_kurtosis(sml, distributions)
 } else if (selection_metric == "Z-statistic") {
-	z_statistic(sml, dml, ams)
+	z_statistic(sml, distributions, ams)
 }
 
 # Save the distribution to a variable
-distribution <- selection_results$recommendation
+distribution <- distributions[[ selection_results$recommendation ]]
+message(glue(" - Selected distribution: {selection_results$recommendation}"))
 
 # Generate a plot
-lm_plot <- plot_lm(selection_metric, selection_results, sml, dml)
+lm_plot <- plot_lm(selection_metric, selection_results, sml, distributions)
 name <- glue("{ tolower(selection_metric) }-selection.png")
 ggsave(name, plot = lm_plot, path = img_path, width = 10, height = 8)
 
 # Run parameter estimation
+message(glue("\n\nRunning parameter estimation with method '{estimation_method}'."))
+
 estimation_results <- if(estimation_method == "L-moments") {
 	l_moments(ams, distribution)
 } else if (estimation_method == "MLE") {
@@ -81,7 +84,15 @@ estimation_results <- if(estimation_method == "L-moments") {
 	NULL
 }
 
+# Print the fitted parameters, adjusting shape for GPA/GEV (see documentation)
+p_vector <- estimation_results
+if (selection_results$recommendation %in% c("GPA", "GEV")) p_vector[3] <- -p_vector[3]
+p_text <- paste(round(p_vector, 4), collapse = ", ")
+message(glue(" - Estimated parameters: {p_text}"))
+
 # Run uncertainty quantification
+message(glue("\n\nRunning uncertainty quantification with method '{uncertainty_method}'."))
+
 uncertainty_results <- if(uncertainty_method == "S-bootstrap") {
 	s_bootstrap(ams, distribution, estimation_method)
 } else if (uncertainty_method == "RFPL") {
@@ -91,7 +102,7 @@ uncertainty_results <- if(uncertainty_method == "S-bootstrap") {
 }
 
 # Generate a plot
-uncertainty_plot <- plot_uncertainty(uncertainty_results, distribution)
+uncertainty_plot <- plot_uncertainty(uncertainty_results)
 name <- glue("{ tolower(uncertainty_method) }-results.png")
 ggsave(name, plot = uncertainty_plot, path = img_path, width = 10, height = 8)
 
@@ -105,10 +116,6 @@ ggsave(name, plot = assessment_plot, path = img_path, width = 10, height = 8)
 
 # Print the results of FFA
 message("\nFFA Complete.")
-message(glue(" - Distribution selection metric: {selection_metric}"))
-message(glue(" - Selected distribution: {distribution}"))
-message(glue(" - Parameter estimation method: {estimation_method}"))
-message(glue(" - Uncertainty quantification method: {uncertainty_method}"))
 
 # If report generation is disabled, go to next file
 if (!generate_report) {

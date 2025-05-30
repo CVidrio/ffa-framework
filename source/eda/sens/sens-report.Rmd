@@ -2,7 +2,7 @@
 
 **Dataset**: AMS `r tools::toTitleCase(params$data_type)`.
 
-For more information, see [here](https://rileywheadon.github.io/ffa-framework/eda/sens/). 
+For more information, see [here](https://rileywheadon.github.io/ffa-framework/eda/#sens-trend-estimator). 
 
 `r params$msg`
 

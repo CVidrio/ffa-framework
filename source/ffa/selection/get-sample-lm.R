@@ -2,7 +2,7 @@ library(lmom)
 
 # Get the (log) L-moments and (log) L-moment ratios
 #  - ams is a vector of annual maximum streamflow data without NaN values
-sample_lm <- function(ams) {
+get_sample_lm <- function(ams) {
 
 	# Compute the L-moments and Log L-moments
 	lm <- as.list(suppressWarnings(samlmu(ams, ratios = FALSE)))

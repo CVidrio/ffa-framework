@@ -6,9 +6,9 @@ test_that("Test bbmk-test.R on data set #2", {
 
 	# Load dataset and run BB-MK test with profiling
 	df_clean <- data2$df_clean
-	# start <- Sys.time()
+	start <- Sys.time()
 	results <- bbmk_test(df_clean$max)
-	# end <- Sys.time()
+	end <- Sys.time()
 	# print(end - start)
 	list2env(results, envir = environment())
 

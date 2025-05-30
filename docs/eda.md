@@ -109,7 +109,7 @@ For a two-sided test, we reject the null hypothesis if $|Z_{MK}| \geq Z_{1 - (\a
 
 The code used to implement this test can be found [here](https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/mk).
 
-### Mann-Kendal-Sneyers Test
+### Mann-Kendall-Sneyers Test
 
 The **Mann-Kendall-Sneyers (MKS) Test** is used to identify the beginning of a trend in a time series:
 

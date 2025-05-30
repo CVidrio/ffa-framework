@@ -7,8 +7,8 @@ source("eda/spearman/spearman-test.R")
 # Block-Bootstrap Mann-Kendall test for identifying non-autocorrelated trends
 #  - ams: A vector of annual maximum streamflow data with no NA values
 #  - alpha: The significance level as a floating point number
-#  - reps: The number of repetitions for the bootstrap
-bbmk_test <- function(ams, alpha = 0.05, reps = 10000, quiet = TRUE) {
+#  - n_sim: The number of repetitions for the bootstrap
+bbmk_test <- function(ams, alpha = 0.05, n_sim = 10000, quiet = TRUE) {
 
 	# Assign a variable to the number of data points for convenience
 	n <- length(ams)
@@ -23,7 +23,7 @@ bbmk_test <- function(ams, alpha = 0.05, reps = 10000, quiet = TRUE) {
 	blocks <- split(ams[1:(n_blocks * block_size)], rep(1:n_blocks, each = block_size))
 
 	# Loop through the bootstrap in parallel
-	bootstrap_list <- mclapply(1:reps, function(i) { 
+	bootstrap_list <- mclapply(1:n_sim, function(i) { 
 
 		# Sample blocks for this iteration
 		sampled_blocks <- sample(blocks, n_blocks, replace = FALSE)

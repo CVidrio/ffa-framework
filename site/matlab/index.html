@@ -54,6 +54,16 @@
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../eda/">Exploratory Data Analysis</a>
                   </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model-selection/">Model Selection</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../parameter-estimation/">Parameter Estimation</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../frequency-analysis/">Frequency Analysis</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../uncertainty-quantification/">Uncertainty Quantification</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../model-assessment/">Model Assessment</a>
+                  </li>
               </ul>
               <p class="caption"><span class="caption-text">About</span></p>
               <ul class="current">
@@ -120,7 +130,18 @@
 <li>Run change point detection in multiple stages.</li>
 </ul>
 <h2 id="flood-frequency-analysis-ffa">Flood Frequency Analysis (FFA)</h2>
-<p>TBD</p>
+<h3 id="bug-fixes_1">Bug Fixes</h3>
+<ul>
+<li>L-moments parameter estimation for GEV/GPA distributions has an unnecessary sign change.</li>
+</ul>
+<h3 id="framework-changes_1">Framework Changes</h3>
+<p>Parameterization of the PE3/LP3 distributions fails for some datasets because MATLAB is unable to handle the large numbers created by the gamma function. To manage this issue, the MATLAB version used the conventional moments (i.e. sample mean/variance/skewness) when this occurred. This behaviour is no longer necessary and has been removed.</p>
+<p>The procedure for computing the Z-statistic selection metric has been changed slightly. In the MATLAB version, kappa and log-kappa distributions were fitted to the data. Then, two bootstrap samples were generated, one from the kappa distribution and one from the log-kappa distribution. In the new version, we do not fit the log-kappa distribution and use a <em>single</em> bootstrap sample to compute the sample L-moments and log-L-moments. We do this for three reasons:</p>
+<ol>
+<li>Consistency with the other metrics, which do not use the L-moments for the log-normal/log-pearson distributions. Instead, they use the fact that under the log-normal/log-pearson models, the log-transformed data has the same L-moments as the normal/pearson distributions.</li>
+<li>It is hard to estimate the parameters of the log-kappa distribution from L-moments.</li>
+<li>By taking less bootstrap samples, we improve the speed of our code.</li>
+</ol>
               
             </div>
           </div><footer>

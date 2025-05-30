@@ -13,12 +13,14 @@ source("eda/white/white-test.R")
 source("eda/mwmk/mwmk-test.R")
 source("eda/sens/sens-estimator.R")
 
+# Source distribution functions
+source("ffa/get-distributions.R")
+
 # Source selection functions
 source("ffa/selection/l-distance.R")
 source("ffa/selection/l-kurtosis.R")
 source("ffa/selection/z-statistic.R")
-source("ffa/selection/sample-lm.R")
-source("ffa/selection/distribution-lm.R")
+source("ffa/selection/get-sample-lm.R")
 
 # Source estimation functions
 source("ffa/estimation/l-moments.R")

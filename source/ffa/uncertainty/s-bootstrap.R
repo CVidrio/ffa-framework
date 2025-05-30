@@ -10,25 +10,12 @@ s_bootstrap <- function(ams, distribution, method, n_sim = 100000, alpha = 0.05)
     returns <- 1 - (1 / t)
     n <- length(ams)
 
-    # Define quantile functions
-    quantiles <- list(
-		GEV = quagev,
-		GUM = quagum,
-		NOR = quanor,
-		LNO = qualn3,
-		GLO = quaglo,
-		PE3 = quape3,
-		LP3 = function(x, params) exp(quape3(x, params)),
-		GNO = quagno,
-		WEI = quawei,
-		GPA = quagpa
-    )
-
     # Get the quantile function and parameter estimates
-    qfunc <- quantiles[[distribution]]
+	qfunc <- distribution$quantile
     params <- l_moments(ams, distribution)
     estimates <- qfunc(returns, params)
 
+	# Run L-moments sample bootstrap estimation
     if (method == "L-moments") {
 
 		# Vectorized, parallel bootstrap function 

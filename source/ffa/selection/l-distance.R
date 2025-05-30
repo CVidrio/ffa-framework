@@ -1,35 +1,26 @@
 library(lmom)
 
 # Select a distribution using the l-distance method
-#  - slm is a list of sample L-moments
-#  - dlm is a list of list of distribution L-moments
-l_distance <- function(slm, dlm) {
+#  - sample_moments_list is a list of sample L-moments
+#  - distributions is a list of lists with distribution information
+l_distance <- function(sample_moments, distributions) {
 
-	# Vectorized helper function for computing minimum distance between slm and dlm
-	# - df is a dataframe of points on the (tau3, tau4) curve for a distribution
-	# - moments is a list containing the sample L-moments or Log L-moments
-	get_minimum_distance <- function(df, moments) { 
-		df$metric <- sqrt((df$t3 - moments$t3)^2 + (df$t4 - moments$t4)^2)
-		as.list(df[which.min(df$metric), ])
+	# Compute euclidian distance between distribution/sample L-moment ratios
+	get_minimum_distance <- function(dlm, slm) { 
+		dlm$metric <- sqrt((dlm$t3 - slm$t3)^2 + (dlm$t4 - slm$t4)^2)
+		as.list(dlm[which.min(dlm$metric), ])
 	}
-	
+
 	# Generate a list containing the distances for each distribution
-	distance <- list(
-		GEV = get_minimum_distance(dlm$GEV, slm$lm),
-		GUM = get_minimum_distance(dlm$GUM, slm$lm),
-		NOR = get_minimum_distance(dlm$NOR, slm$lm),
-		LNO = get_minimum_distance(dlm$NOR, slm$log_lm),
-		GLO = get_minimum_distance(dlm$GLO, slm$lm),
-		PE3 = get_minimum_distance(dlm$PE3, slm$lm),
-		LP3 = get_minimum_distance(dlm$PE3, slm$log_lm),
-		GNO = get_minimum_distance(dlm$GNO, slm$lm),
-		WEI = get_minimum_distance(dlm$WEI, slm$lm),
-		GPA = get_minimum_distance(dlm$GPA, slm$lm)
-	)
+	distance <- lapply(distributions, function(distribution) { 
+		dlm <- distribution$moments
+		slm <- if (distribution$log) { sample_moments$log_lm } else { sample_moments$lm }
+		get_minimum_distance(dlm, slm)	
+	})
 
 	# Get the distribution with the best fit
-	values <- sapply(distance, function(x) x$metric)
-	recommendation <- names(distance)[[ which.min(values) ]]
+	metrics <- sapply(distance, function(x) x$metric)
+	recommendation <- names(distance)[[ which.min(metrics) ]]
 
 	# Return the results as a list
 	mget(c("distance", "recommendation"))	

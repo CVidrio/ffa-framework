@@ -5,7 +5,7 @@ library(glue)
 # Source the plot theme (working directory is /source)
 source("helpers/plot-theme.R")
 
-plot_lm <- function(metric, results, slm, dlm) {
+plot_lm <- function(metric, results, slm, distributions) {
 
 	# Load the distribution selection results into the environment
 	list2env(results, env = environment())
@@ -14,9 +14,9 @@ plot_lm <- function(metric, results, slm, dlm) {
 	lm <- data.frame(x = slm$lm$t3, y = slm$lm$t4)
 	log_lm <- data.frame(x = slm$log_lm$t3, y = slm$log_lm$t4) 
 
-	# Convert each matrix in dlm into a dataframe
-	dlm <- lapply(dlm, function(mat) {
-		as.data.frame(mat, col.names = c("x", "y")) |> 
+	# Convert each moment list in distributions into a dataframe
+	dlm <- lapply(distributions, function(d) {
+		as.data.frame(d$moments, col.names = c("x", "y")) |> 
 		setNames(c("x", "y")) |>
 		subset(x >= -1 & x <= 1)
 	})

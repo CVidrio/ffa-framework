@@ -8,6 +8,9 @@ data3_1 <- load(data_path, "Application_3.1.csv")
 data3_2 <- load(data_path, "Application_3.2.csv")
 data3_3 <- load(data_path, "Application_3.3.csv")
 
+# Load distributions
+distributions <- get_distributions()
+
 # Basic configuration file list without errors
 config <- list(
 	data_folder = "~/Code/ffa-framework/data",

@@ -1,13 +1,16 @@
 # Set seed for reproducibility
 set.seed(1)
 
+# Load distributions into the environment
+invisible(list2env(distributions, envir = environment()))
+
 test_that("Test model-assessment on data set #1 with GEV/L-moments/S-bootstrap.", {
 
 	# Load dataset and run L-moments estimation with uncertainty analysis
 	ams <- data1$df_clean$max
-	estimation_results <- l_moments(ams, "GEV")
-	uncertainty_results <- s_bootstrap(ams, "GEV", "L-moments")
-	assessment <- model_assessment(ams, "GEV", estimation_results, uncertainty_results)
+	estimation_results <- l_moments(ams, GEV)
+	uncertainty_results <- s_bootstrap(ams, GEV, "L-moments")
+	assessment <- model_assessment(ams, GEV, estimation_results, uncertainty_results)
 
 	# Test results against MATLAB
 	expect_equal(assessment$R2  ,   0.9922, tol = 1e-3)
@@ -26,9 +29,9 @@ test_that("Test model-assessment on data set #2 with GPA/L-moments/S-bootstrap."
 
 	# Load dataset and run L-moments estimation with uncertainty analysis
 	ams <- data2$df_clean$max
-	estimation_results <- l_moments(ams, "GPA")
-	uncertainty_results <- s_bootstrap(ams, "GPA", "L-moments")
-	assessment <- model_assessment(ams, "GPA", estimation_results, uncertainty_results)
+	estimation_results <- l_moments(ams, GPA)
+	uncertainty_results <- s_bootstrap(ams, GPA, "L-moments")
+	assessment <- model_assessment(ams, GPA, estimation_results, uncertainty_results)
 
 	# Test results against MATLAB
 	expect_equal(assessment$R2  ,   0.9889, tol = 1e-3)
@@ -50,9 +53,9 @@ test_that("Test model-assessment on data set #3.2 with GNO/L-moments/S-bootstrap
 
 	# Load dataset and run L-moments estimation with uncertainty analysis
 	ams <- data3_2$df_clean$max
-	estimation_results <- l_moments(ams, "GNO")
-	uncertainty_results <- s_bootstrap(ams, "GNO", "L-moments")
-	assessment <- model_assessment(ams, "GNO", estimation_results, uncertainty_results)
+	estimation_results <- l_moments(ams, GNO)
+	uncertainty_results <- s_bootstrap(ams, GNO, "L-moments")
+	assessment <- model_assessment(ams, GNO, estimation_results, uncertainty_results)
 
 	# Test results against MATLAB
 	expect_equal(assessment$R2  ,   0.9884, tol = 1e-3)
@@ -71,9 +74,9 @@ test_that("Test model-assessment on data set #3.3 with GPA/L-moments/S-bootstrap
 
 	# Load dataset and run L-moments estimation with uncertainty analysis
 	ams <- data3_3$df_clean$max
-	estimation_results <- l_moments(ams, "GPA")
-	uncertainty_results <- s_bootstrap(ams, "GPA", "L-moments")
-	assessment <- model_assessment(ams, "GPA", estimation_results, uncertainty_results)
+	estimation_results <- l_moments(ams, GPA)
+	uncertainty_results <- s_bootstrap(ams, GPA, "L-moments")
+	assessment <- model_assessment(ams, GPA, estimation_results, uncertainty_results)
 
 	# Test results against MATLAB
 	expect_equal(assessment$R2  ,   0.9906, tol = 1e-3)

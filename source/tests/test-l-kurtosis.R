@@ -2,9 +2,8 @@ test_that("Test l-kurtosis.R on data set #1", {
 
 	# Load dataset and run L-kurtosis selection
 	ams <- data1$df_clean$max
-	slm <- sample_lm(ams)
-	dlm <- distribution_lm()
-	results <- l_kurtosis(slm, dlm)
+	sample_moments <- get_sample_lm(ams)
+	results <- l_kurtosis(sample_moments, distributions)
 	list2env(results, envir = environment())
 
 	# Check the distances
@@ -23,9 +22,8 @@ test_that("Test l-kurtosis.R on data set #2", {
 
 	# Load dataset and run L-kurtosis selection
 	ams <- data2$df_clean$max
-	slm <- sample_lm(ams)
-	dlm <- distribution_lm()
-	results <- l_kurtosis(slm, dlm)
+	sample_moments <- get_sample_lm(ams)
+	results <- l_kurtosis(sample_moments, distributions)
 	list2env(results, envir = environment())
 
 	# Check the distances
@@ -44,9 +42,8 @@ test_that("Test l-kurtosis.R on data set #3.1", {
 
 	# Load dataset and run L-kurtosis selection
 	ams <- data3_1$df_clean$max
-	slm <- sample_lm(ams)
-	dlm <- distribution_lm()
-	results <- l_kurtosis(slm, dlm)
+	sample_moments <- get_sample_lm(ams)
+	results <- l_kurtosis(sample_moments, distributions)
 	list2env(results, envir = environment())
 
 	# Check the distances
@@ -65,9 +62,8 @@ test_that("Test l-kurtosis.R on data set #3.2", {
 
 	# Load dataset and run L-kurtosis selection
 	ams <- data3_2$df_clean$max
-	slm <- sample_lm(ams)
-	dlm <- distribution_lm()
-	results <- l_kurtosis(slm, dlm)
+	sample_moments <- get_sample_lm(ams)
+	results <- l_kurtosis(sample_moments, distributions)
 	list2env(results, envir = environment())
 
 	# Check the distances
@@ -86,9 +82,8 @@ test_that("Test l-kurtosis.R on data set #3.3", {
 
 	# Load dataset and run L-kurtosis selection
 	ams <- data3_3$df_clean$max
-	slm <- sample_lm(ams)
-	dlm <- distribution_lm()
-	results <- l_kurtosis(slm, dlm)
+	sample_moments <- get_sample_lm(ams)
+	results <- l_kurtosis(sample_moments, distributions)
 	list2env(results, envir = environment())
 
 	# Check the distances
