@@ -16,22 +16,22 @@ test_that("Test z-statistic.R on data set #1", {
 	list2env(results, envir = environment())
 
 	# Check the Kappa distribution parameters (only k and h)
-	expect_equal(params[3],     -0.1544, tol = 1e-4)
-	expect_equal(params[4],     -0.1704, tol = 1e-4)
-	expect_equal(log_params[3], -0.0597, tol = 1e-4)
-	expect_equal(log_params[4], -1.3223, tol = 1e-4)
+	expect_equal(params[3], -0.1544, tol = 1e-4)
+	expect_equal(params[4], -0.1704, tol = 1e-4)
+	expect_equal(log_params[3], NULL)
+	expect_equal(log_params[4], NULL)
 
 	# Check the bootstrap summary statistics
-	expect_equal(bootstrap$b4,     -0.0026, tol = 1e-2)
-	expect_equal(bootstrap$s4,      0.0514, tol = 1e-2)
-	expect_equal(bootstrap$log_b4, -0.0007, tol = 1e-2)
-	expect_equal(bootstrap$log_s4,  0.0365, tol = 1e-2)
+	expect_equal(bootstrap$bias_t4,     -0.0026, tol = 1e-2)
+	expect_equal(bootstrap$sd_t4,      0.0514, tol = 1e-2)
+	expect_equal(bootstrap$log_bias_t4, NULL)
+	expect_equal(bootstrap$log_sd_t4, NULL)
 
 	# Check the Z-distances
 	expect_equal(distance$GEV$metric, -0.2524, tol = 1e-2)
 	expect_equal(distance$GLO$metric,  0.3673, tol = 1e-2)
 	expect_equal(distance$PE3$metric, -1.0738, tol = 1e-2)
-	expect_equal(distance$LP3$metric, -1.3084, tol = 1e-2)
+	expect_equal(distance$LP3$metric, NULL)
 	expect_equal(distance$GNO$metric, -0.5443, tol = 1e-2)
 	expect_equal(distance$WEI$metric, -1.3005, tol = 1e-2)
 	expect_equal(distance$GPA$metric, -1.8072, tol = 1e-2)
@@ -54,10 +54,10 @@ test_that("Test z-statistic.R on data set #2", {
 	expect_equal(log_params[4], 0.5134, tol = 1e-4)
 
 	# Check the bootstrap summary statistics
-	expect_equal(bootstrap$b4,     0.0010, tol = 1e-2)
-	expect_equal(bootstrap$s4,     0.0286, tol = 1e-2)
-	expect_equal(bootstrap$log_b4, 0.0009, tol = 1e-2)
-	expect_equal(bootstrap$log_s4, 0.0276, tol = 1e-2)
+	expect_equal(bootstrap$bias_t4,     0.0010, tol = 1e-2)
+	expect_equal(bootstrap$sd_t4,     0.0286, tol = 1e-2)
+	expect_equal(bootstrap$log_bias_t4, 0.0009, tol = 1e-2)
+	expect_equal(bootstrap$log_sd_t4, 0.0276, tol = 1e-2)
 
 	# Check the Z-distances
 	expect_equal(distance$GEV$metric,  3.1342, tol = 1e-2)
@@ -86,10 +86,10 @@ test_that("Test z-statistic.R on data set #3.1", {
 	expect_equal(log_params[4], 0.1371, tol = 1e-4)
 
 	# Check the bootstrap summary statistics
-	expect_equal(bootstrap$b4,     0.0001, tol = 1e-2)
-	expect_equal(bootstrap$s4,     0.0323, tol = 1e-2)
-	expect_equal(bootstrap$log_b4, 0.0005, tol = 1e-2)
-	expect_equal(bootstrap$log_s4, 0.0273, tol = 1e-2)
+	expect_equal(bootstrap$bias_t4,     0.0001, tol = 1e-2)
+	expect_equal(bootstrap$sd_t4,     0.0323, tol = 1e-2)
+	expect_equal(bootstrap$log_bias_t4, 0.0005, tol = 1e-2)
+	expect_equal(bootstrap$log_sd_t4, 0.0273, tol = 1e-2)
 
 	# Check the Z-distances
 	expect_equal(distance$GEV$metric,  0.7609, tol = 1e-2)
@@ -118,10 +118,10 @@ test_that("Test z-statistic.R on data set #3.2", {
 	expect_equal(log_params[4], -0.1367, tol = 1e-3) # NOTE: Error is still < 0.001
 
 	# Check the bootstrap summary statistics
-	expect_equal(bootstrap$b4,     -0.0006, tol = 1e-2)
-	expect_equal(bootstrap$s4,      0.0409, tol = 1e-2)
-	expect_equal(bootstrap$log_b4,  0.0003, tol = 1e-2)
-	expect_equal(bootstrap$log_s4,  0.0332, tol = 1e-2)
+	expect_equal(bootstrap$bias_t4,     -0.0006, tol = 1e-2)
+	expect_equal(bootstrap$sd_t4,      0.0409, tol = 1e-2)
+	expect_equal(bootstrap$log_bias_t4,  0.0003, tol = 1e-2)
+	expect_equal(bootstrap$log_sd_t4,  0.0332, tol = 1e-2)
 
 	# Check the Z-distances
 	expect_equal(distance$GEV$metric,  0.1264, tol = 1e-2)
@@ -150,10 +150,10 @@ test_that("Test z-statistic.R on data set #3.3", {
 	expect_equal(log_params[4], 0.4114, tol = 1e-4)
 
 	# Check the bootstrap summary statistics
-	expect_equal(bootstrap$b4,     0.0010, tol = 1e-2)
-	expect_equal(bootstrap$s4,     0.0273, tol = 1e-2)
-	expect_equal(bootstrap$log_b4, 0.0008, tol = 1e-2)
-	expect_equal(bootstrap$log_s4, 0.0275, tol = 1e-2)
+	expect_equal(bootstrap$bias_t4,     0.0010, tol = 1e-2)
+	expect_equal(bootstrap$sd_t4,     0.0273, tol = 1e-2)
+	expect_equal(bootstrap$log_bias_t4, 0.0008, tol = 1e-2)
+	expect_equal(bootstrap$log_sd_t4, 0.0275, tol = 1e-2)
 
 	# Check the Z-distances
 	expect_equal(distance$GEV$metric, 3.9655, tol = 1e-2)

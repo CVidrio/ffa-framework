@@ -1,6 +1,33 @@
-# Mann-Kendall test for trends
-#  - data: A vector of AMS data or AMS variances with no NA values
-#  - alpha: The significance level as a floating point number
+#' Mann–Kendall Test for Monotonic Trends
+#'
+#' Performs the Mann–Kendall trend test on a numeric vector to detect the presence of a monotonic
+#' trend (increasing or decreasing) over time. The test is non-parametric and accounts for tied
+#' observations in the data.
+#'
+#' @param data A numeric vector of AMS values or their variances. Must not contain NA values.
+#' @param alpha A numeric value specifying the significance level (default is 0.05).
+#' @param quiet Logical. If FALSE, prints a summary of the test result to the console.
+#'
+#' @return A named list with the following components:
+#' \describe{
+#'   \item{s_statistic}{The raw Mann–Kendall test statistic \(S\).}
+#'   \item{s_variance}{The variance of the test statistic under the null hypothesis.}
+#'   \item{p_value}{The p-value associated with the two-sided hypothesis test.}
+#'   \item{reject}{Logical. TRUE if the null hypothesis of no trend is rejected at \code{alpha}.}
+#'   \item{msg}{A character string summarizing the result (printed if \code{quiet = FALSE}).}
+#' }
+#'
+#' @details
+#' The statistic \(S\) is computed as the sum over all pairs \(i < j\) of the sign of the
+#' difference \(x_j - x_i\). Ties are explicitly accounted for when calculating the variance of
+#' \(S\), using grouped frequencies of tied observations.
+#'
+#' The test statistic \(Z\) is then computed based on the sign and magnitude of \(S\), and the
+#' p-value is derived from the standard normal distribution.
+#'
+#' @seealso \code{\link{bbmk_test}} for a bootstrap-based variant of this test.
+#' @export
+
 mk_test <- function(data, alpha = 0.05, quiet = TRUE) {
 
 	# Assign a variable to number of data points for convenience

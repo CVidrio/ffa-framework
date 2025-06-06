@@ -50,10 +50,15 @@ report_format:
 # ------------ #
 
 # Distribution selection metric ("L-distance", "L-kurtosis", "Z-statistic")
-selection_metric: "L-distance"
+selection_metric: "Z-statistic"
 
 # Parameter estimation method ("L-moments", "MLE", "GMLE")
 estimation_method: "L-moments"
 
 # Uncertainty quantification method ("S-bootstrap", "RFPL", "RFGPL")
 uncertainty_method: "S-bootstrap"
+
+# Plotting position formula ("Weibull", "Blom", "Cunnane", "Gringorten", "Hazen")
+plotting_position: "Weibull"
+
+

@@ -1,8 +1,37 @@
 library(lmom)
 
-# Select a distribution using the l-distance method
-#  - sample_moments_list is a list of sample L-moments
-#  - distributions is a list of lists with distribution information
+#' L-Distance Method for Distribution Selection Using L-Moment Ratios
+#'
+#' Selects the best-fit distribution from a candidate set by minimizing the Euclidean distance
+#' between theoretical and sample L-moment ratios (\eqn{\tau_3}, \eqn{\tau_4}). This method
+#' quantifies goodness-of-fit in the L-moment ratio space and returns the closest matching
+#' distribution.
+#'
+#' @param sample_moments A named list containing sample L-moments, with components:
+#'   \code{lm} for raw AMS, and \code{log_lm} for log-transformed AMS.
+#' @param distributions A named list of distribution specifications. Each entry must contain:
+#'   \code{moments}, a data frame of theoretical L-moment ratios, and a logical \code{log}
+#'   indicating whether log-transformed moments should be used.
+#'
+#' @return A named list containing:
+#' \describe{
+#'   \item{distance}{A list of fitted moment points for each candidate distribution with
+#'     associated L-distance metrics.}
+#'   \item{recommendation}{The name of the distribution with the smallest L-distance.}
+#' }
+#'
+#' @details
+#' For each candidate distribution, the method computes the Euclidean distance between
+#' sample L-moment ratios (\eqn{\tau_3}, \eqn{\tau_4}) and the closest point on the
+#' theoretical distribution's L-moment surface. The distribution with the minimum distance
+#' is selected.
+#'
+#' If a distribution is flagged as requiring log-transformed data, the \code{log_lm}
+#' component is used for matching.
+#'
+#' @seealso \code{\link{z_statistic}}, \code{\link{l_kurtosis}}
+#' @export
+
 l_distance <- function(sample_moments, distributions) {
 
 	# Compute euclidian distance between distribution/sample L-moment ratios

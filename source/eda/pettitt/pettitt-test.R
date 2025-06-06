@@ -1,7 +1,34 @@
-# Mann-Whitney-Pettitt hypothesis test for abrupt changes in the mean
-#  - ams: A vector of annual maximum streamflow data with no NA values
-#  - year: A vector of years corresponding to ams with no NA values
-#  - alpha: The significance level as a floating point number
+#' Pettitt Test for Abrupt Changes in the Mean of a Time Series
+#'
+#' Performs the non-parametric Pettitt test to detect a single change point in the
+#' mean of a time series, often used for abrupt shifts in hydrological data.
+#'
+#' @param ams Numeric vector of annual maximum streamflow values, no missing data.
+#' @param year Numeric vector of years corresponding to \code{ams}, no missing data.
+#' @param alpha Numeric significance level for hypothesis testing (default 0.05).
+#' @param quiet Logical; if FALSE, print test summary messages (default TRUE).
+#'
+#' @return A named list containing:
+#' \describe{
+#'   \item{u_t}{Vector of absolute U-statistics for all time indices.}
+#'   \item{k_statistic}{Maximum absolute U-statistic (test statistic).}
+#'   \item{k_alpha}{Critical K-statistic value for given \code{alpha}.}
+#'   \item{p_value}{Approximate p-value for the test.}
+#'   \item{change_index}{Index of the detected change point (0 if none).}
+#'   \item{change_year}{Year of the detected change point (0 if none).}
+#'   \item{reject}{Logical indicating if null hypothesis was rejected.}
+#'   \item{msg}{Formatted summary message describing the test result.}
+#' }
+#'
+#' @details
+#' The Pettitt test is a rank-based non-parametric test that evaluates the
+#' hypothesis of a change point in the median/mean of a time series.
+#' It computes the maximum of the absolute value of the U-statistic over all
+#' possible split points. The p-value is approximated using an asymptotic formula.
+#'
+#' @references Pettitt, A.N. (1979) A non-parametric approach to the change-point problem,
+#' \emph{Applied Statistics}, 28(2), 126-135.
+ 
 pettitt_test <- function(ams, year, alpha = 0.05, quiet = TRUE) {
 
 	# Extract the length of ams for convenience

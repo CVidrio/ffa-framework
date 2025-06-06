@@ -3,6 +3,42 @@ library(parallel)
 
 source("ffa/estimation/l-moments.R")
 
+
+#' Sample Bootstrap Confidence Intervals for Flood Quantile Estimates
+#'
+#' Computes confidence intervals for flood quantile estimates using the nonparametric
+#' sample bootstrap method, based on L-moment parameter estimation. This function supports
+#' uncertainty quantification for return period estimates derived from a fitted distribution.
+#'
+#' @param ams Numeric vector of annual maximum streamflow values (no missing values).
+#' @param distribution A list representing the selected distribution, which must contain a
+#'   \code{quantile} function for inverse evaluation.
+#' @param method Character string specifying the estimation method. Currently supports only
+#'   \code{"L-moments"}.
+#' @param n_sim Integer number of bootstrap simulations (default is 100000).
+#' @param alpha Numeric significance level for the confidence intervals (default is 0.05).
+#'
+#' @return A named list containing:
+#' \describe{
+#'   \item{estimates}{Vector of estimated quantiles for return periods 2, 5, 10, 20, 50, and 100.}
+#'   \item{ci_lower}{Lower bound of the confidence interval for each return period.}
+#'   \item{ci_upper}{Upper bound of the confidence interval for each return period.}
+#'   \item{t}{Vector of return periods (2, 5, 10, 20, 50, and 100).}
+#' }
+#'
+#' @details
+#' The bootstrap procedure simulates resamples from the fitted distribution via inverse transform
+#' sampling using the estimated parameters. For each resample, L-moment parameters are re-estimated
+#' and used to compute quantiles. Confidence intervals are obtained by applying empirical quantiles
+#' to the resulting distribution of estimates.
+#'
+#' The function currently only supports the L-moments estimation method and assumes that the
+#' \code{distribution} object provides a valid quantile function and is compatible with the
+#' \code{l_moments()} estimator defined externally.
+#'
+#' @seealso \code{\link[lmom]{samlmu}}, \code{\link[stats]{quantile}}
+#' @export
+
 s_bootstrap <- function(ams, distribution, method, n_sim = 100000, alpha = 0.05) {
 
 	# Set return periods and their quantiles

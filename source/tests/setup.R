@@ -27,5 +27,6 @@ config <- list(
 	report_format = c("md_document", "html_document", "pdf_document"),
 	selection_metric = "L-distance",
 	estimation_method = "L-moments",
-	uncertainty_method = "S-bootstrap"
+	uncertainty_method = "S-bootstrap",
+	plotting_position = "Weibull"
 )

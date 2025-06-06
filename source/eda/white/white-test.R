@@ -1,7 +1,36 @@
-# Perform the White test to check for heteroskedasticity
-#  - ams: A vector of annual maximum streamflow data with no NA values
-#  - year: A numeric vector of years corresponding to ams with no NA values
-#  - alpha: The significance level as a floating point number
+#' White Test for Heteroskedasticity in Annual Maximum Streamflow
+#'
+#' Performs the White test for heteroskedasticity by regressing the squared residuals of a linear
+#' model on the original regressors and their squared terms. The null hypothesis is homoskedasticity.
+#'
+#' @param ams Numeric vector of annual maximum streamflow values with no missing values.
+#' @param year Numeric vector of years corresponding to \code{ams}, with no missing values.
+#' @param alpha Numeric significance level for the test (default is 0.05).
+#' @param quiet Logical. If FALSE, prints a summary message to the console (default is TRUE).
+#'
+#' @return A named list containing:
+#' \describe{
+#'   \item{r_squared}{Coefficient of determination from the auxiliary regression.}
+#'   \item{test_statistic}{White test statistic based on sample size and auxiliary \code{R^2}.}
+#'   \item{p_value}{P-value computed from the Chi-squared distribution with 2 degrees of freedom.}
+#'   \item{reject}{Logical. TRUE if the null hypothesis of homoskedasticity is rejected at \code{alpha}.}
+#'   \item{msg}{Character string summarizing the test result (printed if \code{quiet = FALSE}).}
+#' }
+#'
+#' @details
+#' The White test regresses the squared residuals from a primary linear model \code{lm(ams ~ year)}
+#' against both the original regressor and its square. The test statistic is calculated as
+#' \code{n * R^2}, where \code{R^2} is from the auxiliary regression. Under the null hypothesis,
+#' this statistic follows a \eqn{\chi^2} distribution with 2 degrees of freedom.
+#'
+#' Rejection of the null hypothesis suggests the presence of heteroskedasticity in the residuals.
+#'
+#' @references White, H. (1980). A heteroskedasticity-consistent covariance matrix estimator and a
+#' direct test for heteroskedasticity. \emph{Econometrica}, 48(4), 817–838.
+#'
+#' @seealso \code{\link[stats]{lm}}, \code{\link[stats]{pchisq}}
+#' @export
+
 white_test <- function(ams, year, alpha = 0.05, quiet = TRUE) {
 
 	# Do a linear regression of ams against year, get the squared residuals

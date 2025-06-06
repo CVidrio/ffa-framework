@@ -3,7 +3,7 @@ library(ggplot2)
 # Source the plot theme (path is relative to /source)
 source("helpers/plot-theme.R")
 
-# Plot the results of the Mann-Whitney-Pettitt test for abrupt changes in the mean
+# Plot the results of the BB-MK test for abrupt changes in the mean
 bbmk_plot <- function(df, results, show_trend) {
 
 	# Load the results of the test into the environment

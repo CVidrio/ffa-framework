@@ -107,7 +107,14 @@ name <- glue("{ tolower(uncertainty_method) }-results.png")
 ggsave(name, plot = uncertainty_plot, path = img_path, width = 10, height = 8)
 
 # Run model assessment
-assessment <- model_assessment(ams, distribution, estimation_results, uncertainty_results)
+assessment <- model_assessment(
+	ams,
+	distribution,
+	estimation_results,
+	uncertainty_results,
+	plotting_position = config$plotting_position,
+	alpha = config$alpha
+)
 
 # Generate a plot
 assessment_plot <- plot_assessment(ams, assessment)
@@ -149,4 +156,3 @@ for (format in report_format) {
 
 # Print completion message
 message("\nReport(s) generated successfully.")
-

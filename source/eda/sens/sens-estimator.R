@@ -1,8 +1,44 @@
 library(randtests)
 
-# Compute Sen's trend estimator for a dataframe
-#  - data: A vector of AMS data or AMS variances with no NA values
-#  - year: A numeric vector of years corresponding to data with no NA values
+#' Sen's Slope Estimator with Residual Randomness Test
+#'
+#' Computes Sen's slope estimator and intercept for a univariate time series and evaluates the
+#' randomness of the residuals using the Wald–Wolfowitz runs test. This method provides a
+#' non-parametric linear trend estimate and a post hoc check on model adequacy.
+#'
+#' @param data Numeric vector of AMS values or variances with no missing values.
+#' @param year Numeric vector of years corresponding to \code{data}, with no missing values.
+#' @param alpha Numeric significance level for the runs test (default is 0.05).
+#' @param quiet Logical. If FALSE, prints a summary message describing results (default is TRUE).
+#'
+#' @return A named list containing:
+#' \describe{
+#'   \item{sens_slope}{Median slope of all pairwise data-year combinations (Sen's slope).}
+#'   \item{sens_intercept}{Median intercept estimate of the fitted line.}
+#'   \item{residuals}{Vector of residuals between observed and fitted values.}
+#'   \item{p_value}{P-value from the Wald–Wolfowitz runs test applied to residuals.}
+#'   \item{reject}{Logical. TRUE if null hypothesis of random residuals is rejected.}
+#'   \item{msg}{Character string summarizing the estimator and test result.}
+#' }
+#'
+#' @details
+#' Sen's slope estimator is a robust, non-parametric trend estimator computed from the median
+#' of all pairwise slopes between data points. The corresponding intercept is taken as the
+#' median of residual-corrected values. To assess the assumption of independence in residuals,
+#' the Wald–Wolfowitz runs test is applied to the residual sequence.
+#'
+#' Rejection of the null hypothesis in the runs test indicates non-randomness in residuals,
+#' which may suggest model misfit or autocorrelation.
+#'
+#' @references
+#' Sen, P.K. (1968). Estimates of the regression coefficient based on Kendall's tau.
+#' \emph{Journal of the American Statistical Association}, 63(324), 1379–1389. \cr
+#' Wald, A., & Wolfowitz, J. (1940). On a test whether two samples are from the same population.
+#' \emph{Annals of Mathematical Statistics}, 11(2), 147–162.
+#'
+#' @seealso \code{\link[randtests]{runs.test}}, \code{\link{mk_test}}
+#' @export
+
 sens_estimator <- function(data, year, alpha = 0.05, quiet = TRUE) {
 
 	# Get the length of data for convenience

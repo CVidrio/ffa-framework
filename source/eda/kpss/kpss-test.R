@@ -1,19 +1,33 @@
-# Loading tseries generates unnecessary warning messages
 suppressPackageStartupMessages(library(aTSA))
 
-# Conduct the KPSS unit root test
-#  - ams: A vector of annual maximum streamflow data with no NA values
-#  - alpha: The significance level as a floating point number
-kpss_test <- function(ams, alpha = 0.05, quiet = TRUE) {
+#' Kwiatkowski–Phillips–Schmidt–Shin (KPSS) Unit Root Test
+#'
+#' Performs the KPSS test for stationarity in annual maximum streamflow (AMS) data using the
+#' \pkg{aTSA} package. The null hypothesis is that the time series is stationary.
+#'
+#' @param ams A numeric vector of annual maximum streamflow data. Must not contain NA values.
+#' @param alpha A numeric value indicating the significance level. Must be 0.01, 0.05, or 0.10.
+#' @param quiet Logical. If FALSE, prints a summary message to the console (default is TRUE).
+#'
+#' @return A named list with the following components:
+#' \describe{
+#'   \item{p_value}{The reported p-value from the test. See notes regarding discrete thresholds.}
+#'   \item{reject}{Logical. TRUE if the null hypothesis of stationarity is rejected at \code{alpha}.}
+#'   \item{msg}{Character string summarizing the test outcome, printed if \code{quiet = FALSE}.}
+#' }
+#'
+#' @details
+#' The KPSS test implementation in \pkg{aTSA} uses interpolation from the Hobjin et al. (2004)
+#' significance table, which only includes thresholds for 0.01, 0.05, and 0.10. As such, the
+#' returned p-values are discretized. Specifically, p = 0.01 implies p ≤ 0.01, and p = 0.10
+#' implies p ≥ 0.10.
+#'
+#' @note This function suppresses startup messages from \pkg{aTSA} and its dependency \pkg{tseries}.
+#'
+#' @seealso \code{\link[aTSA]{kpss.test}}
+#' @export
 
-	# NOTE: The implementation of the KPSS test in the aTSA package
-	# interpolates the p-value using a table from Hobjin et al. (2004). 
-	# This table only contains significance thresholds for 0.01, 0.05, and 0.10.
-	# Therefore, this test requires that 0.01 <= alpha <= 0.10. 
-	# Additionally, a p = 0.01 implies p <= 0.01 and p = 0.10 implies p >= 0.10.
-	
-	# NOTE: The documentation for this test can be found below
-	# https://www.rdocumentation.org/packages/aTSA/versions/3.1.2.1/topics/kpss.test
+kpss_test <- function(ams, alpha = 0.05, quiet = TRUE) {
 
 	# Run the KPSS test and get the p_value
 	result <- kpss.test(ams, output = FALSE)

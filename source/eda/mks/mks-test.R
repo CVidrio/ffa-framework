@@ -1,7 +1,41 @@
-# Mann-Kendall-Sneyers test for detecting the beginning of a trend 
-#  - ams: A vector of annual maximum streamflow data with no NA values
-#  - year: A vector of years corresponding to ams with no NA values
-#  - alpha: The significance level as a floating point number
+#' Mann–Kendall–Sneyers Test for Detecting Change Points in Trends
+#'
+#' Performs the Mann–Kendall–Sneyers (MKS) test to detect the approximate time of onset
+#' of a monotonic trend in annual maximum streamflow (AMS) data. The test computes
+#' progressive and regressive Mann–Kendall statistics and identifies statistically
+#' significant crossing points, indicating potential change points in the trend.
+#'
+#' @param ams Numeric vector of annual maximum streamflow values with no missing values.
+#' @param year Numeric vector of years corresponding to \code{ams}, with no missing values.
+#' @param alpha Numeric significance level for the test (default 0.05).
+#' @param quiet Logical flag to suppress or print a summary message (default TRUE).
+#'
+#' @return A named list containing:
+#' \describe{
+#'   \item{s_prog}{Normalized progressive Mann–Kendall statistics over time.}
+#'   \item{s_regr}{Normalized regressive Mann–Kendall statistics over time.}
+#'   \item{bound}{Critical confidence bound for significance based on \code{alpha}.}
+#'   \item{crossing_df}{Data frame of detected crossing points with indices, years, statistics, and AMS values.}
+#'   \item{change_df}{Subset of \code{crossing_df} where crossing statistics exceed confidence bounds.}
+#'   \item{p_value}{Two-sided p-value assessing the significance of maximum crossing statistic.}
+#'   \item{reject}{Logical indicating whether null hypothesis of no change point is rejected.}
+#'   \item{msg}{Summary message describing test outcome (printed if \code{quiet=FALSE}).}
+#' }
+#'
+#' @details
+#' The function computes progressive and regressive Mann–Kendall statistics \(S_t\),
+#' normalized by their expected values and variances under the null hypothesis. The crossing
+#' points where the difference between these normalized statistics changes sign are
+#' identified using linear interpolation. The significance of detected crossings is
+#' assessed using normal quantiles and the maximum absolute crossing statistic.
+#'
+#' @references
+#' Sneyers, R. (1990). On the statistical analysis of series of observations.
+#' Technical note No. 143, World Meteorological Organization, Geneva.
+#'
+#' @seealso \code{\link{mk_test}} for the classical Mann–Kendall test.
+#' @export
+
 mks_test <- function(ams, year, alpha = 0.05, quiet = TRUE) {
 
 	# Compute number of elements such that ams[i] > ams[j] for all j < i < t for all t.

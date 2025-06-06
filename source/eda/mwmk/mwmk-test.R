@@ -1,9 +1,27 @@
-# Import the Mann-Kendall test
 source("eda/mk/mk-test.R")
 
-# Perform the MW-MK test to check for trends in the variance
-#  - std: A vector of annual maximum streamflow standard deviations
-#  - alpha: The significance level as a floating point number
+#' Mann-Kendall Test on Moving-Window Variance Series
+#'
+#' Applies the Mann-Kendall test to a precomputed moving-window standard deviation series
+#' to detect significant monotonic trends in variance over time.
+#'
+#' @param std Numeric vector of moving-window standard deviations, no missing values.
+#' @param alpha Numeric significance level for the test (default 0.05).
+#' @param quiet Logical; if FALSE, print test summary messages (default TRUE).
+#'
+#' @return A list containing:
+#' \describe{
+#'   \item{p_value}{Computed p-value of the Mann-Kendall test.}
+#'   \item{reject}{Logical indicating whether null hypothesis is rejected.}
+#'   \item{std}{Input moving-window standard deviation vector.}
+#'   \item{msg}{Summary message describing the test results.}
+#' }
+#'
+#' @details
+#' The function assumes that `std` is already derived via moving-window computations
+#' (i.e., it is a series of variance estimates over time windows). The Mann-Kendall test
+#' detects monotonic trends in this variance series, indicating changes in variability.
+
 mwmk_test <- function(std, alpha = 0.05, quiet = TRUE) {
 
 	# Run the Mann-Kendall test on the variance series

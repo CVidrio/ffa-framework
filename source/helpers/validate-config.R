@@ -15,7 +15,8 @@ validate_config <- function(config) {
 		show_trend = "logical",
 		generate_report = "logical",
 		report_format = "character",
-		selection_metric = "character"
+		selection_metric = "character",
+		plotting_position = "character"
 	)
 
 	# Validate data types in the configuration file
@@ -130,6 +131,16 @@ validate_config <- function(config) {
 		))
 	}
 
-	return (config)
+	# Check that the plotting position is valid
+	valid_plotting_positions <- c("Weibull", "Blom", "Cunnane", "Gringorten", "Hazen")
+
+	if (!(config$plotting_position %in% valid_plotting_positions)) {
+		stop(sprintf(
+			"plotting_position '%s' is invalid.\nSupported options: %s.",
+			config$plotting_position, toString(valid_plotting_positions)
+		))
+	}
+
+	config
 
 }

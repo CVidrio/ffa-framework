@@ -119,13 +119,30 @@ test_that("Test that validate-config.R catches invalid distribution selection me
 })
 
 
-test_that("Test that validate-config.R catches invalid distribution selection metric.", {
+test_that("Test that validate-config.R catches invalid parameter estimation method.", {
 	config$estimation_method <- "invalid_method"
 	expect_error(
 		validate_config(config),
 		regexp = "estimation_method 'invalid_method' is invalid."
 	)
 })
+
+test_that("Test that validate-config.R catches invalid uncertainty method.", {
+	config$uncertainty_method <- "invalid_method"
+	expect_error(
+		validate_config(config),
+		regexp = "uncertainty_method 'invalid_method' is invalid."
+	)
+})
+
+test_that("Test that validate-config.R catches invalid plotting position.", {
+	config$plotting_position <- "invalid_formula"
+	expect_error(
+		validate_config(config),
+		regexp = "plotting_position 'invalid_formula' is invalid."
+	)
+})
+
 
 
 
