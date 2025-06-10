@@ -61,6 +61,36 @@
     <li class="toctree-l2"><a class="reference internal" href="#l-moments">L-Moments</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#maximum-likelihood-mle">Maximum Likelihood (MLE)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#two-parameter-distributions">Two Parameter Distributions</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#gumbel-gum-distribution">Gumbel (GUM) Distribution</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#normal-nor-distribution">Normal (NOR) Distribution</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#log-normal-lno-distribution">Log-Normal (LNO) Distribution</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#three-parameter-distributions">Three Parameter Distributions</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#generalized-extreme-value-gev-distribution">Generalized Extreme Value (GEV) Distribution</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#generalized-logistic-glo-distribution">Generalized Logistic (GLO) Distribution</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#generalized-normal-gno-distribution">Generalized Normal (GNO) Distribution</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#generalized-pareto-gpa-distribution">Generalized Pareto (GPA) Distribution</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#pearson-type-iii-pe3-distribution">Pearson Type III (PE3) Distribution</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#log-pearson-type-iii-lp3-distribution">Log-Pearson Type III (LP3) Distribution</a>
+    </li>
+    <li class="toctree-l4"><a class="reference internal" href="#weibull-wei-distribution">Weibull (WEI) Distribution</a>
+    </li>
+        </ul>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#generalized-maximum-likelihood-gmle">Generalized Maximum Likelihood (GMLE)</a>
     </li>
@@ -111,7 +141,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="parameter-estimation">Parameter Estimation</h1>
-<p>The FFA framework implements three methods for parameter estimation: </p>
+<p>The FFA framework implements three methods for parameter estimation:</p>
 <ol>
 <li>L-moments</li>
 <li>Maximum likelihood (MLE)</li>
@@ -120,9 +150,200 @@
 <h2 id="l-moments">L-Moments</h2>
 <p>The method estimates parameter values based on the sample L-moments <span class="arithmatex">\(l_{1}\)</span>, <span class="arithmatex">\(l_{2}\)</span> and the sample L-moment ratios <span class="arithmatex">\(t_{3}\)</span>, <span class="arithmatex">\(t_{4}\)</span>.
 For more information about L-moments, see <a href="../model-selection/#an-introduction-to-l-moments">here</a>.
-The parameter estimation methods are based on <a href="https://lib.stat.cmu.edu/general/lmoments">these</a> Fortran routines by J.R.M. Hosking. 
+The parameter estimation methods are based on <a href="https://lib.stat.cmu.edu/general/lmoments">these</a> Fortran routines by J.R.M. Hosking.
 In particular, we use the <a href="https://cran.r-project.org/web/packages/lmom/lmom.pdf">lmom</a> CRAN package, which implements the aformentioned Fotran routines.</p>
+<p><strong>Warning</strong>: L-moments parameter estimation can yield distributions which do not have support at small values.
+This is generally not an issue, since we are only interested in the higher quantiles of the distrbution.
+However, it is important to remember that the probability distributions produced by L-moments <em>should not</em> be used to predict future streamflow data in general.</p>
 <h2 id="maximum-likelihood-mle">Maximum Likelihood (MLE)</h2>
+<p>For all distributions below, let <span class="arithmatex">\(x\)</span> be a vector of data with elements <span class="arithmatex">\(x_{1}, \dots, x_{n}\)</span>.</p>
+<h3 id="two-parameter-distributions">Two Parameter Distributions</h3>
+<p>For a two-parameter distribution <code>XXX</code>, we use three different models:</p>
+<ol>
+<li><code>XXX</code> is the standard model with no non-stationarity.</li>
+<li><code>XXX10</code> has a trend in the location parameter <span class="arithmatex">\(\mu\)</span>.</li>
+<li><code>XXX11</code> has a trend in the location <span class="arithmatex">\(\mu\)</span> and the scale <span class="arithmatex">\(\sigma\)</span>.</li>
+</ol>
+<p>Shown below is a table summarizing these three models:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th><code>XXX</code></th>
+<th><code>XXX10</code></th>
+<th><code>XXX11</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Location <span class="arithmatex">\(\mu\)</span></td>
+<td>constant</td>
+<td><span class="arithmatex">\(\mu_0 + \mu_1z\)</span></td>
+<td><span class="arithmatex">\(\mu_0 + \mu_1z\)</span></td>
+</tr>
+<tr>
+<td>Scale <span class="arithmatex">\(\sigma\)</span></td>
+<td>constant</td>
+<td>constant</td>
+<td><span class="arithmatex">\(\sigma_0 + \sigma_1z\)</span></td>
+</tr>
+<tr>
+<td>Number of Parameters</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+</tr>
+</tbody>
+</table>
+<h4 id="gumbel-gum-distribution">Gumbel (GUM) Distribution</h4>
+<p>The probability density function (PDF) of the Gumbel distribution is as follows:</p>
+<div class="arithmatex">\[
+f(x_{i} : \mu, \sigma) = \frac{1}{\sigma} \exp \left(-z_{i} - e^{-z_{i}}\right) , \quad
+z_{i} = \frac{x_{i} - \mu}{\sigma }
+\]</div>
+<p>Therefore, the Log-likelihood function is defined as follows:</p>
+<div class="arithmatex">\[
+\ell(x:\mu, \sigma) = \sum_{i=1}^{n} \left[-\ln \sigma - z_{i} - e^{-z_{i}} \right]
+\]</div>
+<h4 id="normal-nor-distribution">Normal (NOR) Distribution</h4>
+<p>The probability density function (PDF) of the Normal distribution is as follows:</p>
+<div class="arithmatex">\[
+f(x_{i} : \mu, \sigma) = \frac{1}{\sigma \sqrt{2\pi }}e^{-z_{i}^2/2} , \quad
+z_{i} = \frac{x_{i} - \mu}{\sigma }
+\]</div>
+<p>Therefore, the Log-likelihood function is defined as follows:</p>
+<div class="arithmatex">\[
+\ell(x:\mu, \sigma) = \sum_{i=1}^{n} \left[-\ln (\sigma \sqrt{2\pi }) - \frac{z_{i}^2}{2} \right]
+\]</div>
+<h4 id="log-normal-lno-distribution">Log-Normal (LNO) Distribution</h4>
+<p>To perform MLE using the LNO distribution, we use the fact that:</p>
+<div class="arithmatex">\[
+\text{Data} \sim \text{LNO} \Leftrightarrow \log(\text{Data}) \sim \text{NOR}
+\]</div>
+<p>Precisely, we require the change of variables formula, which states that:</p>
+<div class="arithmatex">\[
+\ell_{\text{LNO}}(x ; \mu, \sigma) 
+= \ell_{\text{NOR}}(\ln x ; \mu , \sigma) \left|\frac{d}{dx} \ln  x\right| 
+= \frac{\ell_{\text{NOR}}(\ln x ; \mu , \sigma)}{x}  
+\]</div>
+<h3 id="three-parameter-distributions">Three Parameter Distributions</h3>
+<p>For a three-parameter distribution <code>XXX</code>, we use three different models:</p>
+<ol>
+<li><code>XXX</code> is the standard model with no non-stationarity.</li>
+<li><code>XXX100</code> has a trend in the location parameter <span class="arithmatex">\(\mu\)</span>.</li>
+<li><code>XXX110</code> has a trend in the location <span class="arithmatex">\(\mu\)</span> and the scale <span class="arithmatex">\(\sigma\)</span>.</li>
+</ol>
+<p>Shown below is a table summarizing these three models:</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th><code>XXX</code></th>
+<th><code>XXX100</code></th>
+<th><code>XXX110</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Location <span class="arithmatex">\(\mu\)</span></td>
+<td>constant</td>
+<td><span class="arithmatex">\(\mu_0 + \mu_1z\)</span></td>
+<td><span class="arithmatex">\(\mu_0 + \mu_1z\)</span></td>
+</tr>
+<tr>
+<td>Scale <span class="arithmatex">\(\sigma\)</span></td>
+<td>constant</td>
+<td>constant</td>
+<td><span class="arithmatex">\(\sigma_0 + \sigma_1z\)</span></td>
+</tr>
+<tr>
+<td>Shape <span class="arithmatex">\(\kappa\)</span></td>
+<td>constant</td>
+<td>constant</td>
+<td>constant</td>
+</tr>
+<tr>
+<td>Number of Parameters</td>
+<td>3</td>
+<td>4</td>
+<td>5</td>
+</tr>
+</tbody>
+</table>
+<h4 id="generalized-extreme-value-gev-distribution">Generalized Extreme Value (GEV) Distribution</h4>
+<p>The probability density function (PDF) of the GEV distribution is as follows (assume <span class="arithmatex">\(t_{i} &gt; 0)\)</span>:</p>
+<div class="arithmatex">\[
+f(x_{i} : \mu, \sigma, \kappa) = \frac{1}{\sigma}t_{i}^{-1 - (1/\kappa)} \exp (-t_{i}^{-1/\kappa}), \quad
+t_{i} = 1 + \kappa \left(\frac{x_{i} - \mu }{\sigma } \right)
+\]</div>
+<p>Therefore, the Log-likelihood function is defined as follows:</p>
+<div class="arithmatex">\[
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[-\ln \sigma - \left(1 + \frac{1}{\kappa }\right) \ln t_{i} - t_{i}^{-1/\kappa}\right]
+\]</div>
+<h4 id="generalized-logistic-glo-distribution">Generalized Logistic (GLO) Distribution</h4>
+<p>The probability density function (PDF) of the GLO distribution is as follows (assume <span class="arithmatex">\(t_{i} &gt; 0)\)</span>:</p>
+<div class="arithmatex">\[
+f(x_{i} : \mu , \sigma , \kappa ) = \frac{1}{\sigma }t_{i}^{(1/\kappa) - 1} \left[1 + t_{i}^{1/\kappa}\right]^{-2}, \quad
+t_{i} = 1 - \kappa \left(\frac{x_{i} - \mu }{\sigma }\right)
+\]</div>
+<p>Therefore, the Log-likelihood function is defined as follows:</p>
+<div class="arithmatex">\[
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[-\ln \sigma + \left(\frac{1}{\kappa }-1\right) \ln t_{i} - 2 \ln \left(1 + t_{i}^{1/\kappa }\right) \right]
+\]</div>
+<h4 id="generalized-normal-gno-distribution">Generalized Normal (GNO) Distribution</h4>
+<p>The probability density function (PDF) of the GNO distribution is as follows (assume <span class="arithmatex">\(t_{i} &gt; 0)\)</span>:</p>
+<div class="arithmatex">\[
+f(x_{i} : \mu , \sigma , \kappa ) = \frac{1}{\sigma \sqrt{2\pi }} t_{i}^{-1} \exp \left[-\frac{(\ln t_{i})^2}{2\kappa ^2}\right], \quad
+t_{i} = 1 - \kappa \left(\frac{x - \mu }{\sigma }\right)
+\]</div>
+<p>Therefore, the Log-likelihood function is defined as follows:</p>
+<div class="arithmatex">\[
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[- \ln (\sigma \sqrt{2\pi }) - \ln t_{i} - \frac{(\ln t_{i})^2}{2\kappa ^2}\right]
+\]</div>
+<h4 id="generalized-pareto-gpa-distribution">Generalized Pareto (GPA) Distribution</h4>
+<p>The probability density function (PDF) of the GPA distribution is as follows (assume <span class="arithmatex">\(t_{i} &gt; 0)\)</span>:</p>
+<div class="arithmatex">\[
+f(x_{i} : \mu , \sigma , \kappa ) = \frac{1}{\sigma } t_{i}^{-1 - (1/\kappa )}, \quad
+t_{i} = 1 + \kappa \left(\frac{x - \mu }{\sigma }\right)
+\]</div>
+<p>Therefore, the Log-likelihood function is defined as follows:</p>
+<div class="arithmatex">\[
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[ -\ln \sigma - \left(1 + \frac{1}{\kappa }\right) \ln t_{i}   \right]
+\]</div>
+<h4 id="pearson-type-iii-pe3-distribution">Pearson Type III (PE3) Distribution</h4>
+<p>The probability density function (PDF) of the PE3 distribution is as follows:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+f(x_{i} : \mu , \sigma , \kappa ) = \frac{(x_{i} - \xi)^{\alpha  - 1}e^{-(x_{i} - \xi )/\beta }}{\beta ^{\alpha } \Gamma (\alpha )} \\[5pt]
+\alpha = \frac{4}{\kappa^2}, \quad
+\beta = \frac{\sigma |\kappa|}{2}, \quad
+\xi  = \mu  - \frac{2\sigma }{\kappa }
+\end{aligned}
+\]</div>
+<p>Therefore, the Log-likelihood function is defined as follows:</p>
+<div class="arithmatex">\[
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[(\alpha  - 1) \ln |x_{i} - \xi | - \frac{|x_{i} - \xi  |}{\beta } - \alpha \ln\beta  - \ln \Gamma (\alpha )\right]
+\]</div>
+<h4 id="log-pearson-type-iii-lp3-distribution">Log-Pearson Type III (LP3) Distribution</h4>
+<p>To perform MLE using the LP3 distribution, we use the fact that:</p>
+<div class="arithmatex">\[
+\text{Data} \sim \text{LP3}  \Leftrightarrow \log(\text{Data}) \sim \text{PE3}
+\]</div>
+<p>Precisely, we require the change of variables formula, which states that:</p>
+<div class="arithmatex">\[
+\ell_{\text{LP3}}(x ; \mu, \sigma, \kappa) 
+= \ell_{\text{PE3}}(\ln x ; \mu , \sigma, \kappa ) \left|\frac{d}{dx} \ln  x\right| 
+= \frac{\ell_{\text{PE3}}(\ln x ; \mu , \sigma, \kappa )}{x}  
+\]</div>
+<h4 id="weibull-wei-distribution">Weibull (WEI) Distribution</h4>
+<p>The probability density function (PDF) of the Weibull distribution is as follows for <span class="arithmatex">\(x_{i} &gt; \mu\)</span>:</p>
+<div class="arithmatex">\[
+f(x_{i} : \mu, \sigma, \kappa) = \frac{\kappa}{\sigma }\left(\frac{x_{i} - \mu}{\sigma }\right)^{\kappa -1} \exp \left( - \left(\frac{x_{i} - \mu}{\sigma }\right)^{\kappa } \right)
+\]</div>
+<p>Therefore, the Log-likelihood function is defined as follows:</p>
+<div class="arithmatex">\[
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[\ln \kappa - \kappa \ln \sigma +(\kappa -1)\ln (x_{i}-\mu ) - \left(\frac{x_{i} - \mu }{\sigma }\right) ^{\kappa } \right]
+\]</div>
 <h2 id="generalized-maximum-likelihood-gmle">Generalized Maximum Likelihood (GMLE)</h2>
               
             </div>

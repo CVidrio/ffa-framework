@@ -71,9 +71,11 @@
                   </li>
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Roadmap</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#cran-package">CRAN Package</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#command-line-interface">Command Line Interface</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#plumber-api">Plumber API</a>
+    <li class="toctree-l2"><a class="reference internal" href="#api-development">API Development</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#web-app">Web App</a>
     </li>
@@ -111,13 +113,110 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="roadmap">Roadmap</h1>
+<h2 id="cran-package">CRAN Package</h2>
+<p>Implementing remaining functions:</p>
+<ul>
+<li>[ ] <code>mle.estimation</code></li>
+<li>[ ] <code>gmle.estimation</code></li>
+<li>[ ] <code>rfpl.uncertainty</code></li>
+<li>[ ] <code>rfgpl.uncertainty</code></li>
+</ul>
+<p>Touch-ups:</p>
+<ul>
+<li>[ ] Remove parallelization (which hinders reproducibility)</li>
+<li>[ ] Separate plotting tests into different files.</li>
+<li>[ ] Add more plotting tests including <code>vdiffr</code> tests.</li>
+<li>[ ] Remove redundant parameters in uncertainty/assessment functions.</li>
+</ul>
+<p>Rewriting functions:</p>
+<ul>
+<li>[ ] <code>kpss.test</code></li>
+<li>[ ] <code>pp.test</code></li>
+<li>[ ] <code>runs.test</code></li>
+</ul>
+<p>List of functions:</p>
+<ul>
+<li>EDA:<ul>
+<li><code>mw.variance</code></li>
+<li><code>pettitt.test</code></li>
+<li><code>mks.test</code></li>
+<li><code>mk.test</code></li>
+<li><code>spearman.test</code></li>
+<li><code>bbmk.test</code></li>
+<li><code>pp.test</code>+</li>
+<li><code>kpss.test</code>+</li>
+<li><code>runs.test</code>+</li>
+<li><code>white.test</code></li>
+<li><code>sens.trend</code></li>
+</ul>
+</li>
+<li>FFA:<ul>
+<li><code>get.distributions</code></li>
+<li><code>ams.decomposition</code></li>
+<li><code>ld.selection</code></li>
+<li><code>lk.selection</code></li>
+<li><code>z.selection</code></li>
+<li><code>lmom.estimation</code></li>
+<li><code>mle.estimation</code>*</li>
+<li><code>gmle.estimation</code>*</li>
+<li><code>sb.uncertainty</code></li>
+<li><code>rfpl.uncertainty</code>*</li>
+<li><code>rfgpl.uncertainty</code>*</li>
+<li><code>model.assessment</code></li>
+</ul>
+</li>
+<li>Plotting:<ul>
+<li><code>mks.plot</code></li>
+<li><code>bbmk.plot</code></li>
+<li><code>pettitt.plot</code></li>
+<li><code>runs.plot</code></li>
+<li><code>spearman.plot</code></li>
+<li><code>lmom.plot</code></li>
+<li><code>uncertainty.plot</code></li>
+<li><code>assessment.plot</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>Note</strong>: Functions with a (*) bullet point need to be ported.</p>
+<p><strong>Note</strong>: Functions with a (*) marker need to be written.</p>
+<p><strong>Note</strong>: Functions with a (+) need to be rewritten/tested.</p>
 <h2 id="command-line-interface">Command Line Interface</h2>
 <p><strong>Exploratory Data Analysis</strong>: COMPLETE</p>
 <p><strong>Flood Frequency Analysis</strong>: TBD</p>
-<h2 id="plumber-api">Plumber API</h2>
-<p>TBD</p>
+<p>Revise documentation (focus on simplicity) for FFA</p>
+<ul>
+<li>[ ] Mention manual implementation of <code>get-kappa-params.R</code></li>
+<li>[ ] Mention different parameterizations for GEV/GPA</li>
+<li>[ ] Mention parallelization</li>
+</ul>
+<h2 id="api-development">API Development</h2>
+<p>https://www.youtube.com/watch?v=t-Is-8Qfym0</p>
+<p>Need to learn:</p>
+<ul>
+<li>OpenAPI</li>
+<li>Swagger</li>
+<li>Docker</li>
+</ul>
+<p>For the web app, use Flask/HTMX/Alpine.</p>
+<p>https://api.weather.gc.ca/collections/hydrometric-annual-statistics</p>
+<p>Sites used for the paper:</p>
+<ul>
+<li><code>Application_1</code>: 07BE001 (Athabasca River at Athabasca)</li>
+<li><code>Application_2</code>: 08NH021 (Kootenai River at Porthill)</li>
+<li><code>Application_3_1</code>: 05BB001 (Bow River at Banff)</li>
+<li><code>Application_3_2</code>: 08MH016 (Chilliwack River at Chilliwack Lake)</li>
+<li><code>Application_3_3</code>: 08NM050 (Okanagan River at Penticton)</li>
+</ul>
+<p>Query for getting a station (<code>hydrometric-annual-statistics/items</code>)</p>
+<ul>
+<li><code>limit = 200</code> to get all the annual data</li>
+<li><code>skipGeometry = TRUE</code> to ignore geographical data</li>
+<li><code>DATA_TYPE_EN = Discharge</code> to get flows</li>
+<li><code>STATION_NUMBER</code> set to the station number</li>
+</ul>
+<p>Get a list of stations with (<code>hydrometric-stations/items</code>)</p>
 <h2 id="web-app">Web App</h2>
-<p>TBD</p>
+<p>Use Flaks/HTML/CSS with leaflet.js</p>
               
             </div>
           </div><footer>
