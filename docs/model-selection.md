@@ -109,4 +109,36 @@ The Z-statistic selection metric is calculated as follows (for three parameter d
 
 ## Handling Non-Stationarity
 
-TBD
+There are three non-stationary scenarios that can be identified during EDA:
+
+1. Significant trend in the mean only.
+2. Significant trend in the STD only.
+3. Significant trend in both the mean and STD.
+
+To determine the best probability distribution for non-stationary data, we *decompose* the data into stationary and non-stationary components and then use one of the methods described above.
+
+### Decomposition (Scenario 1)
+
+1. Use [Sen's Trend Estimator](eda.md#sens-trend-estimator) to identify the slope $b_{1}$ and intercept $b_{0}$ of the trend. 
+2. Detrend the data by subtracting the linear function $(b_{1} \cdot \text{Covariate})$ from the data, where the *covariate* is a value between $[0, 1]$ derived from the index.
+3. If necessary, enforce positivity by adding a constant such that $\min(\text{data}) = 1$ .
+
+### Decomposition (Scenario 2)
+
+1. Use a moving-window algorithm to compute the variance of the data. 
+2. Use [Sen's Trend Estimator](eda.md#sens-trend-estimator) to identify the slope $c_{1}$ and intercept $c_{0}$ of the trend in the variance. 
+3. Normalize the data to have mean $0$, then divide out the scale factor $g_{t}$.
+
+    $$
+    g_{t} = \frac{(c_{1} \cdot  \text{Covariate} ) + c_{0}}{c_{0}}
+    $$ 
+
+4. Add back the long-term mean $\mu$, and then ensure positivity as in Scenario 1.
+
+### Decomposition (Scenario 3)
+
+1. Remove the linear (additive) trend exactly as in Scenario 1.
+2. On that detrended series, compute a rolling‐window STD series and fit its trend.
+3. Divide the detrended data by the time-varying scale factor $g_{t}$ (as in Scenario 2).
+4. Shift to preserve the series mean and ensure positivity.
+

@@ -71,6 +71,14 @@
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#handling-non-stationarity">Handling Non-Stationarity</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#decomposition-scenario-1">Decomposition (Scenario 1)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#decomposition-scenario-2">Decomposition (Scenario 2)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#decomposition-scenario-3">Decomposition (Scenario 3)</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -247,7 +255,40 @@ z = \frac{\tau_{4} (\kappa ^{*}) - t_{4} + B_{4} }{ \sigma _{4}}
 </li>
 </ol>
 <h2 id="handling-non-stationarity">Handling Non-Stationarity</h2>
-<p>TBD</p>
+<p>There are three non-stationary scenarios that can be identified during EDA:</p>
+<ol>
+<li>Significant trend in the mean only.</li>
+<li>Significant trend in the STD only.</li>
+<li>Significant trend in both the mean and STD.</li>
+</ol>
+<p>To determine the best probability distribution for non-stationary data, we <em>decompose</em> the data into stationary and non-stationary components and then use one of the methods described above.</p>
+<h3 id="decomposition-scenario-1">Decomposition (Scenario 1)</h3>
+<ol>
+<li>Use <a href="../eda/#sens-trend-estimator">Sen's Trend Estimator</a> to identify the slope <span class="arithmatex">\(b_{1}\)</span> and intercept <span class="arithmatex">\(b_{0}\)</span> of the trend. </li>
+<li>Detrend the data by subtracting the linear function <span class="arithmatex">\((b_{1} \cdot \text{Covariate})\)</span> from the data, where the <em>covariate</em> is a value between <span class="arithmatex">\([0, 1]\)</span> derived from the index.</li>
+<li>If necessary, enforce positivity by adding a constant such that <span class="arithmatex">\(\min(\text{data}) = 1\)</span> .</li>
+</ol>
+<h3 id="decomposition-scenario-2">Decomposition (Scenario 2)</h3>
+<ol>
+<li>Use a moving-window algorithm to compute the variance of the data. </li>
+<li>Use <a href="../eda/#sens-trend-estimator">Sen's Trend Estimator</a> to identify the slope <span class="arithmatex">\(c_{1}\)</span> and intercept <span class="arithmatex">\(c_{0}\)</span> of the trend in the variance. </li>
+<li>
+<p>Normalize the data to have mean <span class="arithmatex">\(0\)</span>, then divide out the scale factor <span class="arithmatex">\(g_{t}\)</span>.</p>
+<div class="arithmatex">\[
+g_{t} = \frac{(c_{1} \cdot  \text{Covariate} ) + c_{0}}{c_{0}}
+\]</div>
+</li>
+<li>
+<p>Add back the long-term mean <span class="arithmatex">\(\mu\)</span>, and then ensure positivity as in Scenario 1.</p>
+</li>
+</ol>
+<h3 id="decomposition-scenario-3">Decomposition (Scenario 3)</h3>
+<ol>
+<li>Remove the linear (additive) trend exactly as in Scenario 1.</li>
+<li>On that detrended series, compute a rolling‐window STD series and fit its trend.</li>
+<li>Divide the detrended data by the time-varying scale factor <span class="arithmatex">\(g_{t}\)</span> (as in Scenario 2).</li>
+<li>Shift to preserve the series mean and ensure positivity.</li>
+</ol>
 <div class="footnote">
 <hr />
 <ol>
