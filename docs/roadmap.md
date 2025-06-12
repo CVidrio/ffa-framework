@@ -4,54 +4,52 @@
 
 Implementing remaining functions:
 
-- [x] `mle.estimation`
-- [x] `gmle.estimation`
-- [ ] Remove GPA distribution from L-moments estimation and test cases
-- [ ] Split `log.likelihood` and `generalized.likelihood` into new files
-    - Write unit tests (should be identical to MATLAB)
-    - Ensure that invalid parameters are handled gracefully
-- [ ] `rfpl.uncertainty`
-- [ ] `rfgpl.uncertainty`
+- `rfpl.uncertainty`
+- `rfgpl.uncertainty`
+- Update `sb.uncertainty` for non-stationary distributions
 
-Touch-ups:
-
-- [ ] Make parallelization optional (to improve reproducibility)
-- [ ] Separate plotting tests into different files.
-- [ ] Add more plotting tests including `vdiffr` tests.
-- [ ] Remove redundant parameters in uncertainty/assessment functions.
+### Preparing For CRAN
 
 Rewriting functions:
 
-- [ ] `kpss.test`
-- [ ] `pp.test`
-- [ ] `runs.test`
+- `kpss.test`
+- `pp.test`
+- `runs.test`
 
-List of functions:
+Carefully edit documentation.
 
-- EDA:
+### List of Functions
+
+- Helper functions:
     - `mw.variance`
+    - `get.distributions`
+    - `ams.decomposition`
+- EDA:
     - `pettitt.test`
     - `mks.test`
     - `mk.test`
     - `spearman.test`
     - `bbmk.test`
-    - `pp.test`+
-    - `kpss.test`+
-    - `runs.test`+
+    - `pp.test`
+    - `kpss.test`
+    - `runs.test`
     - `white.test`
     - `sens.trend`
+- Likelihood Functions:
+    - `likelihood`
+    - `generalized.likelihood`
+    - `fixed.likelihood`
+    - `reparameterized.likelihood`
 - FFA:
-    - `get.distributions`
-    - `ams.decomposition`
     - `ld.selection`
     - `lk.selection`
     - `z.selection`
     - `lmom.estimation`
-    - `mle.estimation`*
-    - `gmle.estimation`*
+    - `mle.estimation` 
+    - `gmle.estimation`
     - `sb.uncertainty`
-    - `rfpl.uncertainty`*
-    - `rfgpl.uncertainty`*
+    - `rfpl.uncertainty`
+    - `rfgpl.uncertainty`
     - `model.assessment`
 - Plotting:
     - `mks.plot`
@@ -63,27 +61,15 @@ List of functions:
     - `uncertainty.plot`
     - `assessment.plot`
 
-**Note**: Functions with a (\*) bullet point need to be ported.
-
-**Note**: Functions with a (\*) marker need to be written.
-
-**Note**: Functions with a (+) need to be rewritten/tested.
-
 ## Command Line Interface
 
-**Exploratory Data Analysis**: COMPLETE
+**Exploratory Data Analysis**: Complete.
 
-**Flood Frequency Analysis**: TBD
-
-Revise documentation (focus on simplicity) for FFA
-
-- [ ] Mention manual implementation of `get-kappa-params.R`
-- [ ] Mention different parameterizations for GEV/GPA
-- [ ] Mention parallelization
+**Flood Frequency Analysis**: In progress.
 
 ## API Development
 
-https://www.youtube.com/watch?v=t-Is-8Qfym0
+Link: [Building APIs with R](https://www.youtube.com/watch?v=t-Is-8Qfym0)
 
 Need to learn:
 

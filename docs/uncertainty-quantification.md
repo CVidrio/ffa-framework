@@ -38,27 +38,23 @@ $$
 f(\theta) = \ell_{p}(\theta) - \left[\ell_{p}(\hat{\theta}) - \frac{\chi_{1;1-\alpha }^2}{2}\right]
 $$ 
 
-For the FFA framework, we use the constant location parameter $\mu$ (or $\mu_{0}$ for non-stationary models) to compute the profile likelihood. 
-The other parameters are considered nuisance parameters.
-For a list of statistical models and their parameters, see [here](parameter-estimation.md#maximum-likelihood-mle).
+In the FFA framework, we compute the profile likelihood of each quantile $y$ by reparameterizing the location parameter $\mu$.
+Let $q(p, \mu, \psi)$ be a function that takes an exceedance probability $p$, location parameter $\mu$ and nuisance parameters $\psi$ and returns a quantile $y$.
+All quantile functions satisfy: 
+
+$$
+y = q(p, \mu, \psi) = \mu + q(p, 0, \psi)
+$$
+
+Therefore, we can define $\mu$ as a function of $(p, y, \psi)$ as shown below:
+
+$$
+\mu = y - q(p, 0, \psi)
+$$ 
+
+Then, we compute the profile likelihood $\ell_{p}(y)$ by evaluating $\mu(p, y, \psi)$ using the formula shown above and substituting $\mu$ into the log-likelihood functions listed [here](parameter-estimation.md#maximum-likelihood-mle).
 
 ### Initialization Algorithm
-
-First, we need to identify the initial bounds for $\mu$. This involves:
-
-- Finding a lower bound $\mu^{-} < \hat{\mu}$ such that $f(\mu^{-}) < 0 < f(\hat{\mu})$.
-- Finding an upper bound $\mu^{+} > \hat{\mu}$ such that $f(\mu^{+}) < 0 < f(\hat{\mu})$.
-
-To find the bounds, initialize $\mu^{*} = (1 \pm 0.05)\hat{\mu}$, depending on whether we are looking for the upper/lower bound. 
-Then, compute the profile likelihood and $f(\mu^{*})$. 
-
-- If $f(\mu^{*}) < 0$ we have found an upper/lower bound.
-- Otherwise, iteratively set $\mu^{*} = (1 \pm 0.05)\mu^{*}$ until $f(\mu^{*}) < 0$.
-
-Then, we assign the following variables:
-
-- For the lower bound, set $a = \mu^{-}$ and $b = \hat{\mu}$.
-- For the upper bound, set $a = \hat{\mu}$ and $b = \mu^{+}$.
 
 ### Iteration Algorithm
 

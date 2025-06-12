@@ -6,6 +6,9 @@ The FFA framework implements three methods for parameter estimation:
 2. Maximum likelihood (MLE)
 3. Generalized maximum likelihood (GMLE)
 
+**Note**: The parameterization used for the GEV distributions is different from the parameterization used by the `lmom` library. 
+In particular, the sign of the shape parameter is inverted for consistency with "Regional Frequency Analysis" (Hosking, 1997).
+
 ## L-Moments
 
 The method estimates parameter values based on the sample L-moments $l_{1}$, $l_{2}$ and the sample L-moment ratios $t_{3}$, $t_{4}$.
@@ -200,14 +203,14 @@ $$
 The generalized maximum likelihood (GMLE) parameter estimation method is used to determine the parameters of the generalized extreme value (GEV) distribution given a prior distribution for the shape parameter $\kappa$.
 This method uses [maximum a posteriori estimation](https://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation), which maximizes the product of the likelihood and the prior distribution.
 
-Suppose that $\kappa$ is sampled from a random variable $K \sim \text{Beta}(p, q)$ where $p$ and $q$ are determined using prior knowledge. 
-Then, the prior probability density function $f_{K}(\kappa)$ is defined as follows, where $B(p, q)$ is the [Beta function](https://en.wikipedia.org/wiki/Beta_function).
+Suppose that $\kappa$ is drawn from a random variable $K \sim \text{Beta}(p, q)$ where $p$ and $q$ are determined using prior knowledge. 
+The prior PDF $f_{K}(\kappa)$ is shown below, where $B(p, q)$ is the [Beta function](https://en.wikipedia.org/wiki/Beta_function).
 
 $$
 f_{K}(\kappa) = \frac{\kappa ^{p - 1}(1 - \kappa)^{q-1}}{B(p, q)}
 $$ 
 
-As in the case of regular maximum likelihood, the likelihood function is as follows:
+As in the case of regular maximum likelihood estimation, the likelihood function is:
 
 $$
 f_{X}(x : \mu, \sigma, \kappa) =\prod_{i=1}^{n} \frac{1}{\sigma}t_{i}^{-1 - (1/\kappa)} \exp (-t_{i}^{-1/\kappa}), \quad
@@ -218,5 +221,9 @@ As mentioned previously, we want to maximize the product $\mathcal{L} = f_{K}(\k
 To ensure numerical stability, we will maximize $\ln  (\mathcal{L})$ instead, which has the following form:
 
 $$
-\ln(\mathcal{L}) = (p - 1)\ln \kappa + (q-1) \ln (1 - \kappa)  - \ln (B(p, q)) + \sum_{i=1}^{n} \left[-\ln \sigma - \left(1 + \frac{1}{\kappa }\right) \ln t_{i} - t_{i}^{-1/\kappa}\right]
+\begin{aligned}
+\ln(\mathcal{L}) &= \ln(f_{K}(\kappa)) + \ln(f_{X}(x:\mu ,\sigma ,\kappa )) \\[10pt]
+\ln(f_{K}(\kappa)) &= (p - 1)\ln \kappa + (q-1) \ln (1 - \kappa)  - \ln (B(p, q)) \\[5pt]
+\ln(f_{X}(x:\mu ,\sigma ,\kappa )) &= \sum_{i=1}^{n} \left[-\ln \sigma - \left(1 + \frac{1}{\kappa }\right) \ln t_{i} - t_{i}^{-1/\kappa}\right]
+\end{aligned}
 $$

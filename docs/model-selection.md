@@ -60,7 +60,6 @@ Then, we compare these statistics to their theoretical values to select a distri
 | (Log) Pearson Type III    | PE3/LP3      | 3                    |
 | Generalized Normal        | GNO          | 3                    |
 | Weibull                   | WEI          | 3                    |
-| Generalized Pareto        | GPA          | 3                    |
 
 [^1]: The Gumbel distribution is equivalent to the GEV distribution with $\xi = 0$.
 

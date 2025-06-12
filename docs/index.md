@@ -2,9 +2,11 @@
 
 Welcome to the FFA Framework wiki!
 
-The FFA Framework is an open-source project for **Flood Frequency Analysis** (FFA) developed by researchers at the University of Calgary, Canada. The framework is currently available as a set of scripts for the R programming environment[^1].
+The FFA Framework is an open-source project for **Flood Frequency Analysis** (FFA) developed by researchers at the University of Calgary, Canada[^1].
+The framework is currently available as an R package and a command line interface (CLI).
 
-To get started, please read the [installation instructions](installation.md) and the [user manual](user-manual.md).
+- To get started with the R package, please read the [documentation](r-documentation.pdf).
+- To get started with the CLI, please read the [installation instructions](cli-installation.md) and the [user manual](cli-manual.md).
 
 You may also be interested in our [goals](goals.md), [roadmap](roadmap.md), or [release notes](changelog.md).
 

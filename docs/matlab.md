@@ -27,22 +27,40 @@ This page documents changes from [original MATLAB code](https://zenodo.org/recor
 
 ## Flood Frequency Analysis (FFA)
 
+### Bug Fixes
+
+- Implement the RFPL uncertainty quantification with the Weibull distribution.
+
+### Distribution Changes
+
+The generalized pareto (GPA) distribution has been removed, since its likelihood function is not amenable to maximum likelihood estimation.
+This issue occurs because the GPA distribution is used in peaks over threshold modelling, which we have not yet implemented.
+
+The R version uses the three parameter Weibull distribution (with location, scale, and shape) parameters instead of the two parameter Weibull distribution (with scale and shape parameters).
+This ensures consistency with the other distributions, which all have location parameters.
+
+The quantile function for the Pearson Type III (PE3) distribution does not have a closed form.
+The `quape3` function, which computes the quantiles of the PE3 distribution in the R version, uses a different approximate formula than the MATLAB version.
+Therefore, quantiles for the PE3 distribution may vary by up to $1\%$ between the R version and MATLAB versions.
+
 ### Model Selection Changes
 
-The L-distance and L-kurtosis selection methods have been improved by using an optimization algorithm to find the parameters with the closest L-moments to the data instead of using a brute force approach. This improves efficiency (but has no effect on the results).
+The L-distance and L-kurtosis selection methods have been improved by using an optimization algorithm to find the parameters with the closest L-moments to the data instead of using a brute force approach. This is more computational efficient and elegant (but has no significant effect on the results).
 
-The procedure for computing the Z-statistic selection metric has been changed slightly. If the fitted Kappa distribution is dissimilar to the candidate distributions (GEV, GLO, etc.), then the user is notified and the candidate distributions are ignored.
-
-The generalized pareto (GPA) distribution has been removed, since its likelihood function is not amenable to maximum likelihood estimation. Typically, the GPA distribution is used in peaks over threshold modelling, which we have not yet implemented.
+The procedure for computing the Z-statistic selection metric has been changed.
+If the L-moments of the dataset do not satisfy $\tau_{4} \leq (1 + 5\tau _{3}^2)/6$, then the Kappa distribution will not be fitted and the candidate distributions that use the dataset will be omitted.
 
 ### Parameter Estimation Changes
 
-Parameterization of the PE3/LP3 distributions fails for some datasets because MATLAB is unable to handle the large numbers created by the gamma function. To manage this issue, the MATLAB version used the conventional moments (i.e. sample mean/variance/skewness) when this occurred. This behaviour is no longer necessary and has been removed.
+Parameterization of the PE3/LP3 distributions fails for some datasets because MATLAB is unable to handle the large numbers created by the gamma function.
+To manage this issue, the MATLAB version used the conventional moments (i.e. sample mean/variance/skewness) when this occurred.
+This behaviour is no longer necessary and has been removed.
 
-The R version uses the three parameter Weibull distribution (with location, scale, and shape) parameters instead of the two parameter Weibull distribution (with scale and shape parameters). This ensures consistency with the other distributions, which all have location parameters.
+The R implementation uses L-BFGS-B for MLE/GMLE parameter estimation instead of Nelder-Mead, since the gradient is well defined for the likelihood functions we are working with.
+Additionally, the L-BFGS-B method makes it possible to assign bounds to the variables.
+This modification produced slight improvements to the MLE/GMLE for some datasets.
 
-The R implementation uses L-BFGS-B for MLE/GMLE parameter estimation instead of Nelder-Mead, since the gradient is well defined for the likelihood functions we are working with. Additionally, the L-BFGS-B method makes it possible to assign bounds to the variables. This modification produced slight improvements to the MLE/GMLE for some datasets.
+### Model Assessment Changes
 
-**Note**: The parameterization used for L-moments parameter estimation on the GEVdistributions is different from the parameterization used by the `lmom` library. In particular, the sign of the shape parameter is inverted. We do this to be consistent with the notation used in "Regional Frequency Analysis" (Hosking, 1997).
-
-
+Use the built-in R function `approx()` to perform log-linear interpolation of the return periods.
+The MATLAB implementation uses a hard-coded algorithm which behaves unpredictably when the original and interpolated $x$-values are equally.
