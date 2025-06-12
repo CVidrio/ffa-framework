@@ -43,14 +43,19 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">R Package</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation Instructions</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../user-manual/">User Manual</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../r-documentation.pdf">Documentation</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <p class="caption"><span class="caption-text">Command Line Interface</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli-installation/">Installation Instructions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli-manual/">User Manual</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Concepts</span></p>
               <ul>
                   <li class="toctree-l1"><a class="reference internal" href="../eda/">Exploratory Data Analysis</a>
                   </li>
@@ -72,6 +77,12 @@
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Roadmap</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#cran-package">CRAN Package</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#preparing-for-cran">Preparing For CRAN</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#list-of-functions">List of Functions</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#command-line-interface">Command Line Interface</a>
     </li>
@@ -116,52 +127,56 @@
 <h2 id="cran-package">CRAN Package</h2>
 <p>Implementing remaining functions:</p>
 <ul>
-<li>[ ] <code>mle.estimation</code></li>
-<li>[ ] <code>gmle.estimation</code></li>
-<li>[ ] <code>rfpl.uncertainty</code></li>
-<li>[ ] <code>rfgpl.uncertainty</code></li>
+<li><code>rfpl.uncertainty</code></li>
+<li><code>rfgpl.uncertainty</code></li>
+<li>Update <code>sb.uncertainty</code> for non-stationary distributions</li>
 </ul>
-<p>Touch-ups:</p>
-<ul>
-<li>[ ] Remove parallelization (which hinders reproducibility)</li>
-<li>[ ] Separate plotting tests into different files.</li>
-<li>[ ] Add more plotting tests including <code>vdiffr</code> tests.</li>
-<li>[ ] Remove redundant parameters in uncertainty/assessment functions.</li>
-</ul>
+<h3 id="preparing-for-cran">Preparing For CRAN</h3>
 <p>Rewriting functions:</p>
 <ul>
-<li>[ ] <code>kpss.test</code></li>
-<li>[ ] <code>pp.test</code></li>
-<li>[ ] <code>runs.test</code></li>
+<li><code>kpss.test</code></li>
+<li><code>pp.test</code></li>
+<li><code>runs.test</code></li>
 </ul>
-<p>List of functions:</p>
+<p>Carefully edit documentation.</p>
+<h3 id="list-of-functions">List of Functions</h3>
 <ul>
-<li>EDA:<ul>
+<li>Helper functions:<ul>
 <li><code>mw.variance</code></li>
+<li><code>get.distributions</code></li>
+<li><code>ams.decomposition</code></li>
+</ul>
+</li>
+<li>EDA:<ul>
 <li><code>pettitt.test</code></li>
 <li><code>mks.test</code></li>
 <li><code>mk.test</code></li>
 <li><code>spearman.test</code></li>
 <li><code>bbmk.test</code></li>
-<li><code>pp.test</code>+</li>
-<li><code>kpss.test</code>+</li>
-<li><code>runs.test</code>+</li>
+<li><code>pp.test</code></li>
+<li><code>kpss.test</code></li>
+<li><code>runs.test</code></li>
 <li><code>white.test</code></li>
 <li><code>sens.trend</code></li>
 </ul>
 </li>
+<li>Likelihood Functions:<ul>
+<li><code>likelihood</code></li>
+<li><code>generalized.likelihood</code></li>
+<li><code>fixed.likelihood</code></li>
+<li><code>reparameterized.likelihood</code></li>
+</ul>
+</li>
 <li>FFA:<ul>
-<li><code>get.distributions</code></li>
-<li><code>ams.decomposition</code></li>
 <li><code>ld.selection</code></li>
 <li><code>lk.selection</code></li>
 <li><code>z.selection</code></li>
 <li><code>lmom.estimation</code></li>
-<li><code>mle.estimation</code>*</li>
-<li><code>gmle.estimation</code>*</li>
+<li><code>mle.estimation</code> </li>
+<li><code>gmle.estimation</code></li>
 <li><code>sb.uncertainty</code></li>
-<li><code>rfpl.uncertainty</code>*</li>
-<li><code>rfgpl.uncertainty</code>*</li>
+<li><code>rfpl.uncertainty</code></li>
+<li><code>rfgpl.uncertainty</code></li>
 <li><code>model.assessment</code></li>
 </ul>
 </li>
@@ -177,20 +192,11 @@
 </ul>
 </li>
 </ul>
-<p><strong>Note</strong>: Functions with a (*) bullet point need to be ported.</p>
-<p><strong>Note</strong>: Functions with a (*) marker need to be written.</p>
-<p><strong>Note</strong>: Functions with a (+) need to be rewritten/tested.</p>
 <h2 id="command-line-interface">Command Line Interface</h2>
-<p><strong>Exploratory Data Analysis</strong>: COMPLETE</p>
-<p><strong>Flood Frequency Analysis</strong>: TBD</p>
-<p>Revise documentation (focus on simplicity) for FFA</p>
-<ul>
-<li>[ ] Mention manual implementation of <code>get-kappa-params.R</code></li>
-<li>[ ] Mention different parameterizations for GEV/GPA</li>
-<li>[ ] Mention parallelization</li>
-</ul>
+<p><strong>Exploratory Data Analysis</strong>: Complete.</p>
+<p><strong>Flood Frequency Analysis</strong>: In progress.</p>
 <h2 id="api-development">API Development</h2>
-<p>https://www.youtube.com/watch?v=t-Is-8Qfym0</p>
+<p>Link: <a href="https://www.youtube.com/watch?v=t-Is-8Qfym0">Building APIs with R</a></p>
 <p>Need to learn:</p>
 <ul>
 <li>OpenAPI</li>

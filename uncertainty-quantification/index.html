@@ -43,14 +43,19 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">R Package</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation Instructions</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../user-manual/">User Manual</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../r-documentation.pdf">Documentation</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <p class="caption"><span class="caption-text">Command Line Interface</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli-installation/">Installation Instructions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli-manual/">User Manual</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Concepts</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eda/">Exploratory Data Analysis</a>
                   </li>
@@ -65,6 +70,12 @@
     <li class="toctree-l2"><a class="reference internal" href="#sample-bootstrap">Sample Bootstrap</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#regula-falsi-profile-likelihood-rfpl">Regula-Falsi Profile Likelihood (RFPL)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#initialization-algorithm">Initialization Algorithm</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#iteration-algorithm">Iteration Algorithm</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#regula-falsi-generalized-profile-likelihood-rfgpl">Regula-Falsi Generalized Profile Likelihood (RFGPL)</a>
     </li>
@@ -100,7 +111,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Documentation</li>
+          <li class="breadcrumb-item">Concepts</li>
       <li class="breadcrumb-item active">Uncertainty Quantification</li>
     <li class="wy-breadcrumbs-aside">
     </li>
@@ -126,6 +137,41 @@
 <li>Generate confidence intervals using the mean and variance of the bootstrapped quantiles .</li>
 </ol>
 <h2 id="regula-falsi-profile-likelihood-rfpl">Regula-Falsi Profile Likelihood (RFPL)</h2>
+<p>Consider a statistical model with parameters <span class="arithmatex">\((\theta, \psi_{1}, \dots, \psi_{n})\)</span>.
+The <strong>Profile Likelihood</strong> for the scalar parameter <span class="arithmatex">\(\theta\)</span> and vector of nuisance parameters <span class="arithmatex">\(\psi\)</span> is defined as:</p>
+<div class="arithmatex">\[
+\ell_{p}(\theta) = \max_{\psi } \ell(\theta , \psi)
+\]</div>
+<p>Let <span class="arithmatex">\(\hat{\theta}\)</span> be MLE of <span class="arithmatex">\(\theta\)</span>.
+To find a confidence interval with significance <span class="arithmatex">\(1-\alpha\)</span>, we find the two solutions to the following equation (where <span class="arithmatex">\(\chi_{1;1-\alpha}^2\)</span> is the <span class="arithmatex">\(1-\alpha\)</span> quantile of the <a href="https://en.wikipedia.org/wiki/Chi-squared_distribution">Chi-squared distribution</a>):</p>
+<div class="arithmatex">\[
+2[\ell_{p}(\hat{\theta }) - \ell_{p}(\theta )] = \chi_{1;1-\alpha }^2
+\]</div>
+<p>This is equivalent to finding the two points <span class="arithmatex">\(\theta_{L} &lt; \hat{\theta} &lt; \theta_{U}\)</span> such that the profile log-likelihood has dropped by <span class="arithmatex">\(\chi _{1;1-\alpha }^2 / 2\)</span>.
+To find <span class="arithmatex">\(\theta_{L}\)</span> and <span class="arithmatex">\(\theta_{U}\)</span> we find the roots of <span class="arithmatex">\(f(\theta)\)</span> using a secant-based algorithm.</p>
+<div class="arithmatex">\[
+f(\theta) = \ell_{p}(\theta) - \left[\ell_{p}(\hat{\theta}) - \frac{\chi_{1;1-\alpha }^2}{2}\right]
+\]</div>
+<p>In the FFA framework, we compute the profile likelihood of each quantile <span class="arithmatex">\(y\)</span> by reparameterizing the location parameter <span class="arithmatex">\(\mu\)</span>.
+Let <span class="arithmatex">\(q(p, \mu, \psi)\)</span> be a function that takes an exceedance probability <span class="arithmatex">\(p\)</span>, location parameter <span class="arithmatex">\(\mu\)</span> and nuisance parameters <span class="arithmatex">\(\psi\)</span> and returns a quantile <span class="arithmatex">\(y\)</span>.
+All quantile functions satisfy: </p>
+<div class="arithmatex">\[
+y = q(p, \mu, \psi) = \mu + q(p, 0, \psi)
+\]</div>
+<p>Therefore, we can define <span class="arithmatex">\(\mu\)</span> as a function of <span class="arithmatex">\((p, y, \psi)\)</span> as shown below:</p>
+<div class="arithmatex">\[
+\mu = y - q(p, 0, \psi)
+\]</div>
+<p>Then, we compute the profile likelihood <span class="arithmatex">\(\ell_{p}(y)\)</span> by evaluating <span class="arithmatex">\(\mu(p, y, \psi)\)</span> using the formula shown above and substituting <span class="arithmatex">\(\mu\)</span> into the log-likelihood functions listed <a href="../parameter-estimation/#maximum-likelihood-mle">here</a>.</p>
+<h3 id="initialization-algorithm">Initialization Algorithm</h3>
+<h3 id="iteration-algorithm">Iteration Algorithm</h3>
+<p>Compute the following:</p>
+<div class="arithmatex">\[
+c = \frac{af(b) - bf(a)}{f(b) - f(a)}
+\]</div>
+<p>Evaluate <span class="arithmatex">\(\ell_{p}(c)\)</span> by maximizing over the nuisance parameters <span class="arithmatex">\(\psi\)</span>, then find <span class="arithmatex">\(f(c)\)</span>.</p>
+<p>If <span class="arithmatex">\(|f(c)| &lt; \epsilon\)</span> (where <span class="arithmatex">\(\epsilon\)</span> is small), then stop. <span class="arithmatex">\(c\)</span> is the confidence interval bound.</p>
+<p>Otherwise, assign <span class="arithmatex">\(a = c\)</span> if <span class="arithmatex">\(f(c) &lt; 0\)</span> and <span class="arithmatex">\(b = c\)</span> if <span class="arithmatex">\(f(c) &gt; 0\)</span>.</p>
 <h2 id="regula-falsi-generalized-profile-likelihood-rfgpl">Regula-Falsi Generalized Profile Likelihood (RFGPL)</h2>
               
             </div>
