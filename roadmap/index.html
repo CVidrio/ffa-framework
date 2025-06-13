@@ -131,22 +131,33 @@
 <li><code>rfgpl.uncertainty</code></li>
 <li>Update <code>sb.uncertainty</code> for non-stationary distributions</li>
 </ul>
-<h3 id="preparing-for-cran">Preparing For CRAN</h3>
-<p>Rewriting functions:</p>
+<p>Touch-ups:</p>
 <ul>
-<li><code>kpss.test</code></li>
-<li><code>pp.test</code></li>
+<li>Change NS uncertainty axis label to "Effective Return Period"</li>
+<li>Implement a NS uncertainty plot with multiple slices</li>
+<li>Add support for custom plot labels using an optional argument</li>
+<li>Add option to run NS uncertainty quantification on 1+ time slices</li>
 </ul>
+<p>Read through papers on different NS metrics and possibly implement them:</p>
+<ul>
+<li>EWT: Olsen et al. 1998; Wigley, 2009</li>
+<li>ENE: Parey et al. 2007; 2010</li>
+<li>ERP: Katz et al. 2002</li>
+<li>R: Read &amp; Vogel, 2015; Salas &amp; Obeysekera, 2014; Serinaldi &amp; Kilsby, 2015</li>
+<li>DLL: Rootzen &amp; Katz, 2013</li>
+<li>ADLL: Yan et al. 2017</li>
+</ul>
+<h3 id="preparing-for-cran">Preparing For CRAN</h3>
 <p>Carefully edit documentation.</p>
 <h3 id="list-of-functions">List of Functions</h3>
+<p>Helper functions:</p>
 <ul>
-<li>Helper functions:<ul>
 <li><code>mw.variance</code></li>
 <li><code>get.distributions</code></li>
 <li><code>ams.decomposition</code></li>
 </ul>
-</li>
-<li>EDA:<ul>
+<p>EDA:</p>
+<ul>
 <li><code>pettitt.test</code></li>
 <li><code>mks.test</code></li>
 <li><code>mk.test</code></li>
@@ -158,28 +169,28 @@
 <li><code>white.test</code></li>
 <li><code>sens.trend</code></li>
 </ul>
-</li>
-<li>Likelihood Functions:<ul>
+<p>Likelihood Functions:</p>
+<ul>
 <li><code>likelihood</code></li>
 <li><code>generalized.likelihood</code></li>
 <li><code>fixed.likelihood</code></li>
 <li><code>reparameterized.likelihood</code></li>
 </ul>
-</li>
-<li>FFA:<ul>
+<p>FFA:</p>
+<ul>
 <li><code>ld.selection</code></li>
 <li><code>lk.selection</code></li>
 <li><code>z.selection</code></li>
 <li><code>lmom.estimation</code></li>
-<li><code>mle.estimation</code> </li>
+<li><code>mle.estimation</code></li>
 <li><code>gmle.estimation</code></li>
 <li><code>sb.uncertainty</code></li>
 <li><code>rfpl.uncertainty</code></li>
 <li><code>rfgpl.uncertainty</code></li>
 <li><code>model.assessment</code></li>
 </ul>
-</li>
-<li>Plotting:<ul>
+<p>Plotting:</p>
+<ul>
 <li><code>mks.plot</code></li>
 <li><code>bbmk.plot</code></li>
 <li><code>pettitt.plot</code></li>
@@ -188,8 +199,6 @@
 <li><code>lmom.plot</code></li>
 <li><code>uncertainty.plot</code></li>
 <li><code>assessment.plot</code></li>
-</ul>
-</li>
 </ul>
 <h2 id="command-line-interface">Command Line Interface</h2>
 <p><strong>Exploratory Data Analysis</strong>: Complete.</p>
