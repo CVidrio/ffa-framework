@@ -77,6 +77,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#sens-trend-estimator">Sen's Trend Estimator</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#runs-test">Runs Test</a>
+    </li>
     <li class="toctree-l3"><a class="reference internal" href="#spearman-test">Spearman Test</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#white-test">White Test</a>
@@ -161,41 +163,82 @@ These statistical tests have four purposes:</p>
 <li>Derive the empirical distribution of the MK test statistic from the bootstrapped statistics.</li>
 <li>Estimate the significance of the observed test statistic using the empirical distribution.</li>
 </ol>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/bbmk">here</a>.</p>
 <h3 id="kpss-test">KPSS Test</h3>
 <p>The <strong>KPSS Test</strong> is used to identify if an autoregressive time series has a <em>unit root</em>.</p>
 <ul>
-<li>Null hypothesis: The time series has does not have a unit root.</li>
-<li>Alternative hypothesis: The time series has a unit root.</li>
+<li>Null hypothesis: The time series does not have a unit root and is <em>trend-stationary</em>.</li>
+<li>Alternative hypothesis: The time series has a unit root and is <em>non-stationary</em>.</li>
 </ul>
-<p>Precisely, the autoregressive time series shown below has unit root if <span class="arithmatex">\(\sigma ^2 &gt; 0\)</span>:</p>
+<p>Precisely, the autoregressive time series shown below has unit root if <span class="arithmatex">\(\sigma_{v}^2 &gt; 0\)</span>:</p>
 <div class="arithmatex">\[
 \begin{align}
-y_{t} &amp;= \mu_{t} + \alpha t + \epsilon_{t} \\
-\mu_{t} &amp;= \mu_{t-1} + v_{t} \\
+y_{t} &amp;= \mu_{t} + \beta t +  \epsilon_{t} \\[5pt]
+\mu_{t} &amp;= \mu_{t-1} + v_{t} \\[5pt]
+v_{t} &amp;\sim \mathcal{N}(0, \sigma_{v}^2)
 \end{align}
 \]</div>
-<p>Here's what each term in this formulation represents:</p>
+<p>Here is what each term in this formulation represents:</p>
 <ul>
-<li><span class="arithmatex">\(\mu_{t}\)</span> is the <em>drift</em>, or the deviation of <span class="arithmatex">\(y_{t}\)</span> from <span class="arithmatex">\(0\)</span>.</li>
-<li>Under the null hypothesis, <span class="arithmatex">\(\mu_{t}\)</span> is constant (since <span class="arithmatex">\(v_{t}\)</span> is constant).</li>
-<li>Under the alternative hypothesis, <span class="arithmatex">\(\mu_t\)</span> is a stochastic process with unit root.</li>
-<li><span class="arithmatex">\(\alpha t\)</span> is a <em>linear trend</em>, which represents deterministic non-stationarity (i.e. climate change).</li>
-<li><span class="arithmatex">\(\epsilon_{t}\)</span> is <em>stationary noise</em>, corresponding to reversible fluctuations in <span class="arithmatex">\(y_{t}\)</span>.</li>
-<li>In hydrology, <span class="arithmatex">\(\epsilon_{t}\)</span> represents fluctuations in streamflow due to random events (i.e. weather).</li>
-<li><span class="arithmatex">\(v_{t}\)</span> is <em>random walk innovation</em>, or irreversible fluctuations in <span class="arithmatex">\(\mu_{t}\)</span>.</li>
-<li>In hydrology, <span class="arithmatex">\(v_{t}\)</span> could represent randomness in industrial activity causing climate change.</li>
+<li><span class="arithmatex">\(\mu_{t}\)</span> is the <em>drift</em>, or the deviation of <span class="arithmatex">\(y_{t}\)</span> from <span class="arithmatex">\(0\)</span>.
+  Under the null hypothesis, <span class="arithmatex">\(\mu_{t}\)</span> is constant (since <span class="arithmatex">\(v_{t}\)</span> is constant).
+  Under the alternative hypothesis, <span class="arithmatex">\(\mu_t\)</span> is a stochastic process with unit root.</li>
+<li><span class="arithmatex">\(\beta t\)</span> is a <em>linear trend</em>, which represents deterministic non-stationarity (i.e. climate change).</li>
+<li><span class="arithmatex">\(\epsilon_{t}\)</span> is <em>stationary noise</em>, corresponding to reversible fluctuations in <span class="arithmatex">\(y_{t}\)</span>.
+  In hydrology, <span class="arithmatex">\(\epsilon_{t}\)</span> represents fluctuations in streamflow due to random events (i.e. weather).</li>
+<li><span class="arithmatex">\(v_{t}\)</span> is <em>random walk innovation</em>, or irreversible fluctuations in <span class="arithmatex">\(\mu_{t}\)</span>.
+  In hydrology, <span class="arithmatex">\(v_{t}\)</span> could represent randomness in industrial activity causing climate change.</li>
 </ul>
-<p>This test is implemented using R package <a href="https://cran.r-project.org/web/packages/aTSA/index.html">aTSA</a> with the following settings:</p>
-<ul>
-<li><code>lag.short = TRUE</code>, since AMS data has minimal autocorrelation.</li>
-<li>We consider <code>type3</code> results since we are assuming the presence of a trend.</li>
-</ul>
-<p>For more information, see the <a href="https://www.rdocumentation.org/packages/aTSA/versions/3.1.2.1/topics/kpss.test">documentation</a>.</p>
-<p><strong>Warning</strong>: The implementation of the KPSS test in the aTSA package interpolates the p-value using a table from <a href="https://doi.org/10.1111/j.1467-9574.2004.00272.x">Hobjin et al. (2004)</a>.
-This table only contains significance thresholds for <span class="arithmatex">\(0.01\)</span>, <span class="arithmatex">\(0.05\)</span> and <span class="arithmatex">\(0.10\)</span>.
-Therefore, p-values below <span class="arithmatex">\(0.01\)</span> and above <span class="arithmatex">\(0.10\)</span> will be truncated.</p>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/kpss">here</a>.</p>
+<p>To conduct the test, we fit a linear model to <span class="arithmatex">\(y_{t}\)</span> and get the residuals <span class="arithmatex">\(\hat{r}_{t}\)</span>
+Then, we compute the cumulative partial-sum statistics <span class="arithmatex">\(S_{k}\)</span> using the following formula:</p>
+<div class="arithmatex">\[
+S_{k} = \sum_{t=1}^{k} \hat{r}_{t}
+\]</div>
+<p>Under the null hypothesis, <span class="arithmatex">\(S_{k}\)</span> will behave like a random walk with finite variance.
+If <span class="arithmatex">\(y_{t}\)</span> has a unit root, then the sums will "drift" too much.</p>
+<p>Next, we estimate the long-run variance of the time series, accounting for autocovariance.
+To do this, we first compute the sample autocovariances <span class="arithmatex">\(\gamma_{j}\)</span> for up to <span class="arithmatex">\(q\)</span> lags, where:</p>
+<div class="arithmatex">\[
+q = \left\lfloor \frac{3\sqrt{n}}{13} \right\rfloor
+\]</div>
+<p>The sample autocovariance <span class="arithmatex">\(\gamma_{j}\)</span> is a measure of the correlation between the time series <span class="arithmatex">\(y_{t}\)</span> and the shifted time series <span class="arithmatex">\(y_{t-j}\)</span>.
+Each sample autocovariance <span class="arithmatex">\(\gamma_{j}\)</span> for <span class="arithmatex">\(j = 0, 1, \dots, q\)</span> is computed as follows:</p>
+<div class="arithmatex">\[
+\hat{\gamma}_{j} = \frac{1}{n} \sum_{t = j + 1}^{n} \hat{r}_{t}\hat{r}_{t-j}
+\]</div>
+<p>Finally, we estimate the long-run variance <span class="arithmatex">\(\hat{\lambda}^2\)</span> using a Newey-West style estimator.
+This estimator corrects for the additional variability in <span class="arithmatex">\(\epsilon_{t}\)</span> caused by autocorrelation and heteroskedasticity.</p>
+<div class="arithmatex">\[
+\hat{\lambda}^2 = \hat{\gamma}_{0} + 2\sum_{j=1}^{q} \left(1 - \frac{j}{q + 1} \right)  \gamma_{j}
+\]</div>
+<p>Then, we compute the test statistic <span class="arithmatex">\(z_{K}\)</span> using the following formula:</p>
+<div class="arithmatex">\[
+z_{K} = \frac{1}{n^2\hat{\lambda }^2}\sum_{k=1}^{n}  S_{k}^2
+\]</div>
+<p>The test statistic <span class="arithmatex">\(z_{K}\)</span> is not normally distributed.
+Instead, we compute the p-value by interpolating a table from <a href="https://doi.org/10.1111/j.1467-9574.2004.00272.x">Hobjin et al. (2004)</a>.
+This table is shown below for various quantiles <span class="arithmatex">\(q\)</span>.</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(q\)</span></th>
+<th>0.90</th>
+<th>0.95</th>
+<th>0.975</th>
+<th>0.99</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Statistic</td>
+<td>0.119</td>
+<td>0.146</td>
+<td>0.176</td>
+<td>0.216</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Warning</strong>: The interpolation procedure discussed above only works for <span class="arithmatex">\(0.01 &lt; p &lt; 0.10\)</span>.
+Therefore, p-values below <span class="arithmatex">\(0.01\)</span> and above <span class="arithmatex">\(0.10\)</span> will be truncated and it is required that <span class="arithmatex">\(0.01 &lt; \alpha &lt; 0.1\)</span>.</p>
 <h3 id="mann-kendall-test">Mann-Kendall Test</h3>
 <p>The <strong>Mann-Kendall Test</strong> is used to assess whether there is a statistically significant monotonic trend in a time series.
 The test requires that when no trend is present, the data is independent and identically distributed.</p>
@@ -220,7 +263,6 @@ Z_{MK} = \begin{cases}
 \end{cases}
 \]</div>
 <p>For a two-sided test, we reject the null hypothesis if <span class="arithmatex">\(|Z_{MK}| \geq Z_{1 - (\alpha/2) }\)</span> and conclude that there is a statistically significant monotonic trend in the data. For more information, see <a href="https://vsp.pnnl.gov/help/vsample/design_trend_mann_kendall.htm">here</a>.</p>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/mk">here</a>.</p>
 <h3 id="mann-kendall-sneyers-test">Mann-Kendall-Sneyers Test</h3>
 <p>The <strong>Mann-Kendall-Sneyers (MKS) Test</strong> is used to identify the beginning of a trend in a time series:</p>
 <ul>
@@ -249,7 +291,6 @@ UB_{t} = \frac{S_{t}'' - \mathbb{E}[S_{t}'']}{\sqrt{\text{Var}\,(S_{t}'')}}
 \]</div>
 <p>Finally, we plot <span class="arithmatex">\(UF_{t}\)</span> and <span class="arithmatex">\(UB_{t}\)</span> with confidence bounds at <span class="arithmatex">\(\pm z_{1 - (\alpha/2)}\)</span>, where <span class="arithmatex">\(\alpha\)</span> is the chosen significance level.
 A crossing point between <span class="arithmatex">\(UF_{t}\)</span> and <span class="arithmatex">\(UB_{t}\)</span> that lies outside the confidence bounds indicates the start of the trend.</p>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/mks">here</a>.</p>
 <h3 id="mw-mk-test">MW-MK Test</h3>
 <p>The <strong>Moving Window Mann-Kendall (MW-MK) Test</strong> is used to identify a statistically significant monotonic trend in the variances of an AMS time series.</p>
 <ul>
@@ -266,7 +307,6 @@ A crossing point between <span class="arithmatex">\(UF_{t}\)</span> and <span cl
 </ol>
 <p>Then, we perform the Mann-Kendall Test on the time series of variances.</p>
 <p>For more information about the Mann-Kendall test, see <a href="#mann-kendall-test">here</a>.</p>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/mwmk">here</a>.</p>
 <h3 id="pettitt-test">Pettitt Test</h3>
 <p>The <strong>Pettitt Test</strong> is used to identify abrupt changes in the mean of a time series.</p>
 <ul>
@@ -283,7 +323,6 @@ U_{t} = \sum_{i=1}^{t} \sum_{j=t+1}^{n} \text{sign} (y_{j} - y_{i}), \quad K = \
 p \approx \exp \left(-\frac{6K^2}{n^3 + n^2}\right)
 \]</div>
 <p>If the p-value is less than the significance level <span class="arithmatex">\(\alpha\)</span>, we reject the null hypothesis and conclude that there is evidence for an abrupt change in the mean at the potential change point.</p>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/pettitt">here</a>.</p>
 <h3 id="phillips-perron-test">Phillips-Perron Test</h3>
 <p>The <strong>Phillips-Perron (PP) Test</strong> is used to identify if an autoregressive time series <span class="arithmatex">\(y_t\)</span> has a unit root.</p>
 <ul>
@@ -291,10 +330,10 @@ p \approx \exp \left(-\frac{6K^2}{n^3 + n^2}\right)
 <li>Alternative hypothesis: <span class="arithmatex">\(y_{t}\)</span> does not have a unit root and is <em>trend-stationary</em>.</li>
 </ul>
 <p>Precisely, let <span class="arithmatex">\(x_{t}\)</span> be an <a href="https://en.wikipedia.org/wiki/Autoregressive_model">AR(1)</a> model.
-Let <span class="arithmatex">\(y_{t}\)</span> be a function of <span class="arithmatex">\(x_{t}\)</span> with drift <span class="arithmatex">\(\mu\)</span> and trend <span class="arithmatex">\(\alpha t\)</span>.</p>
+Let <span class="arithmatex">\(y_{t}\)</span> be a function of <span class="arithmatex">\(x_{t}\)</span> with drift <span class="arithmatex">\(\beta_{0}\)</span> and trend <span class="arithmatex">\(\beta_{1} t\)</span>.</p>
 <div class="arithmatex">\[
 \begin{align}
-y_{t} &amp;= \mu + \alpha t + x_{t} \\
+y_{t} &amp;= \beta_{0} + \beta_{1} t + x_{t} \\[5pt]
 x_{t} &amp;= \rho x_{t-1} + \epsilon_{t}
 \end{align}
 \]</div>
@@ -302,25 +341,131 @@ x_{t} &amp;= \rho x_{t-1} + \epsilon_{t}
 <li>If <span class="arithmatex">\(\rho = 1\)</span>, then <span class="arithmatex">\(x_t\)</span> and hence <span class="arithmatex">\(y_t\)</span> has a <em>unit root</em> (null hypothesis).</li>
 <li>If <span class="arithmatex">\(\rho &lt; 1\)</span>, then <span class="arithmatex">\(y_t\)</span> is <em>trend stationary</em> (alternative hypothesis).</li>
 </ul>
-<p>This test is implemented using R package <a href="https://cran.r-project.org/web/packages/aTSA/index.html">aTSA</a> with the following settings:</p>
-<ul>
-<li><code>lag.short = TRUE</code>, since AMS data has minimal autocorrelation.</li>
-<li>We consider <code>type3</code> results since we are assuming the presence of drift and trend.</li>
-</ul>
-<p>For more information, see the <a href="https://www.rdocumentation.org/packages/aTSA/versions/3.1.2.1/topics/pp.test">documentation</a>.</p>
-<p><strong>Warning</strong>: The implementation of the PP test in the aTSA package interpolates the p-value using a table from Fuller, W. A. (1996).
-This table only contains significance thresholds for <span class="arithmatex">\(0.01\)</span>, <span class="arithmatex">\(0.05\)</span> and <span class="arithmatex">\(0.10\)</span>.
-Therefore, p-values below <span class="arithmatex">\(0.01\)</span> and above <span class="arithmatex">\(0.10\)</span> will be truncated.</p>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/pp">here</a>.</p>
+<p>To perform the test, we begin by fitting an autoregressive linear model to <span class="arithmatex">\(y_{t}\)</span>.
+Let <span class="arithmatex">\(\hat{r}_{t}\)</span> be the residuals of this model.
+From this model, we can determine <span class="arithmatex">\(\hat{\rho}\)</span> (the estimated coefficient on <span class="arithmatex">\(y_{t-1}\)</span>) and <span class="arithmatex">\(\text{SE}(\hat{\rho})\)</span> (its standard error).
+Let <span class="arithmatex">\(\hat{\sigma}^2\)</span> be the variance of the residuals, computed using the following formula:</p>
+<div class="arithmatex">\[
+\hat{\sigma^2} = \frac{1}{n - 3} \sum_{t=1}^{n} \hat{r}_{t}^2
+\]</div>
+<p>In the equation above, <span class="arithmatex">\(n\)</span> is the number of data points in the sample.
+We have <span class="arithmatex">\(n-3\)</span> degrees of freedom since there are three parameters in the autoregressive model (<span class="arithmatex">\(\beta_{0}\)</span>, <span class="arithmatex">\(\beta_{1}\)</span>, and <span class="arithmatex">\(\rho\)</span>).</p>
+<p>Next, we compute the sample autocovariances <span class="arithmatex">\(\gamma_{j}\)</span> for up to <span class="arithmatex">\(q\)</span> lags, where:</p>
+<div class="arithmatex">\[
+q = \left\lfloor \sqrt[4]{\frac{n}{25}}\right\rfloor
+\]</div>
+<p>The sample autocovariance <span class="arithmatex">\(\gamma_{j}\)</span> is a measure of the correlation between the time series <span class="arithmatex">\(y_{t}\)</span> and the shifted time series <span class="arithmatex">\(y_{t-j}\)</span>.
+Each sample autocovariance <span class="arithmatex">\(\gamma_{j}\)</span> for <span class="arithmatex">\(j = 0, 1, \dots, q\)</span> is computed as follows:</p>
+<div class="arithmatex">\[
+\hat{\gamma}_{j} = \frac{1}{n} \sum_{t = j + 1}^{n} \hat{r}_{t}\hat{r}_{t-j}
+\]</div>
+<p>Finally, we estimate the long-run variance <span class="arithmatex">\(\hat{\lambda}^2\)</span> using a Newey-West style estimator.
+This estimator corrects for the additional variability in <span class="arithmatex">\(\epsilon_{t}\)</span> caused by autocorrelation and heteroskedasticity.</p>
+<div class="arithmatex">\[
+\hat{\lambda}^2 = \hat{\gamma}_{0} + 2\sum_{j=1}^{q} \left(1 - \frac{j}{q + 1} \right)  \gamma_{j}
+\]</div>
+<p>Then, we compute the test statistic <span class="arithmatex">\(z_{\rho}\)</span> using the following formula:</p>
+<div class="arithmatex">\[
+z_{\rho } = n(\hat{\rho} - 1) - \frac{n^2 \text{SE}(\hat{\rho})^2}{2 \hat{\sigma}^2}(\hat{\lambda }^2 - \hat{\gamma}_{0})
+\]</div>
+<p>The test statistic <span class="arithmatex">\(z_{\rho}\)</span> is not normally distributed.
+Instead, we compute the p-value by interpolating a table from Fuller, W. A. (1996).
+This table is shown below for sample sizes <span class="arithmatex">\(n\)</span> and quantiles <span class="arithmatex">\(q\)</span>:</p>
+<table>
+<thead>
+<tr>
+<th><span class="arithmatex">\(n\)</span> \ <span class="arithmatex">\(q\)</span></th>
+<th>0.01</th>
+<th>0.025</th>
+<th>0.05</th>
+<th>0.10</th>
+<th>0.50</th>
+<th>0.90</th>
+<th>0.95</th>
+<th>0.975</th>
+<th>0.99</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>25</td>
+<td>-22.5</td>
+<td>-20.0</td>
+<td>-17.9</td>
+<td>-15.6</td>
+<td>-8.49</td>
+<td>-3.65</td>
+<td>-2.51</td>
+<td>-1.53</td>
+<td>-0.46</td>
+</tr>
+<tr>
+<td>50</td>
+<td>-25.8</td>
+<td>-22.4</td>
+<td>-19.7</td>
+<td>-16.8</td>
+<td>-8.80</td>
+<td>-3.71</td>
+<td>-2.60</td>
+<td>-1.67</td>
+<td>-0.67</td>
+</tr>
+<tr>
+<td>100</td>
+<td>-27.4</td>
+<td>-23.7</td>
+<td>-20.6</td>
+<td>-17.5</td>
+<td>-8.96</td>
+<td>-3.74</td>
+<td>-2.63</td>
+<td>-1.74</td>
+<td>-0.76</td>
+</tr>
+<tr>
+<td>250</td>
+<td>-28.5</td>
+<td>-24.4</td>
+<td>-21.3</td>
+<td>-17.9</td>
+<td>-9.05</td>
+<td>-3.76</td>
+<td>-2.65</td>
+<td>-1.79</td>
+<td>-0.83</td>
+</tr>
+<tr>
+<td>500</td>
+<td>-28.9</td>
+<td>-24.7</td>
+<td>-21.5</td>
+<td>-18.1</td>
+<td>-9.08</td>
+<td>-3.76</td>
+<td>-2.66</td>
+<td>-1.80</td>
+<td>-0.86</td>
+</tr>
+<tr>
+<td>1000</td>
+<td>-29.4</td>
+<td>-25.0</td>
+<td>-21.7</td>
+<td>-18.3</td>
+<td>-9.11</td>
+<td>-3.77</td>
+<td>-2.67</td>
+<td>-1.81</td>
+<td>-0.88</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Warning</strong>: The interpolation procedure discussed above only works for <span class="arithmatex">\(0.01 &lt; p\)</span>.
+Therefore, p-values below <span class="arithmatex">\(0.01\)</span> will be truncated and it is required that <span class="arithmatex">\(0.01 &lt; \alpha\)</span>.</p>
 <h3 id="sens-trend-estimator">Sen's Trend Estimator</h3>
 <p><strong>Sen's Trend Estimator</strong> is used to estimate the slope of a regression line.
 Unlike <a href="https://en.wikipedia.org/wiki/Least_squares">Least Squares</a>, Sen's trend estimator uses a non-parametric approach which makes it robust to outliers.</p>
-<p>After computing the regression line using Sen's trend estimator, we use the <strong>Runs Test</strong> to determine whether the residuals from the regression are random.
-If the Runs test identifies a non-random pattern in the residuals, it is a strong indication that the non-stationarity in the data is non-linear.</p>
-<ul>
-<li>Null hypothesis: The residuals are distributed randomly.</li>
-<li>Alternative hypothesis: The residuals <em>are not</em> distributed randomly.</li>
-</ul>
 <p>To compute Sen's trend estimator we use the following procedure:</p>
 <ol>
 <li>Iterate over all pairs of data points <span class="arithmatex">\((x_{i}, y_{i})\)</span> and <span class="arithmatex">\((x_{j}, y_{j})\)</span>.</li>
@@ -328,6 +473,13 @@ If the Runs test identifies a non-random pattern in the residuals, it is a stron
 <li>Sen's trend estimator <span class="arithmatex">\(\hat{m}\)</span> is the median of <span class="arithmatex">\(S\)</span>.</li>
 </ol>
 <p>After computing <span class="arithmatex">\(\hat{m}\)</span>, we can estimate the <span class="arithmatex">\(y\)</span>-intercept <span class="arithmatex">\(b\)</span> by the median of <span class="arithmatex">\(y_{i} - \hat{m}x_{i}\)</span> for all <span class="arithmatex">\(i\)</span>.</p>
+<h3 id="runs-test">Runs Test</h3>
+<p>After computing the regression line using <a href="./#sens-trend-estimator">Sen's trend estimator</a>, we use the <strong>Runs Test</strong> to determine whether the residuals from the regression are random.
+If the Runs test identifies non-randomness in the residuals, it is a strong indication that the non-stationarity in the data is non-linear.</p>
+<ul>
+<li>Null hypothesis: The residuals are distributed randomly.</li>
+<li>Alternative hypothesis: The residuals <em>are not</em> distributed randomly.</li>
+</ul>
 <p>Prior to applying the Runs test, the data is categorized based on whether it is above or below the median. Then, we compute the number of contiguous blocks of <span class="arithmatex">\(+\)</span> or <span class="arithmatex">\(-\)</span> (or <em>runs</em>) in the data.</p>
 <blockquote>
 <p><strong>Example</strong>: Suppose that after categorization, the sequence of data is as follows:</p>
@@ -337,13 +489,12 @@ If the Runs test identifies a non-random pattern in the residuals, it is a stron
 <p>This sequence has six runs with length <span class="arithmatex">\((3, 2, 3, 1,1, 1)\)</span>.</p>
 </blockquote>
 <p>Let <span class="arithmatex">\(R\)</span> be the number of runs in <span class="arithmatex">\(N\)</span> data points (with category counts <span class="arithmatex">\(N_{+}\)</span> and <span class="arithmatex">\(N_{-}\)</span>).</p>
-<p>Then, <span class="arithmatex">\(R\)</span> is asymptotically normal with the following parameters:</p>
+<p>Then, under the null hypothesis, <span class="arithmatex">\(R\)</span> is asymptotically normal with:</p>
 <div class="arithmatex">\[
 \mathbb{E}[R] = \frac{2N_{+}N_{-}}{N} + 1, \quad
 \text{Var}(R) = \frac{2N_{+}N_{-}(2N_{+}N_{-} - N)}{N^2(N - 1)}
 \]</div>
 <p>For more information, see the <a href="https://en.wikipedia.org/wiki/Wald%E2%80%93Wolfowitz_runs_test">Wikipedia</a> entry or the <a href="https://search.r-project.org/CRAN/refmans/randtests/html/runs.test.html">R Documentation</a>.</p>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/sens">here</a>.</p>
 <h3 id="spearman-test">Spearman Test</h3>
 <p>The <strong>Spearman Test</strong> is used to identify autocorrelation in a time series <span class="arithmatex">\(y_{t}\)</span>.
 A <em>significant lag</em> is a number <span class="arithmatex">\(i\)</span> such that the correlation between <span class="arithmatex">\(y_{t}\)</span> and <span class="arithmatex">\(y_{t-i}\)</span> is statistically significant.
@@ -365,7 +516,6 @@ t_{i}= \rho_{i} \sqrt{\frac{n-2}{1 - \rho _{i}^2}}
 \]</div>
 <p>Then, the test statistic <span class="arithmatex">\(t_{i}\)</span> has the <span class="arithmatex">\(t\)</span>-distribution with <span class="arithmatex">\(n-2\)</span> degrees of freedom.</p>
 <p>For more information, see the Wikipedia pages on <a href="https://en.wikipedia.org/wiki/Autocorrelation">Autocorrelation</a> and <a href="https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient">Spearman's Rho</a>.</p>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/spearman">here</a>.</p>
 <h3 id="white-test">White Test</h3>
 <p>The <strong>White Test</strong> is used to detect changes in the variance of a time series.</p>
 <ul>
@@ -375,21 +525,20 @@ t_{i}= \rho_{i} \sqrt{\frac{n-2}{1 - \rho _{i}^2}}
 <p>Consider a simple linear regression model:</p>
 <div class="arithmatex">\[y_{i} = \beta_{0} + \beta_{1} x_{i} + \epsilon_{i}\]</div>
 <p>Use ordinary least squares to fit the model. Then compute the squared residuals:</p>
-<div class="arithmatex">\[{\hat{\epsilon}}_{i}^{2} = (y_{i} - \hat{y}_{i})^{2}\]</div>
+<div class="arithmatex">\[{\hat{r}}_{i}^{2} = (y_{i} - \hat{y}_{i})^{2}\]</div>
 <p>Next, fit an auxillary regression model to the squared residuals.
 This model should include each regressor, the square of each regressor, and the cross products between all regressors.
 Since <span class="arithmatex">\(x\)</span> is our only regressor,</p>
-<div class="arithmatex">\[{\hat{\epsilon}}_{i}^{2} = \alpha_{0} + \alpha_{1}x_{i} + \alpha_{2}x_{i}^{2} + u_{i}\]</div>
+<div class="arithmatex">\[{\hat{r}}_{i}^{2} = \alpha_{0} + \alpha_{1}x_{i} + \alpha_{2}x_{i}^{2} + u_{i}\]</div>
 <p>Next, we compute the <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">coefficient of determination</a> <span class="arithmatex">\(R^2\)</span> for the auxillary model.
 The test statistic is <span class="arithmatex">\(nR^2 \sim \chi_{d}^2\)</span>, where <span class="arithmatex">\(n\)</span> is the number of observations and <span class="arithmatex">\(d = 2\)</span> is the number of regressors, excluding the intercept.
-If <span class="arithmatex">\(nR^2 &gt; \chi_{1-\alpha }\)</span>, we reject the null hypothesis and conclude that the time series exhibits heteroskedasticity.</p>
+If <span class="arithmatex">\(nR^2 &gt; \chi^2_{1-\alpha, d}\)</span>, we reject the null hypothesis and conclude that the time series exhibits heteroskedasticity.</p>
 <p>For more information, the following sources may be useful:</p>
 <ul>
 <li><a href="https://www.numberanalytics.com/blog/white-test-deep-dive">White Test Deep Dive</a></li>
 <li>Marno Verbeek, A Guide to Modern Econometrics (2004)</li>
 <li>William H. Greene, Econometric Analysis, 5th Edition (2002)</li>
 </ul>
-<p>The code used to implement this test can be found <a href="https://github.com/rileywheadon/ffa-framework/tree/master/source/eda/white">here</a>.</p>
               
             </div>
           </div><footer>
