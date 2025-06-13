@@ -8,57 +8,77 @@ Implementing remaining functions:
 - `rfgpl.uncertainty`
 - Update `sb.uncertainty` for non-stationary distributions
 
+Touch-ups:
+
+- Change NS uncertainty axis label to "Effective Return Period"
+- Implement a NS uncertainty plot with multiple slices
+- Add support for custom plot labels using an optional argument
+- Add option to run NS uncertainty quantification on 1+ time slices
+
+Read through papers on different NS metrics and possibly implement them:
+
+- EWT: Olsen et al. 1998; Wigley, 2009
+- ENE: Parey et al. 2007; 2010
+- ERP: Katz et al. 2002
+- R: Read & Vogel, 2015; Salas & Obeysekera, 2014; Serinaldi & Kilsby, 2015
+- DLL: Rootzen & Katz, 2013
+- ADLL: Yan et al. 2017
+
 ### Preparing For CRAN
-
-Rewriting functions:
-
-- `kpss.test`
-- `pp.test`
 
 Carefully edit documentation.
 
 ### List of Functions
 
-- Helper functions:
-    - `mw.variance`
-    - `get.distributions`
-    - `ams.decomposition`
-- EDA:
-    - `pettitt.test`
-    - `mks.test`
-    - `mk.test`
-    - `spearman.test`
-    - `bbmk.test`
-    - `pp.test`
-    - `kpss.test`
-    - `runs.test`
-    - `white.test`
-    - `sens.trend`
-- Likelihood Functions:
-    - `likelihood`
-    - `generalized.likelihood`
-    - `fixed.likelihood`
-    - `reparameterized.likelihood`
-- FFA:
-    - `ld.selection`
-    - `lk.selection`
-    - `z.selection`
-    - `lmom.estimation`
-    - `mle.estimation` 
-    - `gmle.estimation`
-    - `sb.uncertainty`
-    - `rfpl.uncertainty`
-    - `rfgpl.uncertainty`
-    - `model.assessment`
-- Plotting:
-    - `mks.plot`
-    - `bbmk.plot`
-    - `pettitt.plot`
-    - `runs.plot`
-    - `spearman.plot`
-    - `lmom.plot`
-    - `uncertainty.plot`
-    - `assessment.plot`
+Helper functions:
+
+- `mw.variance`
+- `get.distributions`
+- `ams.decomposition`
+
+EDA:
+
+- `pettitt.test`
+- `mks.test`
+- `mk.test`
+- `spearman.test`
+- `bbmk.test`
+- `pp.test`
+- `kpss.test`
+- `runs.test`
+- `white.test`
+- `sens.trend`
+
+Likelihood Functions:
+
+- `likelihood`
+- `generalized.likelihood`
+- `fixed.likelihood`
+- `reparameterized.likelihood`
+
+FFA:
+
+- `ld.selection`
+- `lk.selection`
+- `z.selection`
+- `lmom.estimation`
+- `mle.estimation`
+- `gmle.estimation`
+- `sb.uncertainty`
+- `rfpl.uncertainty`
+- `rfgpl.uncertainty`
+- `model.assessment`
+
+Plotting:
+
+- `mks.plot`
+- `bbmk.plot`
+- `pettitt.plot`
+- `runs.plot`
+- `spearman.plot`
+- `lmom.plot`
+- `uncertainty.plot`
+- `assessment.plot`
 
 ## Command Line Interface
 

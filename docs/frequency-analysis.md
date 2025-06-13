@@ -44,16 +44,7 @@ There are two ways to read a graph like this:
 We say that a distribution is **Non-Stationary** if its mean or variance (or both) are changing over time.
 Under non-stationarity, the quantile function of our fitted probability distribution is also a function of time $F^{-1}(x, t)$.
 
-### Interpreting Return Periods is Difficult
-
-Consider the following plot, which shows the return period on the $x$-axis and the streamflow level on the $y$-axis. 
-This plot was computed using the *stationary* quantile function $F^{-1}(x, t_{\text{slice}})$ where $t_{\text{slice}} = 2020$.
-However, I think that using a single quantile function to infer return periods is incorrect, since each future year has a different quantile function.
-If there is a positive trend in the mean, the return periods could be much shorter (and vice-versa if there is a negative trend).
-
-![](img/nsffa-slice.jpg)
-
-### Properly Estimating Return Periods
+### An Idea for  Estimating Return Periods
 
 Suppose we want to estimate the severity of a flood with return period $t_{0}$ at time $t^{*}$. 
 
@@ -62,12 +53,4 @@ Suppose we want to estimate the severity of a flood with return period $t_{0}$ a
 3. Let $z = \max (y_{1}, \dots, y_{t_{0}})$ be the most severe streamflow event in the sample.
 4. Repeat steps 1-3 $n$ times to generate a sequence $(z_{1}, \dots, z_{n})$.
 5. The mean $(z_{1}, \dots, z_{n}) / n$ is an accurate estimate of the severity.
-
-### Alternatives to Return Periods
-
-Since the procedure for estimating returns periods shown above is computationally expensive, we could also report the *probabilities* of streamflow events at a given time.
-Then, we could plot a family of curves with the probability on the $x$-axis and streamflow on the $y$-axis. 
-Using probabilities instead of return periods solves the issue with non-stationary discussed above.
-
-
 
