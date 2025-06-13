@@ -43,14 +43,19 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
-              <p class="caption"><span class="caption-text">User Guide</span></p>
+              <p class="caption"><span class="caption-text">R Package</span></p>
               <ul>
-                  <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation Instructions</a>
-                  </li>
-                  <li class="toctree-l1"><a class="reference internal" href="../user-manual/">User Manual</a>
+                  <li class="toctree-l1"><a class="reference internal" href="../r-documentation.pdf">Documentation</a>
                   </li>
               </ul>
-              <p class="caption"><span class="caption-text">Documentation</span></p>
+              <p class="caption"><span class="caption-text">Command Line Interface</span></p>
+              <ul>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli-installation/">Installation Instructions</a>
+                  </li>
+                  <li class="toctree-l1"><a class="reference internal" href="../cli-manual/">User Manual</a>
+                  </li>
+              </ul>
+              <p class="caption"><span class="caption-text">Concepts</span></p>
               <ul class="current">
                   <li class="toctree-l1"><a class="reference internal" href="../eda/">Exploratory Data Analysis</a>
                   </li>
@@ -79,8 +84,6 @@
     <li class="toctree-l4"><a class="reference internal" href="#generalized-logistic-glo-distribution">Generalized Logistic (GLO) Distribution</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#generalized-normal-gno-distribution">Generalized Normal (GNO) Distribution</a>
-    </li>
-    <li class="toctree-l4"><a class="reference internal" href="#generalized-pareto-gpa-distribution">Generalized Pareto (GPA) Distribution</a>
     </li>
     <li class="toctree-l4"><a class="reference internal" href="#pearson-type-iii-pe3-distribution">Pearson Type III (PE3) Distribution</a>
     </li>
@@ -130,7 +133,7 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-          <li class="breadcrumb-item">Documentation</li>
+          <li class="breadcrumb-item">Concepts</li>
       <li class="breadcrumb-item active">Parameter Estimation</li>
     <li class="wy-breadcrumbs-aside">
     </li>
@@ -147,6 +150,8 @@
 <li>Maximum likelihood (MLE)</li>
 <li>Generalized maximum likelihood (GMLE)</li>
 </ol>
+<p><strong>Note</strong>: The parameterization used for the GEV distributions is different from the parameterization used by the <code>lmom</code> library. 
+In particular, the sign of the shape parameter is inverted for consistency with "Regional Frequency Analysis" (Hosking, 1997).</p>
 <h2 id="l-moments">L-Moments</h2>
 <p>The method estimates parameter values based on the sample L-moments <span class="arithmatex">\(l_{1}\)</span>, <span class="arithmatex">\(l_{2}\)</span> and the sample L-moment ratios <span class="arithmatex">\(t_{3}\)</span>, <span class="arithmatex">\(t_{4}\)</span>.
 For more information about L-moments, see <a href="../model-selection/#an-introduction-to-l-moments">here</a>.
@@ -218,7 +223,7 @@ z_{i} = \frac{x_{i} - \mu}{\sigma }
 <h4 id="log-normal-lno-distribution">Log-Normal (LNO) Distribution</h4>
 <p>To perform MLE using the LNO distribution, we use the fact that:</p>
 <div class="arithmatex">\[
-\text{Data} \sim \text{LNO} \Leftrightarrow \log(\text{Data}) \sim \text{NOR}
+\text{Data} \sim \text{LNO} \Leftrightarrow \ln (\text{Data}) \sim \text{NOR}
 \]</div>
 <p>Precisely, we require the change of variables formula, which states that:</p>
 <div class="arithmatex">\[
@@ -300,16 +305,6 @@ t_{i} = 1 - \kappa \left(\frac{x - \mu }{\sigma }\right)
 <div class="arithmatex">\[
 \ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[- \ln (\sigma \sqrt{2\pi }) - \ln t_{i} - \frac{(\ln t_{i})^2}{2\kappa ^2}\right]
 \]</div>
-<h4 id="generalized-pareto-gpa-distribution">Generalized Pareto (GPA) Distribution</h4>
-<p>The probability density function (PDF) of the GPA distribution is as follows (assume <span class="arithmatex">\(t_{i} &gt; 0)\)</span>:</p>
-<div class="arithmatex">\[
-f(x_{i} : \mu , \sigma , \kappa ) = \frac{1}{\sigma } t_{i}^{-1 - (1/\kappa )}, \quad
-t_{i} = 1 + \kappa \left(\frac{x - \mu }{\sigma }\right)
-\]</div>
-<p>Therefore, the Log-likelihood function is defined as follows:</p>
-<div class="arithmatex">\[
-\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[ -\ln \sigma - \left(1 + \frac{1}{\kappa }\right) \ln t_{i}   \right]
-\]</div>
 <h4 id="pearson-type-iii-pe3-distribution">Pearson Type III (PE3) Distribution</h4>
 <p>The probability density function (PDF) of the PE3 distribution is as follows:</p>
 <div class="arithmatex">\[
@@ -327,7 +322,7 @@ f(x_{i} : \mu , \sigma , \kappa ) = \frac{(x_{i} - \xi)^{\alpha  - 1}e^{-(x_{i} 
 <h4 id="log-pearson-type-iii-lp3-distribution">Log-Pearson Type III (LP3) Distribution</h4>
 <p>To perform MLE using the LP3 distribution, we use the fact that:</p>
 <div class="arithmatex">\[
-\text{Data} \sim \text{LP3}  \Leftrightarrow \log(\text{Data}) \sim \text{PE3}
+\text{Data} \sim \text{LP3}  \Leftrightarrow \ln (\text{Data}) \sim \text{PE3}
 \]</div>
 <p>Precisely, we require the change of variables formula, which states that:</p>
 <div class="arithmatex">\[
@@ -345,6 +340,27 @@ f(x_{i} : \mu, \sigma, \kappa) = \frac{\kappa}{\sigma }\left(\frac{x_{i} - \mu}{
 \ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[\ln \kappa - \kappa \ln \sigma +(\kappa -1)\ln (x_{i}-\mu ) - \left(\frac{x_{i} - \mu }{\sigma }\right) ^{\kappa } \right]
 \]</div>
 <h2 id="generalized-maximum-likelihood-gmle">Generalized Maximum Likelihood (GMLE)</h2>
+<p>The generalized maximum likelihood (GMLE) parameter estimation method is used to determine the parameters of the generalized extreme value (GEV) distribution given a prior distribution for the shape parameter <span class="arithmatex">\(\kappa\)</span>.
+This method uses <a href="https://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation">maximum a posteriori estimation</a>, which maximizes the product of the likelihood and the prior distribution.</p>
+<p>Suppose that <span class="arithmatex">\(\kappa\)</span> is drawn from a random variable <span class="arithmatex">\(K \sim \text{Beta}(p, q)\)</span> where <span class="arithmatex">\(p\)</span> and <span class="arithmatex">\(q\)</span> are determined using prior knowledge. 
+The prior PDF <span class="arithmatex">\(f_{K}(\kappa)\)</span> is shown below, where <span class="arithmatex">\(B(p, q)\)</span> is the <a href="https://en.wikipedia.org/wiki/Beta_function">Beta function</a>.</p>
+<div class="arithmatex">\[
+f_{K}(\kappa) = \frac{\kappa ^{p - 1}(1 - \kappa)^{q-1}}{B(p, q)}
+\]</div>
+<p>As in the case of regular maximum likelihood estimation, the likelihood function is:</p>
+<div class="arithmatex">\[
+f_{X}(x : \mu, \sigma, \kappa) =\prod_{i=1}^{n} \frac{1}{\sigma}t_{i}^{-1 - (1/\kappa)} \exp (-t_{i}^{-1/\kappa}), \quad
+t_{i} = 1 + \kappa \left(\frac{x_{i} - \mu }{\sigma } \right)
+\]</div>
+<p>As mentioned previously, we want to maximize the product <span class="arithmatex">\(\mathcal{L} = f_{K}(\kappa)f_{X}(x:\mu ,\sigma ,\kappa)\)</span>. 
+To ensure numerical stability, we will maximize <span class="arithmatex">\(\ln  (\mathcal{L})\)</span> instead, which has the following form:</p>
+<div class="arithmatex">\[
+\begin{aligned}
+\ln(\mathcal{L}) &amp;= \ln(f_{K}(\kappa)) + \ln(f_{X}(x:\mu ,\sigma ,\kappa )) \\[10pt]
+\ln(f_{K}(\kappa)) &amp;= (p - 1)\ln \kappa + (q-1) \ln (1 - \kappa)  - \ln (B(p, q)) \\[5pt]
+\ln(f_{X}(x:\mu ,\sigma ,\kappa )) &amp;= \sum_{i=1}^{n} \left[-\ln \sigma - \left(1 + \frac{1}{\kappa }\right) \ln t_{i} - t_{i}^{-1/\kappa}\right]
+\end{aligned}
+\]</div>
               
             </div>
           </div><footer>

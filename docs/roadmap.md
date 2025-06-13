@@ -14,7 +14,6 @@ Rewriting functions:
 
 - `kpss.test`
 - `pp.test`
-- `runs.test`
 
 Carefully edit documentation.
 
