@@ -11,9 +11,16 @@ The FFA framework implements three methods for uncertainty quantification:
 The sample bootstrap is a flexible method for uncertainty quantification that works with all probability models and parameter estimation methods. Let $n$ be the size of the original dataset.
 
 1. Draw $N_{\text{sim}}$ bootstrap samples of size $n$ from the selected probability distribution.
-2. Fit a probability distribution to each bootstrap sample. For consistency, we use the same [model selection method](model-selection.md) and [parameter estimation method](parameter-estimation.md) as before.
+2. Fit a probability distribution to each bootstrap sample using the same [model selection method](model-selection.md) and [parameter estimation method](parameter-estimation.md) that was used to generate the original distribution.
 3. Compute the quantiles for each of the bootstrapped distributions. 
 4. Generate confidence intervals using the mean and variance of the bootstrapped quantiles .
+
+### Handling Non-Stationarity
+
+If the selected probability distribution is non-stationary, the quantiles for the bootstrapped distributions change in time.
+Therefore, the confidence intervals vary with time as well.
+Luckily, it is computationally inexpensive to determine the set of confidence intervals from the bootstrap distributions.
+Therefore, the FFA framework will report the confidence intervals for *all years* in the dataset by default when using the sample bootstrap quantification method.
 
 ## Regula-Falsi Profile Likelihood (RFPL)
 
@@ -52,22 +59,50 @@ $$
 \mu = y - q(p, 0, \psi)
 $$ 
 
-Then, we compute the profile likelihood $\ell_{p}(y)$ by evaluating $\mu(p, y, \psi)$ using the formula shown above and substituting $\mu$ into the log-likelihood functions listed [here](parameter-estimation.md#maximum-likelihood-mle).
+We use this relationship to find the profile likelihood $\ell_{p}(y)$ by evaluating $\mu(p, y, \psi)$ and substituting it into the log-likelihood functions listed [here](parameter-estimation.md#maximum-likelihood-mle).
 
 ### Initialization Algorithm
 
+Before we can find the roots of $f$, we need to identify initial values for the regula-falsi algorithm:
+
+- Let $a_{0}$ be a number such that $a_{0} < y$ and $f(a_{0}) < 0$.
+- Let $b_{0}$ be a number such that $b_{0} > y$ and $f(b_{0}) < 0$.
+
+To find $a_{0}$, start by computing $f(a^{*})$ for $a^{*} = 0.95y$. 
+If $f(a^{*}) < 0$, then assign $a_{0} = a^{*}$.
+Otherwise, update $a^{*}$ to $0.95a^{*}$ until $f(a^{*}) < 0$. 
+To find $b_{0}$, we use a similar process.
+However, instead of iteratively revising $b^{*}$ down, we revise it up to $1.05b^{*}$.
+
 ### Iteration Algorithm
 
-Compute the following:
+At iteration $i$, compute the following:
 
 $$
-c = \frac{af(b) - bf(a)}{f(b) - f(a)}
+c_{i} = \frac{a_{i-1}f(b_{i-1}) - b_{i-1}f(a_{i-1})}{f(b_{i-1}) - f(a_{i-1})}
 $$ 
 
-Evaluate $\ell_{p}(c)$ by maximizing over the nuisance parameters $\psi$, then find $f(c)$.
+Evaluate $\ell_{p}(c_{i})$ by maximizing over the nuisance parameters $\psi$, then find $f(c_{i})$.
 
-If $|f(c)| < \epsilon$ (where $\epsilon$ is small), then stop. $c$ is the confidence interval bound.
+If $|f(c_{i})| < \epsilon$ (where $\epsilon$ is small), then stop. $c_{i}$ is the confidence interval bound.
 
-Otherwise, assign $a = c$ if $f(c) < 0$ and $b = c$ if $f(c) > 0$.
+Otherwise, assign $a_{i} = c_{i}$ if $f(c_{i}) < 0$ and $b_{i} = c_{i}$ if $f(c_{i}) > 0$ and continue to iteration $i + 1$.
+
+### Handling Non-Stationarity
+
+Under non-stationarity, the quantiles $y(t)$ vary with time. 
+Therefore, we must execute the RFPL algorithm individually for each timestamp of interest.
+This can be quite computationally expensive, so the FFA framework defaults to running the RFPL algorithm on the *last year* in the dataset.
 
 ## Regula-Falsi Generalized Profile Likelihood (RFGPL)
+
+The regula-falsi generalized profile likelihood (RFGPL) method performs the regula-falsi algorithm shown above on the GEV distributions with a $\text{Beta}(p, q)$ prior for the shape parameter $\kappa$.
+For more information about generalized parameter estimation, see [here](parameter-estimation.md#generalized-maximum-likelihood-gmle).
+
+
+### Handling Non-Stationarity
+
+See the section for the RFPL method.
+
+
+

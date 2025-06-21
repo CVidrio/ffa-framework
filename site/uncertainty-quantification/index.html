@@ -68,6 +68,10 @@
                   <li class="toctree-l1 current"><a class="reference internal current" href="#">Uncertainty Quantification</a>
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#sample-bootstrap">Sample Bootstrap</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#handling-non-stationarity">Handling Non-Stationarity</a>
+    </li>
+        </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#regula-falsi-profile-likelihood-rfpl">Regula-Falsi Profile Likelihood (RFPL)</a>
         <ul>
@@ -75,9 +79,15 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#iteration-algorithm">Iteration Algorithm</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#handling-non-stationarity_1">Handling Non-Stationarity</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#regula-falsi-generalized-profile-likelihood-rfgpl">Regula-Falsi Generalized Profile Likelihood (RFGPL)</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#handling-non-stationarity_2">Handling Non-Stationarity</a>
+    </li>
+        </ul>
     </li>
     </ul>
                   </li>
@@ -132,10 +142,15 @@
 <p>The sample bootstrap is a flexible method for uncertainty quantification that works with all probability models and parameter estimation methods. Let <span class="arithmatex">\(n\)</span> be the size of the original dataset.</p>
 <ol>
 <li>Draw <span class="arithmatex">\(N_{\text{sim}}\)</span> bootstrap samples of size <span class="arithmatex">\(n\)</span> from the selected probability distribution.</li>
-<li>Fit a probability distribution to each bootstrap sample. For consistency, we use the same <a href="../model-selection/">model selection method</a> and <a href="../parameter-estimation/">parameter estimation method</a> as before.</li>
+<li>Fit a probability distribution to each bootstrap sample using the same <a href="../model-selection/">model selection method</a> and <a href="../parameter-estimation/">parameter estimation method</a> that was used to generate the original distribution.</li>
 <li>Compute the quantiles for each of the bootstrapped distributions. </li>
 <li>Generate confidence intervals using the mean and variance of the bootstrapped quantiles .</li>
 </ol>
+<h3 id="handling-non-stationarity">Handling Non-Stationarity</h3>
+<p>If the selected probability distribution is non-stationary, the quantiles for the bootstrapped distributions change in time.
+Therefore, the confidence intervals vary with time as well.
+Luckily, it is computationally inexpensive to determine the set of confidence intervals from the bootstrap distributions.
+Therefore, the FFA framework will report the confidence intervals for <em>all years</em> in the dataset by default when using the sample bootstrap quantification method.</p>
 <h2 id="regula-falsi-profile-likelihood-rfpl">Regula-Falsi Profile Likelihood (RFPL)</h2>
 <p>Consider a statistical model with parameters <span class="arithmatex">\((\theta, \psi_{1}, \dots, \psi_{n})\)</span>.
 The <strong>Profile Likelihood</strong> for the scalar parameter <span class="arithmatex">\(\theta\)</span> and vector of nuisance parameters <span class="arithmatex">\(\psi\)</span> is defined as:</p>
@@ -162,17 +177,35 @@ y = q(p, \mu, \psi) = \mu + q(p, 0, \psi)
 <div class="arithmatex">\[
 \mu = y - q(p, 0, \psi)
 \]</div>
-<p>Then, we compute the profile likelihood <span class="arithmatex">\(\ell_{p}(y)\)</span> by evaluating <span class="arithmatex">\(\mu(p, y, \psi)\)</span> using the formula shown above and substituting <span class="arithmatex">\(\mu\)</span> into the log-likelihood functions listed <a href="../parameter-estimation/#maximum-likelihood-mle">here</a>.</p>
+<p>We use this relationship to find the profile likelihood <span class="arithmatex">\(\ell_{p}(y)\)</span> by evaluating <span class="arithmatex">\(\mu(p, y, \psi)\)</span> and substituting it into the log-likelihood functions listed <a href="../parameter-estimation/#maximum-likelihood-mle">here</a>.</p>
 <h3 id="initialization-algorithm">Initialization Algorithm</h3>
+<p>Before we can find the roots of <span class="arithmatex">\(f\)</span>, we need to identify initial values for the regula-falsi algorithm:</p>
+<ul>
+<li>Let <span class="arithmatex">\(a_{0}\)</span> be a number such that <span class="arithmatex">\(a_{0} &lt; y\)</span> and <span class="arithmatex">\(f(a_{0}) &lt; 0\)</span>.</li>
+<li>Let <span class="arithmatex">\(b_{0}\)</span> be a number such that <span class="arithmatex">\(b_{0} &gt; y\)</span> and <span class="arithmatex">\(f(b_{0}) &lt; 0\)</span>.</li>
+</ul>
+<p>To find <span class="arithmatex">\(a_{0}\)</span>, start by computing <span class="arithmatex">\(f(a^{*})\)</span> for <span class="arithmatex">\(a^{*} = 0.95y\)</span>. 
+If <span class="arithmatex">\(f(a^{*}) &lt; 0\)</span>, then assign <span class="arithmatex">\(a_{0} = a^{*}\)</span>.
+Otherwise, update <span class="arithmatex">\(a^{*}\)</span> to <span class="arithmatex">\(0.95a^{*}\)</span> until <span class="arithmatex">\(f(a^{*}) &lt; 0\)</span>. 
+To find <span class="arithmatex">\(b_{0}\)</span>, we use a similar process.
+However, instead of iteratively revising <span class="arithmatex">\(b^{*}\)</span> down, we revise it up to <span class="arithmatex">\(1.05b^{*}\)</span>.</p>
 <h3 id="iteration-algorithm">Iteration Algorithm</h3>
-<p>Compute the following:</p>
+<p>At iteration <span class="arithmatex">\(i\)</span>, compute the following:</p>
 <div class="arithmatex">\[
-c = \frac{af(b) - bf(a)}{f(b) - f(a)}
+c_{i} = \frac{a_{i-1}f(b_{i-1}) - b_{i-1}f(a_{i-1})}{f(b_{i-1}) - f(a_{i-1})}
 \]</div>
-<p>Evaluate <span class="arithmatex">\(\ell_{p}(c)\)</span> by maximizing over the nuisance parameters <span class="arithmatex">\(\psi\)</span>, then find <span class="arithmatex">\(f(c)\)</span>.</p>
-<p>If <span class="arithmatex">\(|f(c)| &lt; \epsilon\)</span> (where <span class="arithmatex">\(\epsilon\)</span> is small), then stop. <span class="arithmatex">\(c\)</span> is the confidence interval bound.</p>
-<p>Otherwise, assign <span class="arithmatex">\(a = c\)</span> if <span class="arithmatex">\(f(c) &lt; 0\)</span> and <span class="arithmatex">\(b = c\)</span> if <span class="arithmatex">\(f(c) &gt; 0\)</span>.</p>
+<p>Evaluate <span class="arithmatex">\(\ell_{p}(c_{i})\)</span> by maximizing over the nuisance parameters <span class="arithmatex">\(\psi\)</span>, then find <span class="arithmatex">\(f(c_{i})\)</span>.</p>
+<p>If <span class="arithmatex">\(|f(c_{i})| &lt; \epsilon\)</span> (where <span class="arithmatex">\(\epsilon\)</span> is small), then stop. <span class="arithmatex">\(c_{i}\)</span> is the confidence interval bound.</p>
+<p>Otherwise, assign <span class="arithmatex">\(a_{i} = c_{i}\)</span> if <span class="arithmatex">\(f(c_{i}) &lt; 0\)</span> and <span class="arithmatex">\(b_{i} = c_{i}\)</span> if <span class="arithmatex">\(f(c_{i}) &gt; 0\)</span> and continue to iteration <span class="arithmatex">\(i + 1\)</span>.</p>
+<h3 id="handling-non-stationarity_1">Handling Non-Stationarity</h3>
+<p>Under non-stationarity, the quantiles <span class="arithmatex">\(y(t)\)</span> vary with time. 
+Therefore, we must execute the RFPL algorithm individually for each timestamp of interest.
+This can be quite computationally expensive, so the FFA framework defaults to running the RFPL algorithm on the <em>last year</em> in the dataset.</p>
 <h2 id="regula-falsi-generalized-profile-likelihood-rfgpl">Regula-Falsi Generalized Profile Likelihood (RFGPL)</h2>
+<p>The regula-falsi generalized profile likelihood (RFGPL) method performs the regula-falsi algorithm shown above on the GEV distributions with a <span class="arithmatex">\(\text{Beta}(p, q)\)</span> prior for the shape parameter <span class="arithmatex">\(\kappa\)</span>.
+For more information about generalized parameter estimation, see <a href="../parameter-estimation/#generalized-maximum-likelihood-gmle">here</a>.</p>
+<h3 id="handling-non-stationarity_2">Handling Non-Stationarity</h3>
+<p>See the section for the RFPL method.</p>
               
             </div>
           </div><footer>

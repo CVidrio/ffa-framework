@@ -2,83 +2,30 @@
 
 ## CRAN Package
 
-Implementing remaining functions:
+Final changes:
 
-- `rfpl.uncertainty`
-- `rfgpl.uncertainty`
-- Update `sb.uncertainty` for non-stationary distributions
+- Remove `Rcpp` dependency.
+- Make the `xxx` functions fast, do argument validation in the distribution functions.
+- Add support for custom plot labels using an optional argument.
 
-Touch-ups:
+Then, go through each function:
 
-- Change NS uncertainty axis label to "Effective Return Period"
-- Implement a NS uncertainty plot with multiple slices
-- Add support for custom plot labels using an optional argument
-- Add option to run NS uncertainty quantification on 1+ time slices
+- Carefully write/edit/read documentation.
+- Update the website with the contents of the file.
+- Add additional tests to cover edge cases.
+- Ensure all tests are passing.
 
-Read through papers on different NS metrics and possibly implement them:
+Preparing for CRAN:
 
-- EWT: Olsen et al. 1998; Wigley, 2009
-- ENE: Parey et al. 2007; 2010
-- ERP: Katz et al. 2002
-- R: Read & Vogel, 2015; Salas & Obeysekera, 2014; Serinaldi & Kilsby, 2015
-- DLL: Rootzen & Katz, 2013
-- ADLL: Yan et al. 2017
+- Ensure CRAN check is passing.
+- Regenerate PDF documentation, add to website.
 
-### Preparing For CRAN
+Issue in `rfpl-uncertainty` for the Weibull distribution:
 
-Carefully edit documentation.
-
-### List of Functions
-
-Helper functions:
-
-- `mw.variance`
-- `get.distributions`
-- `ams.decomposition`
-
-EDA:
-
-- `pettitt.test`
-- `mks.test`
-- `mk.test`
-- `spearman.test`
-- `bbmk.test`
-- `pp.test`
-- `kpss.test`
-- `runs.test`
-- `white.test`
-- `sens.trend`
-
-Likelihood Functions:
-
-- `likelihood`
-- `generalized.likelihood`
-- `fixed.likelihood`
-- `reparameterized.likelihood`
-
-FFA:
-
-- `ld.selection`
-- `lk.selection`
-- `z.selection`
-- `lmom.estimation`
-- `mle.estimation`
-- `gmle.estimation`
-- `sb.uncertainty`
-- `rfpl.uncertainty`
-- `rfgpl.uncertainty`
-- `model.assessment`
-
-Plotting:
-
-- `mks.plot`
-- `bbmk.plot`
-- `pettitt.plot`
-- `runs.plot`
-- `spearman.plot`
-- `lmom.plot`
-- `uncertainty.plot`
-- `assessment.plot`
+- When finding the upper confidence interval we iteratively adjust `yp` up until `f < 0`.
+- This iterative process drives `u` upwards through the reparameterization.
+- Sometimes the `yp` value required to get `f < 0` causes `data > u` for a point.
+- Then, the Weibull distribution has no support and it blows up.
 
 ## Command Line Interface
 
@@ -119,4 +66,17 @@ Get a list of stations with (`hydrometric-stations/items`)
 
 ## Web App
 
-Use Flaks/HTML/CSS with leaflet.js
+Use Flask/HTML/CSS with leaflet.js
+
+## Further Research
+
+Read through papers on different NS metrics and possibly implement them:
+
+- EWT: Olsen et al. 1998; Wigley, 2009
+- ENE: Parey et al. 2007; 2010
+- ERP: Katz et al. 2002
+- R: Read & Vogel, 2015; Salas & Obeysekera, 2014; Serinaldi & Kilsby, 2015
+- DLL: Rootzen & Katz, 2013
+- ADLL: Yan et al. 2017
+
+

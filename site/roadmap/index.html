@@ -78,7 +78,11 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#cran-package">CRAN Package</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#preparing-for-cran">Preparing For CRAN</a>
+    <li class="toctree-l3"><a class="reference internal" href="#api">API</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#internal-helper-functions">Internal Helper Functions</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#todo">Todo</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#list-of-functions">List of Functions</a>
     </li>
@@ -89,6 +93,8 @@
     <li class="toctree-l2"><a class="reference internal" href="#api-development">API Development</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#web-app">Web App</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#further-research">Further Research</a>
     </li>
     </ul>
                   </li>
@@ -125,28 +131,67 @@
               
                 <h1 id="roadmap">Roadmap</h1>
 <h2 id="cran-package">CRAN Package</h2>
-<p>Implementing remaining functions:</p>
+<h3 id="api">API</h3>
+<p><code>llv</code> (i.e. <code>llvgum</code> or <code>llvgev110</code>): Computes the log-likelihood value. </p>
 <ul>
-<li><code>rfpl.uncertainty</code></li>
-<li><code>rfgpl.uncertainty</code></li>
-<li>Update <code>sb.uncertainty</code> for non-stationary distributions</li>
+<li>If the distribution is stationary, takes <code>(data, params)</code>.</li>
+<li>If the distribution is non-stationary, takes <code>(data, params, years)</code>.</li>
+<li>Makes call to <code>llvxxx</code> helper.</li>
 </ul>
-<h3 id="preparing-for-cran">Preparing For CRAN</h3>
-<p>Rewriting functions:</p>
+<p><code>gll</code> (i.e. <code>gllgev100</code>): Computes the generalized log-likelihood given <code>(data, params, prior)</code>.</p>
 <ul>
-<li><code>kpss.test</code></li>
-<li><code>pp.test</code></li>
+<li>If the distribution is stationary, takes <code>(data, params, prior)</code>.</li>
+<li>If the distribution is non-stationary, takes <code>(data, params, prior, years)</code>.</li>
+<li>Makes call to <code>gllxxx</code> helper.</li>
 </ul>
-<p>Carefully edit documentation.</p>
+<p><code>qnt</code> (i.e. <code>qntpe3</code> or <code>qntlno11</code>): Computes the quantile from an exceedance probability.</p>
+<ul>
+<li>If the distribution is stationary, takes <code>(pe, params)</code></li>
+<li>If the distribution is non-stationary, takes <code>(pe, params, year)</code></li>
+</ul>
+<p><code>lmr</code> (i.e. <code>lmrwei</code> or <code>lmrgno</code>): Computes the first four L-moments given <code>(params)</code>.</p>
+<p><code>pel</code> (i.e. <code>pellp3</code> or <code>pelnor</code>): Computes the parameters given <code>(lmom)</code></p>
+<h3 id="internal-helper-functions">Internal Helper Functions</h3>
+<p><code>qntxxx</code>: <code>(model, pe, params, years)</code>. Computes the quantile. </p>
+<p><code>llvxxx</code>: <code>(model, data, params)</code>. All of the log-likelihood logic is here.</p>
+<p><code>gllxxx</code>: <code>(model, data, params, prior)</code>. Call <code>llvxxx</code>, add additional term for the prior.</p>
+<p><code>lmrxxx</code>: Implementations of <code>lmom</code> library.</p>
+<p><code>pelxxx</code>: Implementations of <code>lmom</code> library.</p>
+<h3 id="todo">Todo</h3>
+<p><strong>Priority #1</strong>: Make slides.</p>
+<p>Then, go through each function:</p>
+<ul>
+<li>Carefully write/edit/read documentation.</li>
+<li>Update the website with the contents of the file.</li>
+<li>Add additional tests to cover edge cases.</li>
+<li>Ensure all tests are passing.</li>
+</ul>
+<p>Preparing for CRAN:</p>
+<ul>
+<li>Ensure all tests are passing.</li>
+<li>Carefully edit documentation.</li>
+<li>Ensure CRAN check is passing.</li>
+<li>Update the list of functions below.</li>
+<li>Remove <code>Rcpp</code> dependency.</li>
+<li>Make the <code>xxx</code> functions fast, do argument validation in the distribution functions.</li>
+<li>Add support for custom plot labels using an optional argument.</li>
+</ul>
+<p>There is an issue in <code>rfpl-uncertainty</code> for the Weibull distribution:</p>
+<ul>
+<li>When finding the upper confidence interval we iteratively adjust <code>yp</code> up until <code>f &lt; 0</code>.</li>
+<li>This iterative process drives <code>u</code> upwards through the reparameterization.</li>
+<li>Sometimes the <code>yp</code> value required to get <code>f &lt; 0</code> causes <code>data &gt; u</code> for a point.</li>
+<li>Then, the Weibull distribution has no support and it blows up.</li>
+</ul>
 <h3 id="list-of-functions">List of Functions</h3>
+<p>Helper functions:</p>
 <ul>
-<li>Helper functions:<ul>
 <li><code>mw.variance</code></li>
 <li><code>get.distributions</code></li>
-<li><code>ams.decomposition</code></li>
+<li><code>get.covariates</code></li>
 </ul>
-</li>
-<li>EDA:<ul>
+<p>EDA:</p>
+<ul>
 <li><code>pettitt.test</code></li>
 <li><code>mks.test</code></li>
 <li><code>mk.test</code></li>
@@ -158,28 +203,28 @@
 <li><code>white.test</code></li>
 <li><code>sens.trend</code></li>
 </ul>
-</li>
-<li>Likelihood Functions:<ul>
+<p>Likelihood Functions:</p>
+<ul>
 <li><code>likelihood</code></li>
 <li><code>generalized.likelihood</code></li>
 <li><code>fixed.likelihood</code></li>
 <li><code>reparameterized.likelihood</code></li>
 </ul>
-</li>
-<li>FFA:<ul>
+<p>FFA:</p>
+<ul>
 <li><code>ld.selection</code></li>
 <li><code>lk.selection</code></li>
 <li><code>z.selection</code></li>
 <li><code>lmom.estimation</code></li>
-<li><code>mle.estimation</code> </li>
+<li><code>mle.estimation</code></li>
 <li><code>gmle.estimation</code></li>
 <li><code>sb.uncertainty</code></li>
 <li><code>rfpl.uncertainty</code></li>
 <li><code>rfgpl.uncertainty</code></li>
 <li><code>model.assessment</code></li>
 </ul>
-</li>
-<li>Plotting:<ul>
+<p>Plotting:</p>
+<ul>
 <li><code>mks.plot</code></li>
 <li><code>bbmk.plot</code></li>
 <li><code>pettitt.plot</code></li>
@@ -188,8 +233,6 @@
 <li><code>lmom.plot</code></li>
 <li><code>uncertainty.plot</code></li>
 <li><code>assessment.plot</code></li>
-</ul>
-</li>
 </ul>
 <h2 id="command-line-interface">Command Line Interface</h2>
 <p><strong>Exploratory Data Analysis</strong>: Complete.</p>
@@ -222,6 +265,16 @@
 <p>Get a list of stations with (<code>hydrometric-stations/items</code>)</p>
 <h2 id="web-app">Web App</h2>
 <p>Use Flaks/HTML/CSS with leaflet.js</p>
+<h2 id="further-research">Further Research</h2>
+<p>Read through papers on different NS metrics and possibly implement them:</p>
+<ul>
+<li>EWT: Olsen et al. 1998; Wigley, 2009</li>
+<li>ENE: Parey et al. 2007; 2010</li>
+<li>ERP: Katz et al. 2002</li>
+<li>R: Read &amp; Vogel, 2015; Salas &amp; Obeysekera, 2014; Serinaldi &amp; Kilsby, 2015</li>
+<li>DLL: Rootzen &amp; Katz, 2013</li>
+<li>ADLL: Yan et al. 2017</li>
+</ul>
               
             </div>
           </div><footer>
