@@ -3,8 +3,8 @@
 The FFA framework implements three methods for uncertainty quantification: 
 
 1. Sample bootstrap
-2. Regula-Falsi profile likelihood (RFPL)
-2. Regula-Falsi generalized profile likelihood (RFGPL)
+2. Regula-falsi profile likelihood (RFPL)
+2. Regula-falsi generalized profile likelihood (RFGPL)
 
 ## Sample Bootstrap
 
@@ -13,14 +13,7 @@ The sample bootstrap is a flexible method for uncertainty quantification that wo
 1. Draw $N_{\text{sim}}$ bootstrap samples of size $n$ from the selected probability distribution.
 2. Fit a probability distribution to each bootstrap sample using the same [model selection method](model-selection.md) and [parameter estimation method](parameter-estimation.md) that was used to generate the original distribution.
 3. Compute the quantiles for each of the bootstrapped distributions. 
-4. Generate confidence intervals using the mean and variance of the bootstrapped quantiles .
-
-### Handling Non-Stationarity
-
-If the selected probability distribution is non-stationary, the quantiles for the bootstrapped distributions change in time.
-Therefore, the confidence intervals vary with time as well.
-Luckily, it is computationally inexpensive to determine the set of confidence intervals from the bootstrap distributions.
-Therefore, the FFA framework will report the confidence intervals for *all years* in the dataset by default when using the sample bootstrap quantification method.
+4. Generate confidence intervals using the mean and variance of the bootstrapped quantiles.
 
 ## Regula-Falsi Profile Likelihood (RFPL)
 
@@ -88,21 +81,17 @@ If $|f(c_{i})| < \epsilon$ (where $\epsilon$ is small), then stop. $c_{i}$ is th
 
 Otherwise, assign $a_{i} = c_{i}$ if $f(c_{i}) < 0$ and $b_{i} = c_{i}$ if $f(c_{i}) > 0$ and continue to iteration $i + 1$.
 
-### Handling Non-Stationarity
-
-Under non-stationarity, the quantiles $y(t)$ vary with time. 
-Therefore, we must execute the RFPL algorithm individually for each timestamp of interest.
-This can be quite computationally expensive, so the FFA framework defaults to running the RFPL algorithm on the *last year* in the dataset.
-
 ## Regula-Falsi Generalized Profile Likelihood (RFGPL)
 
 The regula-falsi generalized profile likelihood (RFGPL) method performs the regula-falsi algorithm shown above on the GEV distributions with a $\text{Beta}(p, q)$ prior for the shape parameter $\kappa$.
 For more information about generalized parameter estimation, see [here](parameter-estimation.md#generalized-maximum-likelihood-gmle).
 
+## Handling Non-Stationarity
 
-### Handling Non-Stationarity
+If the selected probability distribution is non-stationary, the quantiles (and hence confidence intervals) for the bootstrapped distributions change in time.
+See [here](frequency-analysis.md#handling-non-stationarity) for a more detailed discussion of this idea.
+By default, the FFA framework anchors uncertainty analysis at the *last* year of the dataset. 
+However, [model assessment](model-assessment.md) requires confidence intervals for *every* year in the dataset.
 
-See the section for the RFPL method.
-
-
-
+**Note**: The sample bootstrap algorithm is the fastest algorithm for computing confidence intervals on all years in a dataset because the probabilities used to generate the bootstrapped samples can be reused.
+The RFPL and RFGPL algorithms are far slower, since they must be run separately at each timestamp.

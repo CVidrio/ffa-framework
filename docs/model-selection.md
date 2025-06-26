@@ -2,7 +2,6 @@
 
 Our framework uses the method of L-moment ratios to choose a suitable probability model for frequency analysis.
 This technique involves comparing the L-moments of the data with the known L-moments of various probability distributions.
-The CRAN package [lmom](https://cran.r-project.org/web/packages/lmom/index.html) is used extensively in this portion of the framework.
 
 ## An Introduction to L-Moments
 
@@ -47,25 +46,20 @@ t_{4} &= l_{4} / l_{2}
 \end{aligned}
 $$ 
 
-Then, we compare these statistics to their theoretical values to select a distribution.
+Then, we compare these statistics, specifically the L-skewness and L-kurtosis to their theoretical values (given [here](distributions.md)) using one of three different metrics to select a distribution.
 
-## List of Candidate Distributions
+**Note**: Probability distributions with less than three parameters have constant L-skewness $\tau_{3}$ and L-kurtosis $\tau_{4}$ regardless of their parameters.
+The L-skewness and L-kurtosis of probability distributions with three parameters is a function of the shape parameter $\kappa$.
+The notation $\tau_{3}(\kappa)$ and $\tau_{4}(\kappa)$ refers to the L-skewness and L-kurtosis *curves* for the three parameter distributions.
 
-| Distribution              | Abbreviation | Number of Parameters |
-| ------------------------- | ------------ | -------------------- |
-| Generalized Extreme Value | GEV          | 3                    |
-| Gumbel[^1]                | GUM          | 2                    |
-| (Log) Normal              | NOR/LNO      | 2                    |
-| Generalized Logistic      | GLO          | 3                    |
-| (Log) Pearson Type III    | PE3/LP3      | 3                    |
-| Generalized Normal        | GNO          | 3                    |
-| Weibull                   | WEI          | 3                    |
+### Example Plot
 
-[^1]: The Gumbel distribution is equivalent to the GEV distribution with $\xi = 0$.
+Shown below are the L-moment curves of the `GEV`,`GLO`,`GNO`,`PE3`/`LP3`, and `WEI` distributions.
+The L-moment ratios of the two parameter distributions `GUM` and `NOR`/`LNO`.
+This example uses the "L-distance" selection metric.
+The zoomed-in region shows that the GEV distribution is most similar to the sample L-moments.
 
-The four-parameter kappa distribution (K4D), generalizes all ten of the distributions above.
-
-**Note**: Probability distributions with less than three parameters have constant L-skewness $\tau_{3}$ and L-kurtosis $\tau_{4}$ regardless of their parameters. The L-skewness and L-kurtosis of probability distributions with three parameters is a function of the shape parameter $\kappa$.
+![](img/plot-lmom.png)
 
 ## Selection Metrics
 
@@ -76,8 +70,8 @@ For probability distributions with three parameters, we use the *minimum distanc
 
 ### L-Kurtosis
 
-The L-kurtosis method is only used for three parameter probability distributions. 
-First, identify the shape parameter $\kappa^{*}$ such that $t_{3} = \tau _{3}(\kappa ^{*})$.
+For two-parameter probability distributions, simply compare the difference between the sample L-kurtosis and the theoretical L-kurtosis using the metric $|\tau_{4} - t_{4} |$.
+For three-parameter distributions, we first identify the shape parameter $\kappa^{*}$ such that $t_{3} = \tau _{3}(\kappa ^{*})$.
 Then, compare the difference between the sample L-kurtosis and the theoretical L-kurtosis using the metric $|\tau_{4}(\kappa ^{*}) - t_{4} |$.
 
 ### Z-statistic
@@ -110,9 +104,9 @@ The Z-statistic selection metric is calculated as follows (for three parameter d
 
 There are three non-stationary scenarios that can be identified during EDA:
 
-1. Significant trend in the mean only.
-2. Significant trend in the STD only.
-3. Significant trend in both the mean and STD.
+1. `10`/`100`: Significant trend in the mean only.
+2. `01`/`010`: Significant trend in the variance only.
+3. `11`/`110`: Significant trend in both the mean and variance.
 
 To determine the best probability distribution for non-stationary data, we *decompose* the data into stationary and non-stationary components and then use one of the methods described above.
 

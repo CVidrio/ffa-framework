@@ -1,31 +1,93 @@
 # Roadmap
 
-## CRAN Package
-
-Final changes:
-
-- Remove `Rcpp` dependency.
-- Make the `xxx` functions fast, do argument validation in the distribution functions.
-- Add support for custom plot labels using an optional argument.
-
-Then, go through each function:
-
-- Carefully write/edit/read documentation.
-- Update the website with the contents of the file.
-- Add additional tests to cover edge cases.
-- Ensure all tests are passing.
-
 Preparing for CRAN:
 
 - Ensure CRAN check is passing.
 - Regenerate PDF documentation, add to website.
+- Commit package and documentation to Github.
 
-Issue in `rfpl-uncertainty` for the Weibull distribution:
+Package Installation:
 
-- When finding the upper confidence interval we iteratively adjust `yp` up until `f < 0`.
-- This iterative process drives `u` upwards through the reparameterization.
-- Sometimes the `yp` value required to get `f < 0` causes `data > u` for a point.
-- Then, the Weibull distribution has no support and it blows up.
+- Run a test install of the package, write documentation.
+- Write CLI configuration documentation.
+- Test and build the rest of the CLI.
+
+## CRAN Package
+
+| File                | Roxygen2 | Website | Tested | Validated | Covered |
+| ------------------- | -------- | ------- | ------ | --------- | ------- |
+| ams-decomposition.R | x        | x       | x      |           |         |
+| assessment-plot.R   | x        | x       | x      |           |         |
+| bbmk-plot.R         | x        | x       | x      |           |         |
+| bbmk-test.R         | x        | x       | x      |           |         |
+| gll-functions.R     | x        | x       | x      | x         |         |
+| kpss-test.R         | x        | x       | x      |           |         |
+| ld-selection.R      | x        | x       | x      |           |         |
+| lk-selection.R      | x        | x       | x      |           |         |
+| llv-functions.R     | x        | x       | x      | x         |         |
+| lmom-plot.R         | x        | x       | x      |           |         |
+| lmom-sample.R       | x        | x       | x      |           |         |
+| lmr-functions.R     | x        | x       | x      |           |         |
+| mks-plot.R          | x        | x       | x      |           |         |
+| mks-test.R          | x        | x       | x      |           |         |
+| mk-test.R           | x        | x       | x      |           |         |
+| mle-estimation.R    | x        | x       | x      |           |         |
+| model-assessment.R  | x        | x       | x      |           |         |
+| mw-variance.R       | x        | x       | x      |           |         |
+| pel-functions.R     | x        | x       | x      |           |         |
+| pelkap.R            | x        | x       | x      |           |         |
+| pettitt-plot.R      | x        | x       | x      |           |         |
+| pettitt-test.R      | x        | x       | x      |           |         |
+| pp-test.R           | x        | x       | x      |           |         |
+| qnt-functions.R     | x        | x       | x      |           |         |
+| rfpl-uncertainty.R  | x        | x       | x      |           |         |
+| runs-plot.R         | x        | x       | x      |           |         |
+| runs-test.R         | x        | x       | x      |           |         |
+| sb-uncertainty.R    | x        | x       | x      |           |         |
+| sens-plot.R         | x        | x       | x      |           |         |
+| sens-trend.R        | x        | x       | x      |           |         |
+| spearman-plot.R     | x        | x       | x      |           |         |
+| spearman-test.R     | x        | x       | x      |           |         |
+| uncertainty-plot.R  | x        | x       | x      |           |         |
+| white-test.R        | x        | x       | x      |           |         |
+| z-selection.R       | x        | x       | x      |           |         |
+
+Features:
+
+- Add support for custom plot labels using an optional argument.
+- Implement models with variance-only trends.
+- Use 2-parameter Weibull for `rfpl-uncertainty`, reparamaterized on $\sigma$.
+
+Touch-ups:
+
+- Replace `nlminb` with `optim`, update documentation.
+- Ensure that all references are to Hosking, 1997 (not 1996).
+- Add parameter validation to _every_ function.
+- Achieve 100% code coverage using the `covr` library.
+
+### Notes
+
+Package checking:
+
+- `devtools::check()`
+- `devtools::check(cran = TRUE)`
+
+Documentation:
+
+- `devtools::document()`: generate docmentation
+- `devtools::build_manual(path = "~/Code/ffa-package")`: generate manual
+
+Unit testing:
+
+- `devtools::test()`: run all unit tests
+- `devtools::test_file("tests/testthat/...")`: run a specific unit test
+
+Generating a coverage report:
+
+```
+cov <- covr::package_coverage()
+covr::report(cov, file = "coverage.html")
+```
 
 ## Command Line Interface
 
@@ -35,7 +97,10 @@ Issue in `rfpl-uncertainty` for the Weibull distribution:
 
 ## API Development
 
-Link: [Building APIs with R](https://www.youtube.com/watch?v=t-Is-8Qfym0)
+Talk to Kasra about cloud hosting for API.
+
+- Finish CRAN/CLI/GeoMet by July 10th
+  Link: [Building APIs with R](https://www.youtube.com/watch?v=t-Is-8Qfym0)
 
 Need to learn:
 
@@ -79,4 +144,8 @@ Read through papers on different NS metrics and possibly implement them:
 - DLL: Rootzen & Katz, 2013
 - ADLL: Yan et al. 2017
 
+Outreach:
 
+- Run workshops in August/September
+- Write 10-page report by end of summer
+- Develop training material

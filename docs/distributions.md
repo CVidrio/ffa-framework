@@ -1,0 +1,569 @@
+# Probability Distributions
+
+The FFA framework uses the $9$ probability distributions listed below:
+
+| Distribution               | Abbreviation | Parameters                                           |
+| -------------------------- | ------------ | ---------------------------------------------------- |
+| Gumbel                     | `GUM`        | $\mu$ (location), $\sigma$ (scale)                   |
+| Normal                     | `NOR`        | $\mu$ (location), $\sigma$ (scale)                   |
+| Log-Normal                 | `LNO`        | $\mu$ (location), $\sigma$ (scale)                   |
+| Generalized Extreme Value  | `GEV`        | $\mu$ (location), $\sigma$ (scale), $\kappa$ (shape) |
+| Generalized Logistic Value | `GLO`        | $\mu$ (location), $\sigma$ (scale), $\kappa$ (shape) |
+| Generalized Normal         | `GNO`        | $\mu$ (location), $\sigma$ (scale), $\kappa$ (shape) |
+| Pearson Type III           | `PE3`        | $\mu$ (location), $\sigma$ (scale), $\kappa$ (shape) |
+| Log-Pearson Type III       | `LP3`        | $\mu$ (location), $\sigma$ (scale), $\kappa$ (shape) |
+| Weibull                    | `WEI`        | $\mu$ (location), $\sigma$ (scale), $\kappa$ (shape) |
+
+Each distribution also has two non-stationary variants which we denote by adding a "signature" to the model abbreviation.
+For two-parameter distributions (`GUM`, `NOR`, `LNO`):
+
+1. `XXX` is the standard, stationary model.
+2. `XXX10` has a trend in the location parameter $\mu$.
+3. `XXX01` has a trend in the scale parameter $\sigma$.
+4. `XXX11` has a trend in the location $\mu$ and the scale $\sigma$.
+
+Shown below is a table summarizing these three models:
+
+| Feature              | `XXX`               | `XXX10`             | `XXX01`                | `XXX11`                |
+| -------------------- | ------------------- | ------------------- | ---------------------- | ---------------------- |
+| Location $\mu$       | $\mu$ (constant)    | $\mu_0 + \mu_1z$    | $\mu$ (constant)       | $\mu_0 + \mu_1z$       |
+| Scale $\sigma$       | $\sigma$ (constant) | $\sigma$ (constant) | $\sigma_0 + \sigma_1z$ | $\sigma_0 + \sigma_1z$ |
+| Number of Parameters | 2                   | 3                   | 3                      | 4                      |
+
+For three-parameter distributions (`GEV`, `GLO`, `GNO`, `PE3`, `LP3`, `WEI`):
+
+1. `XXX` is the standard, stationary model.
+2. `XXX100` has a trend in the location parameter $\mu$.
+3. `XXX010` has a trend in the scale parameter $\sigma$.
+3. `XXX110` has a trend in the location $\mu$ and the scale $\sigma$.
+
+Shown below is a table summarizing these three models:
+
+| Feature              | `XXX`               | `XXX100`            | `XXX010`               | `XXX110`               |
+| -------------------- | ------------------- | ------------------- | ---------------------- | ---------------------- |
+| Location $\mu$       | $\mu$ (constant)    | $\mu_0 + \mu_1z$    | $\mu$ (constant)       | $\mu_0 + \mu_1z$       |
+| Scale $\sigma$       | $\sigma$ (constant) | $\sigma$ (constant) | $\sigma_0 + \sigma_1z$ | $\sigma_0 + \sigma_1z$ |
+| Shape $\kappa$       | $\kappa$ (constant) | $\kappa$ (constant) | $\kappa$ (constant)    | $\kappa$ (constant)    |
+| Number of Parameters | 3                   | 4                   | 4                      | 5                      |
+
+The FFA framework also uses the four-parameter Kappa distribution (KAP) for the [Z-statistic](model-selection.md#z-statistic) selection metric. The Kappa distribution generalizes the $9$ distributions listed above.
+
+## List of Distributions[^1]
+
+### Gumbel (GUM) Distribution
+
+**Support**
+
+$-\infty < x < \infty$
+
+**Quantiles**
+
+$x(F) = \mu - \sigma \log (-\log F)$
+
+**Likelihood Function**
+
+The probability density function (PDF) of the Gumbel distribution is given below:
+
+$$
+f(x_{i} : \mu, \sigma) = \frac{1}{\sigma} \exp \left(-z_{i} - e^{-z_{i}}\right) , \quad
+z_{i} = \frac{x_{i} - \mu}{\sigma }
+$$
+
+Therefore, the Log-likelihood function is defined as follows:
+
+$$
+\ell(x:\mu, \sigma) = \sum_{i=1}^{n} \left[-\ln \sigma - z_{i} - e^{-z_{i}} \right]
+$$
+
+**L-Moments**
+
+In the equations below, $\gamma \approx 0.5772$ is [Euler's constant](https://en.wikipedia.org/wiki/Euler%27s_constant).
+
+- $\lambda_{1} = \mu + \sigma \gamma$
+- $\lambda_{2} = \sigma \log 2$
+- $\tau_{3} = \log(9/8)/\log 2 \approx 0.1699$
+- $\tau_{4} = (16 \log 2 - 10\log 3) / \log 2 \approx 0.1504$
+
+We can also express the parameters in terms of the L-moments:
+
+- $\sigma = \lambda_{2} / \log 2$
+- $\mu = \lambda_{1} - \sigma \gamma$
+
+### Normal (NOR) Distribution
+
+**Support**
+
+$-\infty < x < \infty$
+
+**Quantiles**
+
+$x(F) = \mu  + \sigma \Phi^{-1}(F)$
+
+**Likelihood Function**
+
+The probability density function (PDF) of the Normal distribution is given below:
+
+$$
+f(x_{i} : \mu, \sigma) = \frac{1}{\sigma \sqrt{2\pi }}e^{-z_{i}^2/2} , \quad
+z_{i} = \frac{x_{i} - \mu}{\sigma }
+$$
+
+Therefore, the Log-likelihood function is defined as follows:
+
+$$
+\ell(x:\mu, \sigma) = \sum_{i=1}^{n} \left[-\ln (\sigma \sqrt{2\pi }) - \frac{z_{i}^2}{2} \right]
+$$
+
+**L-Moments**
+
+- $\lambda_{1} = \mu$
+- $\lambda_{2} = \pi^{-1/2}\sigma \approx 0.5642\sigma$
+- $\tau_{3} = 0$
+- $\tau_{4} = 30\pi^{-1}\arctan \sqrt{2} - 9 \approx 0.1226$
+
+We can also express the parameters in terms of the L-moments:
+
+- $\mu = \lambda_{1}$
+- $\sigma = \pi^{1/2}\lambda_{2}$
+
+### Log-Normal (LNO) Distribution
+
+**Support**
+
+$0 < x < \infty$
+
+**Quantiles**
+
+$x(F) = \exp(\mu + \sigma \Phi^{-1}(F))$
+
+**Likelihood Function**
+
+To derive the likleihood of the LNO distribution, we use the fact that:
+
+$$
+\text{Data} \sim \text{LNO} \Leftrightarrow \ln (\text{Data}) \sim \text{NOR}
+$$
+
+Precisely, we require the change of variables formula, which states that:
+
+$$
+\ell_{\text{LNO}}(x ; \mu, \sigma)
+= \ell_{\text{NOR}}(\ln x ; \mu , \sigma) \left|\frac{d}{dx} \ln  x\right|
+= \frac{\ell_{\text{NOR}}(\ln x ; \mu , \sigma)}{x}
+$$
+
+**L-Moments**
+
+See [Normal Distribution](#normal-nor-distribution).
+
+### Generalized Extreme Value (GEV) Distribution
+
+**Support**
+
+$$
+\begin{cases}
+-\infty < x \leq \mu + (\sigma/\kappa ) &\kappa > 0 \\[5pt]
+-\infty < x < \infty & \kappa  = 0 \\[5pt]
+\mu + (\sigma /\kappa) \leq x < \infty & \kappa < 0
+\end{cases}
+$$
+
+**Quantiles**
+
+$$
+x(F) = \begin{dcases}
+\mu + \sigma (1 - (-\log F)^{\kappa })/\kappa  &\kappa \neq 0\\[5pt]
+\mu - \sigma \log (-\log F) &\kappa = 0
+\end{dcases}
+$$
+
+**Likelihood Function**
+
+The probability density function (PDF) of the GEV distribution is given below (assume $t_{i} > 0)$:
+
+$$
+f(x_{i} : \mu, \sigma, \kappa) = \frac{1}{\sigma}t_{i}^{-1 - (1/\kappa)} \exp (-t_{i}^{-1/\kappa}), \quad
+t_{i} = 1 + \kappa \left(\frac{x_{i} - \mu }{\sigma } \right)
+$$
+
+Therefore, the Log-likelihood function is defined as follows:
+
+$$
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[-\ln \sigma - \left(1 + \frac{1}{\kappa }\right) \ln t_{i} - t_{i}^{-1/\kappa}\right]
+$$
+
+**L-Moments**
+
+The L-moments are defined for $\kappa > -1$:
+
+- $\lambda_{1} = \mu + \sigma (1 - \Gamma (1 + \kappa)) / \kappa$
+- $\lambda_{2} = \sigma (1 - 2^{-\kappa })\Gamma (1 + \kappa) / \kappa$
+- $\tau_{3} = 2(1 - 3^{-\kappa})/(1 - 2^{-\kappa}) - 3$
+- $\tau_{4} = [5(1 - 4^{-\kappa })-10(1-3^{-\kappa}) + 6(1-2^{-\kappa })]/(1 - 2^{-\kappa })$
+
+To compute the parameters from the L-moments, we first compute $c$:
+
+$$
+c = \frac{2}{3 + \tau_{3}} - \frac{\log 2}{\log 3}
+$$
+
+Then, we use the following approximation[^2]:
+
+$$
+\begin{cases}
+\kappa \approx 7.8590c + 2.9554c^2 \\[5pt]
+\sigma \approx \lambda_{2}\kappa / (1 - 2^{-\kappa })\Gamma (1 + \kappa) \\[5pt]
+\mu \approx \lambda_{1} - \sigma (1 - \Gamma (1 + \kappa )) / \kappa
+\end{cases}
+$$
+
+**Note**: Other sources often use a different parameterization for the GEV distribution in which the sign of the shape parameter $\kappa$ is flipped.
+ w
+### Generalized Logistic (GLO) Distribution
+
+**Support**
+
+$$
+\begin{cases}
+-\infty < x \leq \mu + (\sigma /\kappa ) & \kappa  > 0 \\[5pt]
+-\infty  < x < \infty  & \kappa  = 0 \\[5pt]
+\mu  + (\sigma /\kappa ) \leq  x < \infty  & \kappa  < 0
+\end{cases}
+$$
+
+**Quantiles**
+
+$$
+x(F) = \begin{cases}
+\mu +\sigma [1 - ((1 - F) / F)^{\kappa}] / \kappa &\kappa \neq 0 \\[5pt]
+\mu - \sigma \log ((1 - F) / F) & k = 0
+\end{cases}
+$$
+
+**Likelihood Function**
+
+The probability density function (PDF) of the GLO distribution is given below (assume $t_{i} > 0)$:
+
+$$
+f(x_{i} : \mu , \sigma , \kappa ) = \frac{1}{\sigma }t_{i}^{(1/\kappa) - 1} \left[1 + t_{i}^{1/\kappa}\right]^{-2}, \quad
+t_{i} = 1 - \kappa \left(\frac{x_{i} - \mu }{\sigma }\right)
+$$
+
+Therefore, the Log-likelihood function is defined as follows:
+
+$$
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[-\ln \sigma + \left(\frac{1}{\kappa }-1\right) \ln t_{i} - 2 \ln \left(1 + t_{i}^{1/\kappa }\right) \right]
+$$
+
+**L-Moments**
+
+The L-moments are defined for $-1 < \kappa < 1$:
+
+- $\lambda_{1} = \mu +\sigma [(1 / \kappa) - (\pi / \sin (\kappa\pi))]$
+- $\lambda_{2} = \sigma \kappa \pi / \sin (\kappa \pi)$
+- $\tau_{3} = -\kappa$
+- $\tau_{4} = (1 + 5\kappa ^2) / 6$
+
+We can also express the parameters in terms of the L-moments:
+
+- $\kappa = -\tau_{3}$
+- $\sigma = \lambda_{2}\sin (\kappa \pi ) / \kappa \pi$
+- $\mu = \lambda_{1} - \sigma [(1 / \kappa) - (\pi / \sin (\kappa\pi))]$
+
+### Generalized Normal (GNO) Distribution
+
+**Support**
+
+$$
+\begin{cases}
+-\infty < x \leq \mu + (\sigma /\kappa ) & \kappa  > 0 \\[5pt]
+-\infty  < x < \infty  & \kappa  = 0 \\[5pt]
+\mu  + (\sigma /\kappa ) \leq  x < \infty  & \kappa  < 0
+\end{cases}
+$$
+
+**Quantiles**
+
+$$
+x(F) = \begin{cases}
+\mu + \sigma [1 - \exp(-\kappa \Phi^{-1}(F))] / \kappa &\kappa \neq 0 \\[5pt]
+\mu + \sigma \Phi^{-1}(F) &\kappa  = 0
+\end{cases}
+$$
+
+**Likelihood Function**
+
+**L-Moments**
+
+The L-moments are defined for all values of $\kappa$.
+
+- $\lambda_{1} = \mu + \sigma (1 - e^{\kappa ^2/2}) / \kappa$
+- $\lambda_{2} = \sigma e^{-\kappa ^2/ 2}[1 - 2\Phi (-\kappa  / \sqrt{2})] / \kappa$
+
+To compute $\tau_{3}$ and $\tau_{4}$ we use the following approximation:
+
+$$
+\begin{aligned}
+\tau_{3} &\approx -\kappa \left(\frac{A_{0} + A_{1}\kappa ^2 + A_{2}\kappa ^{4} + A_{3}\kappa ^{6}}{1 + B_{1}\kappa ^2 + B_{2}\kappa ^{4} + B_{3}\kappa ^{6}}\right)  \\[5pt]
+\tau_{4} &\approx \tau_{4}^{0} + \kappa ^2 \left(\frac{C_{0} + C_{1}\kappa ^2 + C_{2}\kappa ^{4} + C_{3}\kappa ^{6}}{1 + D_{1}\kappa ^2 + D_{2}\kappa ^{4} + D_{3}\kappa ^{6}}\right)
+\end{aligned}
+$$
+
+To determine the parameters from the L-moments we also use a rational approximation:
+
+$$
+\kappa \approx -\tau_{3} \left(\frac{E_{0} + E_{1}\tau_{3}^2 + E_{2}\tau_{3}^{4} + E_{3}\tau _{3}^{6}}{1 + F_{1}\tau _{3}^2 + F_{2}\tau _{3}^{4} + F_{3}\tau _{3}^{6}}\right)
+$$
+
+Then, we can find $\mu$ and $\sigma$ as a function of $\kappa$:
+
+$$
+\sigma \approx  \frac{\lambda_{2}\kappa e^{-\kappa ^2 / 2}}{1 - 2\Phi (-\kappa  / \sqrt{2})}, \quad
+\mu  \approx  \lambda_{1} - \frac{\sigma }{\kappa }\left(1 - e^{-\kappa ^2 / 2 }\right)
+$$
+
+The coefficients ($A_{i}$, $B_{i}$, $C_{i}$, $D_{i}$, $E_{i}$, $F_{i}$, and $\tau_{4}^{0}$) are defined in Appendix A.8 of Hosking, 1996[^1].
+Although this appendix covers the 3-parameter log-normal distribution, the L-moments of the generalized normal distribution are the same.
+
+### Pearson Type III (PE3) Distribution
+
+The Pearson Type III distribution is typically reparameterized as follows for $\kappa \neq 0$:
+
+$$
+\begin{aligned}
+\alpha &= 4 / \kappa^2 \\[5pt]
+\beta  &= \sigma |\kappa | / 2 \\[5pt]
+\xi &= \mu  - 2\sigma /\kappa
+\end{aligned}
+$$
+
+**Support**
+
+$$
+\begin{cases}
+\xi \leq  x < \infty &\kappa > 0 \\[5pt]
+-\infty < x < \infty  &\kappa =0 \\[5pt]
+-\infty  < x \leq \xi &\kappa  < 0
+\end{cases}
+$$
+
+**Quantiles**
+
+$$
+x(F) = \begin{cases}
+\mu - \alpha \beta + q(F, \alpha, \beta) &\kappa > 0\\[5pt]
+\mu + \sigma \Phi^{-1}(F) &\kappa  = 0\\[5pt]
+\mu  + \alpha \beta  - q(1 - F, \alpha, \beta) &\kappa < 0
+\end{cases}
+$$
+
+In the equations above, $q$ is the quantile function of the Gamma distribution with with shape $\alpha$ and scale $\beta$. $q$ is defined below, where $\gamma$ is the _lower incomplete Gamma function_.
+
+$$q(F, \alpha, \beta) = \beta \gamma ^{-1}(\alpha, p \Gamma (\alpha))$$
+
+**Likelihood Function**
+
+The probability density function (PDF) of the PE3 distribution is given below:
+
+$$
+f(x_{i} : \mu , \sigma , \kappa ) = \frac{(x_{i} - \xi)^{\alpha  - 1}e^{-(x_{i} - \xi )/\beta }}{\beta ^{\alpha } \Gamma (\alpha )}
+$$
+
+Therefore, the Log-likelihood function is defined as follows:
+
+$$
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[(\alpha  - 1) \ln |x_{i} - \xi | - \frac{|x_{i} - \xi  |}{\beta } - \alpha \ln\beta  - \ln \Gamma (\alpha )\right]
+$$
+
+**L-Moments**
+
+All subsequent definitions assume that $\kappa > 0$.
+If $\kappa < 0$, the L-moments can be obtained by changing the signs of $\lambda_{1}$, $\tau_{3}$, and $\xi$ whenever they appear.
+If $\kappa = 0$, the L-moments are the same as the [Normal Distribution](#normal-nor-distribution).
+The first two L-moments are defined as follows:
+
+- $\lambda_{1} = \xi + \alpha \beta$
+- $\lambda_{2} = \pi ^{-1/2} \beta \Gamma (\alpha  + 0.5) / \Gamma (\alpha )$
+
+Rational approximation is necessary to determine $\tau_{3}$ and $\tau_{4}$. If $\alpha \geq 1$:
+
+$$
+\begin{aligned}
+\tau_{3} &\approx \alpha^{-1/2} \left(\frac{A_{0} + A_{1}\alpha^{-1} + A_{2}\alpha^{-2} + A_{3}\alpha^{-3}}{1 + B_{1}\alpha^{-1} + B_{2}\alpha ^{-2}}\right)  \\[5pt]
+\tau_{4} &\approx \frac{C_{0} + C_{1}\alpha^{-1} + C_{2}\alpha ^{-2} +C_{3}\alpha ^{-3}}{1 + D_{1}\alpha ^{-1} + D_{2}\alpha ^{-2}}
+\end{aligned}
+$$
+
+If $\alpha < 1$ we use a different set of coefficients:
+
+$$
+\begin{aligned}
+\tau_{3} &\approx \frac{1 + E_{1}\alpha  + E_{2}\alpha ^2 + E_{3}\alpha ^3}{1 + F_{1}\alpha  + F_{2}\alpha ^2 + F_{3}\alpha ^3} \\[5pt]
+\tau_{4} &\approx \frac{1 + G_{1}\alpha + G_{2}\alpha ^2 + G_{3}\alpha ^3}{1 + H_{1}\alpha + H_{2}\alpha ^2 + H_{3}\alpha ^3}
+\end{aligned}
+$$
+
+Coefficients are given in Appendix A.9 of Hosking, 1996[^1].
+To estimate parameters from the L-moments, we use one of two approximations for $\alpha$ depending on the value of $\tau_{3}$:
+
+$$
+\alpha \approx \begin{dcases}
+\frac{1 + 0.2906z}{z + 0.1882z^2 + 0.0442z^3}, &z = 3\pi \tau_{3}^2, &0 < |\tau_{3}| < \frac{1}{3} \\[5pt]
+\frac{0.36067z - 0.59567z^2 + 0.25361z^3}{1 - 2.78861z + 2.56096z^2 - 0.77045z^3}, &z = 1 - |\tau_{3}|, &\frac{1}{3} \leq |\tau_{3}| < 1
+\end{dcases}
+$$
+
+Then, we can determine the parameters from the approximated $\alpha$:
+
+$$
+\begin{aligned}
+\kappa &= 2\alpha ^{-1/2} \text{sign} (\tau_{3}) \\[5pt]
+\sigma &= \lambda_{2} \pi^{1/2}\alpha ^{1/2} \Gamma (\alpha )/\Gamma (\alpha + 0.5)\\[5pt]
+\mu &= \lambda_{1 }
+\end{aligned}
+$$
+
+### Log-Pearson Type III (LP3) Distribution
+
+The LP3 distribution uses the same reparameterization as the [PE3 distribution](#pearson-type-iii-pe3-distribution).
+
+**Support**
+
+$$
+\begin{cases}
+\max(0, \xi) \leq  x < \infty &\kappa > 0 \\[5pt]
+0 < x < \infty  &\kappa =0 \\[5pt]
+0  < x \leq \max(0, \xi) &\kappa  < 0
+\end{cases}
+$$
+
+**Quantiles**
+
+$x(F) = \exp(x_{\text{PE3}}(F ))$, where $x_{\text{PE3}}(F)$ is the quantile function of the [PE3 distribution](#pearson-type-iii-pe3-distribution).
+
+**Likelihood Function**
+
+To derive the likelihood of the LP3 distribution, we use the fact that:
+
+$$
+\text{Data} \sim \text{LP3}  \Leftrightarrow \ln (\text{Data}) \sim \text{PE3}
+$$
+
+Precisely, we require the change of variables formula, which states that:
+
+$$
+\ell_{\text{LP3}}(x ; \mu, \sigma, \kappa)
+= \ell_{\text{PE3}}(\ln x ; \mu , \sigma, \kappa ) \left|\frac{d}{dx} \ln  x\right|
+= \frac{\ell_{\text{PE3}}(\ln x ; \mu , \sigma, \kappa )}{x}
+$$
+
+**L-Moments**
+
+Same as the [PE3 distribution](#pearson-type-iii-pe3-distribution).
+
+### Weibull (WEI) Distribution
+
+The Weibull distribution is a reparameterized version of the generalized extreme value distribution:
+
+$$
+\begin{aligned}
+\kappa &= 1 / \kappa_{\text{GEV}} \\[5pt]
+\sigma &= \kappa \sigma_{\text{GEV} } \\[5pt]
+\mu &= \sigma + \mu_{\text{GEV} }
+\end{aligned}
+$$
+
+Under this reparameterization, it is required that $\sigma > 0$ and $\kappa > 0$.
+
+**Support**
+
+$\mu \leq x < \infty$
+
+**Quantiles**
+
+$x(F) = \mu + \sigma (-\log (1 - F))^{1/\kappa}$
+
+**Likelihood Function**
+
+The probability density function (PDF) of the Weibull distribution is given below for $x_{i} > \mu$:
+
+$$
+f(x_{i} : \mu, \sigma, \kappa) = \frac{\kappa}{\sigma }\left(\frac{x_{i} - \mu}{\sigma }\right)^{\kappa -1} \exp \left( - \left(\frac{x_{i} - \mu}{\sigma }\right)^{\kappa } \right)
+$$
+
+Therefore, the Log-likelihood function is defined as follows:
+
+$$
+\ell(x:\mu, \sigma, \kappa) = \sum_{i=1}^{n} \left[\ln \kappa - \kappa \ln \sigma +(\kappa -1)\ln (x_{i}-\mu ) - \left(\frac{x_{i} - \mu }{\sigma }\right) ^{\kappa } \right]
+$$
+
+**L-Moments**
+
+First, reparameterize the Weibull distribution and to recover the GEV parameters:
+
+$$
+\begin{aligned}
+\kappa_{\text{GEV}} &= 1 / \kappa \\[5pt]
+\sigma_{\text{GEV}} &= \sigma / \kappa \\[5pt]
+\end{aligned}
+$$
+
+Next, compute the L-moments for the [GEV distribution](#generalized-extreme-value-gev-distribution) with $\mu_{\text{GEV}} = 0$.
+Then,
+
+- $\lambda_{1} = \mu + \sigma - \lambda_{1, \text{GEV}}$
+- $\lambda_{2} = \lambda_{2, \text{GEV}}$
+- $\tau_{3} = -\tau_{3, \text{GEV}}$
+- $\tau_{4} = \tau_{4, \text{GEV} }$
+
+To compute the parameters from the L-moments, first flip the sign of $\lambda_{1}$ and $\tau_{3}$.
+Then, estimate the parameters of the GEV distribution to get $\hat{\mu}_{\text{GEV}}$, $\hat{\sigma}_{\text{GEV}}$, and $\hat{\kappa}_{\text{GEV}}$.
+Finally, reparameterize the GEV parameters as shown [here](#weibull-wei-distribution) and then flip the sign of $\mu$.
+
+### Kappa (KAP) Distribution
+
+The Kappa distribution has location $\mu$, scale $\sigma$, and two shape parameters $\kappa$ and $h$.
+
+**Support**
+
+$$
+\begin{cases}
+\mu + \sigma (1 - h^{-\kappa}) \leq x \leq \mu + (\sigma /\kappa ) & \kappa > 0, h > 0 \\[5pt]
+-\infty < x \leq \mu + (\sigma /\kappa) & \kappa > 0, h \leq 0 \\[5pt]
+\mu + \sigma (1 - h^{-\kappa}) \leq x < \infty &\kappa \leq 0, h > 0 \\[5pt]
+\mu + (\sigma / \kappa ) \leq x <\infty &\kappa  \leq 0, h \leq 0
+\end{cases}
+$$
+
+**Quantiles**
+
+$$
+x(F) = \mu + \frac{\sigma }{\kappa }\left[1 - \left(\frac{1 - F^{h}}{h}\right)^{\kappa }\right] 
+$$ 
+
+**L-Moments**
+
+The L-moments are defined if $h \geq 0$ and $k > -1$ or if $h < 0$ and  $-1 < k < -1/h$.
+
+- $\lambda_{1} = \mu  + \sigma (1 - g_{1})/\kappa$
+- $\lambda_{2} = \sigma(g_{1} - g_{2})/\kappa$
+- $\tau_{3} = (-g_{1} + 3g_{2} - 2g_{3}) / (g_{1} - g_{2})$ 
+- $\tau_{4} = (-g_{1} + 6g_{2} - 10g_{3} + 5g_{4}) / (g_{1} - g_{2})$
+
+In the expression above, $g_{r}$ is defined as follows:
+
+$$
+g_{r} = \begin{dcases}
+\frac{r\Gamma (1 + \kappa )\Gamma (r / h)}{h^{1 + \kappa }\Gamma (1 + \kappa + r/h)} &h > 0 \\[5pt]
+\frac{r\Gamma (1 + \kappa ) \Gamma (-\kappa  - r/h)}{(-h)^{1 + \kappa }\Gamma (1 - r/h)} &h < 0
+\end{dcases}
+$$ 
+
+There is no closed-form solution for the parameters in terms of the L-moments. 
+However, $\tau_{3}$ and $\tau_{4}$ can be computed in terms of $\kappa$ and $h$ using Newton-Raphson iteration.
+
+## Sources
+
+[^1]: Hosking, J.R.M. & Wallis, J.R., 1997. Regional frequency analysis: an aproach based on L-Moments. Cambridge University Press, New York, USA.
+
+[^2]: Hosking, J.R.M., Wallis, J.R., & Wood, E.F., 1985. Estimation of the generalized extreme-value distribution by the method of probability-weighted moments. Technometrics, 27, 251-61.

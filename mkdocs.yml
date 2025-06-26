@@ -8,6 +8,7 @@ nav:
     - User Manual: cli-manual.md
   - Concepts:
     - Exploratory Data Analysis: eda.md
+    - Probability Distributions: distributions.md
     - Model Selection: model-selection.md
     - Parameter Estimation: parameter-estimation.md
     - Frequency Analysis: frequency-analysis.md

@@ -63,4 +63,4 @@ This modification produced slight improvements to the MLE/GMLE for some datasets
 ### Model Assessment Changes
 
 Use the built-in R function `approx()` to perform log-linear interpolation of the return periods.
-The MATLAB implementation uses a hard-coded algorithm which behaves unpredictably when the original and interpolated $x$-values are equally.
+The MATLAB implementation uses a hard-coded algorithm which behaves unpredictably when the original and interpolated $x$-values are equal.
