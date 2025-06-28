@@ -1,0 +1,23 @@
+### '`r params$method`' Distribution Selection
+
+**Recommended Distribution**: `r params$recommendation`
+
+<!-- Model Selection Table -->
+```{r, echo = FALSE}
+# distance <- params$metrics
+# metrics <- sapply(distance, function(x) round(x$metric, 4))
+
+# df <- data.frame(
+# 	Distribution = names(distance),
+# 	Metric = unname(metrics)
+# )
+
+# knitr::kable(df, align = "cc")
+```
+
+<!-- Model Selection Plot -->
+```{r, echo = FALSE, out.width = "80%", fig.align = "center", dpi = 150}
+img_name <- glue("selection-{params$start}-{params$end}.png")
+knitr::include_graphics(file.path(params$img_path, img_name))
+```
+

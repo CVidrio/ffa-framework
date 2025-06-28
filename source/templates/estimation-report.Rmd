@@ -1,0 +1,7 @@
+### Parameter Estimation
+
+<!-- Parameter Estimation Table -->
+
+**Estimated Parameters**: `r round(params$params, 4)`
+
+

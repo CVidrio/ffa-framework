@@ -1,47 +1,55 @@
-library(glue)
+load.data <- function(data_source, csv_files = NULL, station_ids = NULL) {
 
-# Helper function to load a data file
-load <- function(data_dir, file_name, window_length = 10, window_step = 5) {
+	# Helper function to load a CSV file
+	load.csv <- function(csv_file) {
 
-	# Read the data file
-	df <- read.csv(glue("{data_dir}/{file_name}"))
+		# Read and load the data file
+		csv_path <- file.path(renv::project(), "data", csv_file)
+		df <- read.csv(csv_path)
 
-	# Remove leading and trailing NaN values 
-	idx <- which(!is.na(df$max))
-	df <- df[min(idx):max(idx), ]
+		# Remove NaN values
+		df[!is.na(df$max), ]
 
-	# Convert year to a numeric column
-	df$year <- as.numeric(df$year)
-
-	# Create df_clean, which contains no NA values
-	df_clean <- df[which(!is.na(df$max)), ]
-
-	# Create df_variance, which contains the variances of the AMS data
-	std_series <- c()
-	year_series <- c()
-	n <- nrow(df)
-	i <- 1
-
-	# Iterate through all the windows
-	while ((i + window_length - 1) <= n) {
-
-		# Get the window from the data frame, increment i
-		window <- df[i:(i + window_length - 1), ]
-		i <- i + window_step
-
-		# Compute the standard deviation within the window, add it to std_series
-		std <- sd(window$max, na.rm = TRUE)
-		std_series <- c(std_series, std)
-
-		# Compute the mean within the window, add it to year_series
-		avg_year <- mean(window$year, na.rm = TRUE)
-		year_series <- c(year_series, avg_year)
 	}
 
-	df_variance <- data.frame(year = year_series, std = std_series)
+	# Helper function to make an API call
+	load.geomet <- function(station_id) {
+		
+		# Set GeoMet API URL
+		url <- "https://api.weather.gc.ca/collections/hydrometric-annual-statistics/items"
 
-	# Return df, df_clean, and df_variance as a list
-	mget(c("df", "df_clean", "df_variance"))
+		# Set query parameters
+		params <- list(
+			limit = 200,
+			skipGeometry = TRUE,
+			DATA_TYPE_EN = "Discharge",
+			STATION_NUMBER = station_id
+		)
+
+		# Make a GET request and parse the content as JSON
+		response <- GET(url, query = params)
+		content <- content(response, as = "parsed", type = "application/json")
+
+		# Extract the streamflow data and years
+		ams <- sapply(content$features, function(x) x$properties$MAX_VALUE)	
+		dates <- sapply(content$features, function(x) x$properties$MAX_DATE)
+		years <- as.integer(substr(dates, 1, 4))			
+
+		# Create a dataframe without NaN values
+		data.frame(year = years, max = ams)
+
+	}
+
+	# Get the correct loading function and list of sources
+	if (data_source == "Local") {
+		loader <- load.csv
+		sources <- csv_files
+	} else {
+		loader <- load.geomet
+		sources <- station_ids
+	}
+
+	# Load data from each source
+	lapply(sources, loader)
 
 }
-

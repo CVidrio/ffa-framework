@@ -1,0 +1,38 @@
+### Model Assessment
+
+<!-- Model Assessment Table -->
+```{r, echo = FALSE}
+assessment_df <- data.frame(
+	"R.Squared" = round(params$R2, 4),
+	"RMSE" = round(params$RMSE, 4),
+	"Bias" = round(params$bias, 4),
+	"AIC" = round(params$AIC, 4), 
+	"BIC" = round(params$BIC, 4), 
+	"AIC.MLL" = round(params$AIC_MLL, 4),
+	"BIC.MLL" = round(params$BIC_MLL, 4), 
+	"AW" = round(params$AW, 4), 
+	"POC" = round(params$POC, 4),
+	"CWI" = round(params$CWI, 4)
+)
+
+# Transpose dataframe and create a table
+assessment_df <- data.frame(t(assessment_df))
+
+knitr::kable(
+	assessment_df,
+	align = "cccccccccc",
+	col.names = c("Statistic", "Values")
+)
+```
+
+<!-- Model Selection Plot -->
+```{r, echo = FALSE}
+img_name <- glue("assessment-{params$start}-{params$end}.png")
+knitr::include_graphics(file.path(params$img_path, img_name))
+```
+
+
+
+
+
+

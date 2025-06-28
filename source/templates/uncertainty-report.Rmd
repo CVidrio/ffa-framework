@@ -1,0 +1,14 @@
+### Uncertainty Quantification
+
+<!-- Uncertainty Quantification Table -->
+```{r, echo = FALSE}
+columns <- c("Return Period", "CI (Lower)", "Estimates", "CI (Upper)")
+knitr::kable(as.data.frame(params[[1]]), col.names = columns, align = "cccc")
+```
+
+<!-- Uncertainty Quantification Plot -->
+```{r, echo = FALSE}
+img_name <- glue("uncertainty-{params$start}-{params$end}.png")
+knitr::include_graphics(file.path(params$img_path, img_name))
+```
+

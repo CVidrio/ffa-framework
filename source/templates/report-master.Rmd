@@ -1,0 +1,67 @@
+---
+title: "Framework Report"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+  html_document:
+    toc: true
+    toc_depth: 3
+    css: styles.css
+params: 
+  results: "[results]"
+  file: "[file]"
+---
+
+## Summary
+
+**File**: `r paste0(params$file, ".csv")`
+
+```{r, echo = FALSE}
+outputs <- character()
+
+for (entry in params$results) {
+
+	# Determine the type of the entry
+	if ("mks" %in% names(entry)) {
+		name <- "Change Point Analysis"
+	} else if ("mk" %in% names(entry)) {
+		name <- "Trend Detection"
+	} else if ("assessment" %in% names(entry)) {
+		name <- "Frequency Analysis"
+	} else {
+		name <- "Unknown"
+	}
+
+	# Create a string defining the start/end years
+	period <- glue("{entry$start}-{entry$end}")
+
+	# Add a header to outputs	
+	header <- glue("\n\n## {name} ({period})\n\n")
+	outputs <- c(outputs, header)
+
+	# Create a list with the start year, end year, img path
+	period <- list(
+		start = entry$start,
+		end = entry$end,
+		img_path = file.path(renv::project(), "reports", params$file, "img")
+	)
+
+	# Add the sub-report for each item in the entry
+	for (item in names(entry)) {
+
+		env <- new.env()
+		env$params <- c(entry[[item]], period)
+		report_file <- glue("{item}-report.Rmd")
+
+		# Check if report file exists (TEMPORARY)
+		if (file.exists(report_file)) {
+			outputs <- c(outputs, knitr::knit_child(report_file, envir = env))
+		}
+	}
+
+} 
+
+knitr::asis_output(outputs)
+```

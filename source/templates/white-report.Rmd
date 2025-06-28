@@ -1,0 +1,6 @@
+### White Test
+
+For more information, see [here](https://rileywheadon.github.io/ffa-docs/eda#white-test). 
+
+`r params$msg`
+

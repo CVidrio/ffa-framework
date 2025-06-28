@@ -1,0 +1,19 @@
+### MKS Test
+
+For more information, see [here](https://rileywheadon.github.io/ffa-docs/eda/#mann-kendall-sneyers-test). 
+
+`r params$msg`
+
+Additional information:
+
+- Number of crossings: `r nrow(params$crossing.df)`
+- Number of significant crossings: `r nrow(params$change.df)`
+- Significance threshold: `r round(params$bound, 2)`
+
+<!-- Render the figure. -->
+
+```{r, echo = FALSE, out.width = "80%", fig.align = "center", dpi = 150}
+img_name <- glue("mks-{params$start}-{params$end}.png")
+knitr::include_graphics(file.path(params$img_path, img_name))
+```
+

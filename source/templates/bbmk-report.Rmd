@@ -1,0 +1,18 @@
+### BB-MK Test
+
+For more information, see [here](https://rileywheadon.github.io/ffa-framework/eda/#bb-mk-test). 
+
+`r params$msg`
+
+Additional information:
+
+- Bootstrap samples: `r length(params$s.bootstrap)`
+- S-statistic: `r round(params$s.statistic, 2)`
+- Confidence bounds: (`r round(params$bounds, 2)`)
+
+<!-- Render the figure. -->
+
+```{r, echo = FALSE, out.width = "80%", fig.align = "center", dpi = 150}
+img_name <- glue("bbmk-{params$start}-{params$end}.png")
+knitr::include_graphics(file.path(params$img_path, img_name))
+```

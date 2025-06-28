@@ -1,0 +1,165 @@
+####################
+# Data Preparation #
+####################
+
+
+# Character (1); method for sourcing data for the framework. Must be one of:
+# - "Local": Source data locally using the csv_files option.
+# - "GeoMet": Pull data from the MSC GeoMet API using the station_ids option.
+data_source: "Local"
+
+# Character; names of CSV files located in /data used to run the framework.
+csv_files: "Application_1.csv"
+
+# Character; station IDs for hydrological monitoring stations.
+station_ids: null
+
+
+#############################
+# Exploratory Data Analysis #
+#############################
+
+
+# Boolean (1); if set to true, run exploratory data analysis.
+run_eda: true
+
+# Character (1); method for determining split points. Must be one of:
+# - "Automatic": Identify split points and split the data automatically.
+# - "Manual": Confirm split points after identification.
+# - "Preset": Set the split points ahead of time using split_points.
+split_selection: "Manual"
+
+# Integer; preset values for split points or 'null' for no split points.
+split_points: null
+
+# Numeric (1); significance level. Must be between 0.01 and 0.1.
+significance_level: 0.05
+
+# Integer (1); number of bootstrap samples to use for the BB-MK Test.
+bbmk_samples: 10000
+
+
+############################
+# Flood Frequency Analysis #
+############################
+
+
+# Boolean (1); if set to true, run flood frequency analysis.
+run_ffa: true
+
+# Character (1); non-stationary signature selection method. Must be one of:
+# - "Automatic": Non-stationarity is identified and handled automatically.
+# - "Manual": Confirm non-stationary patterns after EDA. Requires run_eda: true.
+# - "Preset": Set non-stationary signature ahead of time with ns_signature.
+ns_selection: "Manual"
+
+# Character (1); non-stationary signature to use if ns_selection: "preset". Must be one of:
+# - null: No non-stationarity.
+# - "10": Linear trend in the mean.
+# - "11": Linear trend in the mean and variance.
+ns_signature: null
+
+
+##########################
+# Distribution Selection #
+##########################
+
+
+# Character (1); distribution selection method. Must be one of:
+# - "L-distance": Euclidian distance from (L-skewness, L-kurtosis) point.
+# - "L-kurtosis": Difference between theoretical and sample L-kurtosis.
+# - "Z-statistic": Bootstrapped Z-statistic computed using the Kappa distribution.
+# - "Preset": Specify a distribution ahead of time with the distribution_name option.
+distribution_selection: "L-distance"
+
+# Character (1); name of the probability distributions to use.
+distribution_name: "LP3"
+
+# Integer (1); number of bootstrap samples for Z-statistic selection.
+z_samples: 10000
+
+
+########################
+# Parameter Estimation #
+########################
+
+# Character (1); parameter estimation method for stationary models. Must be one of:
+# - "L-moments": Method of L-moments using formulas from Hosking (1997).
+# - "MLE": Maximum likelihood estimation.
+# - "GMLE": Generalized maximum likelihood estimation (GEV distribution only).
+s_estimation: "L-moments"
+
+# Character (1); parameter estimation method for non-stationary models:
+# - "MLE": Maximum likelihood estimation.
+# - "GMLE": Generalized maximum likelihood estimation (GEV distribution only).
+ns_estimation: "MLE"
+
+# Numeric (2); prior parameters for the shape parameter of the GEV distribution.
+gev_prior: [6.0, 9.0]
+
+
+##############################
+# Uncertainty Quantification #
+##############################
+
+
+# Character (1); uncertainty quantification method for stationary models:
+# - "S-bootstrap": Sample bootstrap method.
+# - "RFPL": Regula-falsi profile likelihood (MLE estimation only).
+# - "RFGPL": Generalized regula-falsi profile likelihood (GMLE estimation only).
+s_uncertainty: "S-bootstrap"
+
+# Character (1); uncertainty quantification method for non-stationary models:
+# - "S-bootstrap": Sample bootstrap method.
+# - "RFPL": Regula-falsi profile likelihood (MLE estimation only).
+# - "RFGPL": Generalized regula-falsi profile likelihood (GMLE estimation only).
+ns_uncertainty: "RFPL"
+
+# Numeric; list of return periods (in years) for estimating return levels.
+return_periods: [2, 5, 10, 20, 50, 100]
+
+# Integer (1); number of samples for bootstrap uncertainty quantification.
+sb_samples: 10000
+
+# Numeric (1); log-likelihood tolerance for RFPL uncertainty quantification.
+rfpl_tolerance: 0.01
+
+
+####################
+# Model Assessment #
+####################
+
+
+# Character (1); empirical plotting position formula for model assessment. Valid formulas:
+# - "Weibull": i / (n + 1)
+# - "Blom": (i - 0.375) / (n + 0.25)
+# - "Cunnane": (i - 0.4) / (n + 0.2)
+# - "Gringorten": (i - 0.44) / (n + 0.12)
+# - "Hazen": (i - 0.5) / n
+pp_formula: "Weibull"
+
+
+###################
+# Plot Generation #
+###################
+
+
+# Boolean (1); if true, add a trend line through the AMS data where applicable.
+show_trend: true
+
+# Integer (1); year used to anchor non-stationary models or 'null' to choose automatically.
+anchor_year:  null
+
+
+#####################
+# Report Generation #
+#####################
+
+
+# Boolean (1); if true, generate a report with specified report_formats.
+generate_report: true
+
+# Character; list of report formats. Valid formats: ["markdown", "pdf", "html", "json"]
+report_formats: "html"
+
+

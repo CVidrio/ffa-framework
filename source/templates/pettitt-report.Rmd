@@ -1,0 +1,18 @@
+### Pettitt Test
+
+For more information, see [here](https://rileywheadon.github.io/ffa-docs/eda/#pettitt-test). 
+
+`r params$msg`
+
+Additional information:
+
+- K-statistic: `r round(params$k.statistic, 2)`
+- K-statistic significance threshold: `r round(params$k.critical, 2)`
+
+<!-- Render the figure. -->
+
+```{r, echo = FALSE, out.width = "80%", fig.align = "center", dpi = 150}
+img_name <- glue("pettitt-{params$start}-{params$end}.png")
+knitr::include_graphics(file.path(params$img_path, img_name))
+```
+

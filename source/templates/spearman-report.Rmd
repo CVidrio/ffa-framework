@@ -1,0 +1,12 @@
+### Spearman Test
+
+For more information, see [here](https://rileywheadon.github.io/ffa-framework/eda#spearman-test). 
+
+`r params$msg`
+
+<!-- Render the figure. -->
+
+```{r, echo = FALSE, out.width = "80%", fig.align = "center", dpi = 150}
+img_name <- glue("spearman-{params$start}-{params$end}.png")
+knitr::include_graphics(file.path(params$img_path, img_name))
+```

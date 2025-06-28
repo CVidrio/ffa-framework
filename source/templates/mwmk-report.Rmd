@@ -1,0 +1,12 @@
+### MW-MK Test
+
+For more information, see [here](https://rileywheadon.github.io/ffa-docs/eda/#mw-mk-test). 
+
+`r params$msg`
+
+Additional information:
+
+- S-statistic: `r round(params$s.statistic, 2)`
+- S-statistic variance: `r format(params$s.variance, scientific = TRUE, digits = 3)`
+
+
