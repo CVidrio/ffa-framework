@@ -2,14 +2,21 @@
 
 Welcome to the FFA Framework wiki!
 
-The FFA Framework is an open-source project for **Flood Frequency Analysis** (FFA) developed by researchers at the University of Calgary, Canada[^1].
-The framework is currently available as an R package and a command line interface (CLI).
+The **Flood Frequency Analysis (FFA) Framework** is an open-source project developed by researchers at the University of Calgary[^1] and the University of Saskatchewan, Canada. It is freely available to the public.
 
-- To get started with the R package, please read the [documentation](r-documentation.pdf).
-- To get started with the CLI, please read the [installation instructions](cli-installation.md) and the [user manual](cli-manual.md).
+The original release was a stand-alone application (GUI) with MATLAB source code, available [here](https://zenodo.org/records/8012096). The framework is now also accessible as an R package and a command-line interface (CLI).
 
-You may also be interested in our [goals](goals.md), [roadmap](roadmap.md), or [release notes](changelog.md).
+### Getting Started
 
-<div style="color: red;"><b>Warning</b>: This version of the FFA Framework is incomplete.</div> 
+- **R package**: See the [documentation](r-documentation.pdf).
+- **CLI**: Follow the [installation instructions](cli-installation.md) and the [user manual](cli-manual.md).
 
-[^1]: The [original version](https://zenodo.org/records/8012096) of this software was written in MATLAB and published as [A practice-oriented framework for stationary and nonstationary flood frequency analysis](https://doi.org/10.1016/j.envsoft.2024.105940) (Vidrio-Sahagún et al. 2024). For a list of changes from the MATLAB version, see [here](matlab.md).
+### Additional Resources
+
+- [Project goals](goals.md)
+- [Development roadmap](roadmap.md)
+- [Release notes](changelog.md).
+
+<div style="color: red;"><b>Warning</b>: This version of the FFA Framework is still under development and not yet complete.</div> 
+
+[^1]: The [original MATLAB version](https://zenodo.org/records/8012096) of the FFA Framework was published as [A practice-oriented framework for stationary and nonstationary flood frequency analysis](https://doi.org/10.1016/j.envsoft.2024.105940) (Vidrio-Sahagún et al. 2024). For differences from the MATLAB version, see [here](matlab.md).
