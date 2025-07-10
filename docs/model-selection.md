@@ -1,20 +1,25 @@
 # Model Selection
 
-Our framework uses the method of L-moment ratios to choose a suitable probability model for frequency analysis.
-This technique involves comparing the L-moments of the data with the known L-moments of various probability distributions.
-The CRAN package [lmom](https://cran.r-project.org/web/packages/lmom/index.html) is used extensively in this portion of the framework.
+This sub-module selects a statistical model for S-FFA or NS-FFA based on the annual maximum series.
+
+- **S-FFA**: A time-invariant probability distribution is selected from a pool of candidate distributions.
+- **NS-FFA**: A distribution is chosen along with a nonstationary structure to capture its evolution over time. In piecewise NS-FFA, the series is segmented into sub-periods, each modelled with either time-invariant or time-varying distributions.
+
+The framework uses the **L-moment ratio method** to identify the best-fit distribution family by comparing sample L-moments with those of various distribution families, implemented via the [**lmom** R package](https://cran.r-project.org/web/packages/lmom/index.html).
+
+For NS-FFA, the series is decomposed to isolate its stationary component following [Vidrio-Sahagún and He (2022)](https://doi.org/10.1016/j.jhydrol.2022.128186). This decomposed stationary sample is then used for distribution selection, as in S-FFA.
+
 
 ## An Introduction to L-Moments
 
-**Definition**: The **$k$-th Order Statistic** of a statistical sample is its $k$-th smallest value.
-
-**Definition**: The **$r$-th Population L-moment** $\lambda_{r}$ is a linear combination of the expectation of the order statistics. Let $X_{k:n}$ be the $k$-th order statistic from a sample of size $n$. Then,
+**Definition 1**: The **$k$-th Order Statistic** is $k$-th smallest value in a sample.
+**Definition 2**: The **$r$-th Population L-moment** $\lambda_{r}$ is a linear combination of the expectation of the order statistics. Let $X_{k:n}$ be the $k$-th order statistic from a sample of size $n$. Then,
 
 $$
 \lambda_{r} = \frac{1}{r} \sum_{k=0}^{r-1} (-1)^{k} \binom{r-1}{k} \mathbb{E}[X_{r-k:r}]
 $$
 
-**Definition**: A **Probability Weighted Moment** (PWM) encodes information about a value's position on the cumulative distribution function. The $r$-th PWM, denoted $\beta_{r}$, is:
+**Definition 3**: A **Probability Weighted Moment** (PWM) encodes information about a value's position on the cumulative distribution function. The $r$-th PWM, denoted $\beta_{r}$, is:
 
 $$
 \beta_{r} = \mathbb{E}[X \cdot  F(X)^{r}]
@@ -26,6 +31,7 @@ $$
 b_{r} = \frac{1}{n} \sum_{i=1}^{r} x_{i:n} \left(\frac{i-1}{n-1}\right) ^{r}
 $$
 
+### Sample L-Moments (from PWMs) and L-Moment Ratios
 **Remark**: The first four sample L-moments can be computed as linear combinations of the PWMs:
 
 $$
@@ -47,9 +53,9 @@ t_{4} &= l_{4} / l_{2}
 \end{aligned}
 $$ 
 
-Then, we compare these statistics to their theoretical values to select a distribution.
+Then, we compare these statistics to their theoretical values to select a distribution family.
 
-## List of Candidate Distributions
+## Candidate Distributions
 
 | Distribution              | Abbreviation | Number of Parameters |
 | ------------------------- | ------------ | -------------------- |
@@ -61,30 +67,32 @@ Then, we compare these statistics to their theoretical values to select a distri
 | Generalized Normal        | GNO          | 3                    |
 | Weibull                   | WEI          | 3                    |
 
-[^1]: The Gumbel distribution is equivalent to the GEV distribution with $\xi = 0$.
+[^1]: The Gumbel distribution is a special case of the GEV distribution with $\kappa = 0$.
 
-The four-parameter kappa distribution (K4D), generalizes all ten of the distributions above.
+The four-parameter kappa distribution (K4D) generalizes all of the above.
 
 **Note**: Probability distributions with less than three parameters have constant L-skewness $\tau_{3}$ and L-kurtosis $\tau_{4}$ regardless of their parameters. The L-skewness and L-kurtosis of probability distributions with three parameters is a function of the shape parameter $\kappa$.
+> **Note**: Distributions with <3 parameters have fixed L-skewness ($\tau_3$) and L-kurtosis ($\tau_4$) regardless of their parameters. For three-parameter families, $\tau_3$ and $\tau_4$ vary with shape parameter $\kappa$.
+
+---
 
 ## Selection Metrics
 
-### L-Distance
+### 1. L-Distance
 
-Compare the euclidean distance between the sample L-skewness and sample L-kurtosis $(t_{3}, t_{4})$ and the known L-moment ratios $(\tau_{3}, \tau_{4})$ for each candidate distribution.
-For probability distributions with three parameters, we use the *minimum distance* between the L-moment ratio curve $(\tau _{3}(\kappa ), \tau _{4}(\kappa ))$and the L-moment ratios of the sample $(t_{3}, t_{4})$.
+It is the Euclidean distance between the sample $(t_3, t_4)$ and theoretical $(\tau_3, \tau_4)$ for each candidate distribution. For 3-parameter distributions, this is the **minimum** distance along their L-moment ratio curve.
 
-### L-Kurtosis
+### 2. L-Kurtosis
 
-The L-kurtosis method is only used for three parameter probability distributions. 
+The L-kurtosis method is only used for three-parameter probability distributions. 
 First, identify the shape parameter $\kappa^{*}$ such that $t_{3} = \tau _{3}(\kappa ^{*})$.
 Then, compare the difference between the sample L-kurtosis and the theoretical L-kurtosis using the metric $|\tau_{4}(\kappa ^{*}) - t_{4} |$.
 
-### Z-statistic
+### 3. Z-statistic
 
-The Z-statistic selection metric is calculated as follows (for three parameter distributions):
+The Z-statistic selection metric is calculated as follows (for three-parameter distributions):
 
-1. Fit the four-parameter Kappa (K4D) distribution to the data using $t_{2}$, $t_{3}$, and $t_{4}$.
+1. Fit the four-parameter Kappa (K4D) distribution to the sample using $t_{2}$, $t_{3}$, and $t_{4}$.
 2. Generate $N_{\text{sim}}$ bootstrap samples from the fitted K4D distribution.
 3. Calculate the sample L-kurtosis $t_{4}^{[i]}$ of each synthetic dataset.
 4. Calculate the bias and standard deviation of the bootstrap distribution:
@@ -98,7 +106,7 @@ The Z-statistic selection metric is calculated as follows (for three parameter d
     $$
 
 5. Identify the shape parameter $\kappa^{*}$ such that $t_{3} = \tau _{3}(\kappa ^{*})$.
-6. Use bootstrap distribution to compute the Z-statistic for each distribution:
+6. Use the bootstrap distribution to compute the Z-statistic for each distribution:
 
     $$
     z = \frac{\tau_{4} (\kappa ^{*}) - t_{4} + B_{4} }{ \sigma _{4}}
@@ -106,26 +114,28 @@ The Z-statistic selection metric is calculated as follows (for three parameter d
 
 7. Choose the distribution with the *smallest* Z-statistic.
 
-## Handling Non-Stationarity
+## Handling Nonstationarity
 
-There are three non-stationary scenarios that can be identified during EDA:
+When nonstationarity is detected, the annual maximum series is decomposed before model selection. We consider three nonstationary scenarios that can be identified in EDA:
 
-1. Significant trend in the mean only.
-2. Significant trend in the STD only.
-3. Significant trend in both the mean and STD.
+### Scenarios:
 
-To determine the best probability distribution for non-stationary data, we *decompose* the data into stationary and non-stationary components and then use one of the methods described above.
+1. **Trend in mean only**
+2. **Trend in standard deviation only**
+3. **Trend in both mean and standard deviation**
 
-### Decomposition (Scenario 1)
+### Decomposition Steps
 
-1. Use [Sen's Trend Estimator](eda.md#sens-trend-estimator) to identify the slope $b_{1}$ and intercept $b_{0}$ of the trend. 
-2. Detrend the data by subtracting the linear function $(b_{1} \cdot \text{Covariate})$ from the data, where the *covariate* is a value between $[0, 1]$ derived from the index.
-3. If necessary, enforce positivity by adding a constant such that $\min(\text{data}) = 1$ .
+#### Scenario 1: Trend in mean
 
-### Decomposition (Scenario 2)
+1. Use [Sen's Trend Estimator](eda.md#sens-trend-estimator) to approximate the slope $b_1$ and intercept $b_0$.
+2. Detrend: subtract the linear function $(b_{1} \cdot \text{Covariate})$ from the time series, where the *covariate* is a value between $[0, 1]$ (time index).
+3. Ensure positivity: if necessary, shift series by adding a constant such that $\min(\text{data}) = 1$.
 
-1. Use a moving-window algorithm to compute the variance of the data. 
-2. Use [Sen's Trend Estimator](eda.md#sens-trend-estimator) to identify the slope $c_{1}$ and intercept $c_{0}$ of the trend in the variance. 
+#### Scenario 2: Trend in standard deviation
+
+1. Generate a time series of standard deviations using the moving windows method. 
+2. Use [Sen's Trend Estimator](eda.md#sens-trend-estimator) to identify the slope $c_{1}$ and intercept $c_{0}$ of the trend in the standard deviations. 
 3. Normalize the data to have mean $0$, then divide out the scale factor $g_{t}$.
 
     $$
@@ -134,10 +144,10 @@ To determine the best probability distribution for non-stationary data, we *deco
 
 4. Add back the long-term mean $\mu$, and then ensure positivity as in Scenario 1.
 
-### Decomposition (Scenario 3)
+#### Scenario 3: Trend in both mean and standard deviation
 
-1. Remove the linear (additive) trend exactly as in Scenario 1.
-2. On that detrended series, compute a rolling‐window STD series and fit its trend.
+1. Remove the linear trend in mean exactly as in Scenario 1.
+2. On that detrended series, generate a rolling‐window STD series and fit its trend.
 3. Divide the detrended data by the time-varying scale factor $g_{t}$ (as in Scenario 2).
 4. Shift to preserve the series mean and ensure positivity.
 
