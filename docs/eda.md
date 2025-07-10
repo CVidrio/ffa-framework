@@ -1,29 +1,22 @@
-# EDA Framework
+# EDA to support FFA approach selection (stationary or nonstationary)
 
-The exploratory data analysis (EDA) module of the flood frequency analysis (FFA) framework allows users to run statistical tests on annual maximum streamflow (AMS) data.
-These statistical tests have four purposes:
+The exploratory data analysis (EDA) module assesses the feasibility of the stationarity assumption in the FFA framework. It evaluates the presence of statistically significant nonstationary signatures, such as change points and deterministic temporal trends in the mean or variability of the annual maximum series. 
+Attributing nonstationarity to its drivers is important for selecting the appropriate FFA approach with greater confidence.
 
-1. Identify change points ("jumps" or "kinks") in the AMS data.
-2. Identify [serial correlation](https://en.wikipedia.org/wiki/Autocorrelation) in the AMS data.
-3. Identify trends in the mean value of the AMS data.
-4. Identify trends in the variability of the AMS data.
-
-A diagram showing the current EDA framework is shown below:
+The current EDA workflow is shown below:
 
 ![Diagram showing current EDA framework.](img/fig-eda-current.png)
 
-## List of Statistical Tests
+## List of Statistical Tests (Alphabetical Order)
 
 ### BB-MK Test
 
-The **Block Bootstrap Mann-Kendall (BB-MK) Test** is used to assess whether there is a statistically significant monotonic trend in a time series.
-
-Unlike the MK test, the BB-MK test is insensitive to autocorrelation.
+The **Block Bootstrap Mann-Kendall (BB-MK) Test** assesses whether there is a statistically significant monotonic trend in the time series. Unlike the MK test (see below), the BB-MK test is insensitive to autocorrelation.
 
 - Null hypothesis: There is no monotonic trend.
 - Alternative hypothesis: There is a monotonic upwards or downwards trend.
 
-To carry out the BB-MK test, we rely on the results of the MK test and Spearman test.
+To carry out the BB-MK test, we rely on the results of the MK test and the Spearman auto-correlation test.
 
 1. Compute the MK test statistic.
 2. Find the least significant lag $k$ using the Spearman test.
@@ -34,12 +27,12 @@ To carry out the BB-MK test, we rely on the results of the MK test and Spearman 
 
 ### KPSS Test
 
-The **KPSS Test** is used to identify if an autoregressive time series has a _unit root_.
+The **KPSS Test** determines whether an autoregressive time series has a _unit root_.
 
-- Null hypothesis: The time series does not have a unit root and is _trend-stationary_.
-- Alternative hypothesis: The time series has a unit root and is _non-stationary_.
+- Null hypothesis: The time series has a deterministic trend (does not have a unit root and is _trend-stationary_).
+- Alternative hypothesis: The time series has a stochastic trend (unit root).
 
-Precisely, the autoregressive time series shown below has unit root if $\sigma_{v}^2 > 0$:
+The autoregressive time series shown below has a unit root if $\sigma_{v}^2 > 0$:
 
 $$
 \begin{align}
@@ -49,69 +42,48 @@ v_{t} &\sim \mathcal{N}(0, \sigma_{v}^2)
 \end{align}
 $$
 
-Here is what each term in this formulation represents:
+where:
 
 - $\mu_{t}$ is the _drift_, or the deviation of $y_{t}$ from $0$.
   Under the null hypothesis, $\mu_{t}$ is constant (since $v_{t}$ is constant).
   Under the alternative hypothesis, $\mu_t$ is a stochastic process with unit root.
 - $\beta t$ is a _linear trend_, which represents deterministic non-stationarity (i.e. climate change).
 - $\epsilon_{t}$ is _stationary noise_, corresponding to reversible fluctuations in $y_{t}$.
-  In hydrology, $\epsilon_{t}$ represents fluctuations in streamflow due to random events (i.e. weather).
+  In hydrology, $\epsilon_{t}$ represents natural variability.
 - $v_{t}$ is _random walk innovation_, or irreversible fluctuations in $\mu_{t}$.
   In hydrology, $v_{t}$ could represent randomness in industrial activity causing climate change.
 
-To conduct the test, we fit a linear model to $y_{t}$ and get the residuals $\hat{r}_{t}$
-Then, we compute the cumulative partial-sum statistics $S_{k}$ using the following formula:
+The test involves the following steps:
 
+1. **Fit a linear model** to $y_t$ and get the residuals $\hat{r}_t$.
+2. **Compute cumulative partial-sum statistics**: 
 $$
 S_{k} = \sum_{t=1}^{k} \hat{r}_{t}
 $$
-
-Under the null hypothesis, $S_{k}$ will behave like a random walk with finite variance.
-If $y_{t}$ has a unit root, then the sums will "drift" too much.
-
-Next, we estimate the long-run variance of the time series, accounting for autocovariance.
-To do this, we first compute the sample autocovariances $\gamma_{j}$ for up to $q$ lags, where:
-
-$$
-q = \left\lfloor \frac{3\sqrt{n}}{13} \right\rfloor
-$$
-
-The sample autocovariance $\gamma_{j}$ is a measure of the correlation between the time series $y_{t}$ and the shifted time series $y_{t-j}$.
-Each sample autocovariance $\gamma_{j}$ for $j = 0, 1, \dots, q$ is computed as follows:
-
+3. **Estimate the long-run variance** using a Newey-West style estimator (corrects for additional variability in $\epsilon_{t}$ due to autocorrelation and heteroskedasticity):
+   - Compute the sample autocovariances $\gamma_{j}$ up to lag $q = \left\lfloor \frac{3\sqrt{n}}{13} \right\rfloor$:
 $$
 \hat{\gamma}_{j} = \frac{1}{n} \sum_{t = j + 1}^{n} \hat{r}_{t}\hat{r}_{t-j}
 $$
-
-Finally, we estimate the long-run variance $\hat{\lambda}^2$ using a Newey-West style estimator.
-This estimator corrects for the additional variability in $\epsilon_{t}$ caused by autocorrelation and heteroskedasticity.
-
+   - Estimate long-run variance:
 $$
 \hat{\lambda}^2 = \hat{\gamma}_{0} + 2\sum_{j=1}^{q} \left(1 - \frac{j}{q + 1} \right)  \gamma_{j}
 $$
-
-Then, we compute the test statistic $z_{K}$ using the following formula:
-
+4. **Calculate test statistic**:
 $$
 z_{K} = \frac{1}{n^2\hat{\lambda }^2}\sum_{k=1}^{n}  S_{k}^2
 $$
-
-The test statistic $z_{K}$ is not normally distributed.
-Instead, we compute the p-value by interpolating a table from [Hobjin et al. (2004)](https://doi.org/10.1111/j.1467-9574.2004.00272.x).
-This table is shown below for various quantiles $q$.
+5. **Compare $z_K$ to critical values** from [Hobjin et al. (2004)](https://doi.org/10.1111/j.1467-9574.2004.00272.x):
 
 | $q$       | 0.90  | 0.95  | 0.975 | 0.99  |
 | --------- | ----- | ----- | ----- | ----- |
 | Statistic | 0.119 | 0.146 | 0.176 | 0.216 |
 
-**Warning**: The interpolation procedure discussed above only works for $0.01 < p < 0.10$.
-Therefore, p-values below $0.01$ and above $0.10$ will be truncated and it is required that $0.01 < \alpha < 0.1$.
+**Warning**: Interpolation is valid only for $0.01 < p < 0.10$. P-values < $0.01$ and > $0.10$ will be truncated. Use $\alpha$ values within this range ($0.01 < \alpha < 0.1$).
 
 ### Mann-Kendall Test
 
-The **Mann-Kendall Test** is used to assess whether there is a statistically significant monotonic trend in a time series.
-The test requires that when no trend is present, the data is independent and identically distributed.
+The **Mann-Kendall Test** assesses whether there is a statistically significant monotonic trend in a time series. It assumes independence.
 
 - Null hypothesis: There is no monotonic trend.
 - Alternative hypothesis: There is a monotonic upwards or downwards trend.
@@ -143,7 +115,7 @@ For a two-sided test, we reject the null hypothesis if $|Z_{MK}| \geq Z_{1 - (\a
 
 ### Mann-Kendall-Sneyers Test
 
-The **Mann-Kendall-Sneyers (MKS) Test** is used to identify the beginning of a trend in a time series:
+The **Mann-Kendall-Sneyers (MKS) Test** identifies the beginning of a trend in a time series:
 
 - Null hypothesis: There are no change points in the time series.
 - Alternative hypothesis: There are _one or more_ change points in the time series.
@@ -184,12 +156,12 @@ A crossing point between $UF_{t}$ and $UB_{t}$ that lies outside the confidence 
 
 ### MW-MK Test
 
-The **Moving Window Mann-Kendall (MW-MK) Test** is used to identify a statistically significant monotonic trend in the variances of an AMS time series.
+The **Moving Window Mann-Kendall (MW-MK) Test** identifies a statistically significant monotonic trend in the variances of an AMS time series.
 
 - Null hypothesis: There is no significant trend in the variance of the AMS.
 - Alternative hypothesis: There is a significant trend in the variance of the AMS.
 
-To compute the AMS variances we use a moving window:
+To compute the AMS variances, we use a moving window:
 
 1. Set the length of the moving window $w$ and the step size $s$.
 2. Compute the standard deviation over indices $[1, w]$.
@@ -298,19 +270,6 @@ This table is shown below for sample sizes $n$ and quantiles $q$:
 **Warning**: The interpolation procedure discussed above only works for $0.01 < p$.
 Therefore, p-values below $0.01$ will be truncated and it is required that $0.01 < \alpha$.
 
-### Sen's Trend Estimator
-
-**Sen's Trend Estimator** is used to estimate the slope of a regression line.
-Unlike [Least Squares](https://en.wikipedia.org/wiki/Least_squares), Sen's trend estimator uses a non-parametric approach which makes it robust to outliers.
-
-To compute Sen's trend estimator we use the following procedure:
-
-1. Iterate over all pairs of data points $(x_{i}, y_{i})$ and $(x_{j}, y_{j})$.
-2. If $x_{i} \neq  x_{j}$, compute the slope $(y_{j} - y_{i})/(x_{j} - x_{i})$ and add it to a list $S$.
-3. Sen's trend estimator $\hat{m}$ is the median of $S$.
-
-After computing $\hat{m}$, we can estimate the $y$-intercept $b$ by the median of $y_{i} - \hat{m}x_{i}$ for all $i$.
-
 ### Runs Test
 
 After computing the regression line using [Sen's trend estimator](eda.md#sens-trend-estimator), we use the **Runs Test** to determine whether the residuals from the regression are random.
@@ -340,6 +299,18 @@ $$
 
 For more information, see the [Wikipedia](https://en.wikipedia.org/wiki/Wald%E2%80%93Wolfowitz_runs_test) entry or the [R Documentation](https://search.r-project.org/CRAN/refmans/randtests/html/runs.test.html).
 
+### Sen's Trend Estimator
+
+**Sen's Trend Estimator** approximates the slope of a linear trend. Unlike [Least Squares](https://en.wikipedia.org/wiki/Least_squares), Sen's trend estimator uses a non-parametric approach, which makes it robust to outliers.
+
+To compute Sen's trend estimator, we use the following procedure:
+
+1. Iterate over all pairs of data points $(x_{i}, y_{i})$ and $(x_{j}, y_{j})$.
+2. If $x_{i} \neq  x_{j}$, compute the slope $(y_{j} - y_{i})/(x_{j} - x_{i})$ and add it to a list $S$.
+3. Sen's trend estimator $\hat{m}$ is the median of $S$.
+
+After computing $\hat{m}$, we can estimate the $y$-intercept $b$ by the median of $y_{i} - \hat{m}x_{i}$ for all $i$.
+
 ### Spearman Test
 
 The **Spearman Test** is used to identify autocorrelation in a time series $y_{t}$.
@@ -368,7 +339,7 @@ For more information, see the Wikipedia pages on [Autocorrelation](https://en.wi
 
 ### White Test
 
-The **White Test** is used to detect changes in the variance of a time series.
+The **White Test** detects changes in the variance of a time series.
 
 - Null hypothesis: The variance of the time series is constant (homoskedasticity).
 - Alternative hypothesis: The variance of the time series is time-dependent (heteroskedasticity).
